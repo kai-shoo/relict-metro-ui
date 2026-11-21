@@ -66,6 +66,7 @@ export class MetroLongListSelector extends LitElement {
     .grid[aria-rowcount="0"] { min-block-size: 1px; }
     .window { position: relative; }
     .row { position: absolute; inset-inline: 0; }
+    .row[data-pinned] { z-index: 1; background: var(--_metro-bg); }
     .cell {
       display: flex;
       align-items: center;
@@ -510,14 +511,35 @@ export class MetroLongListSelector extends LitElement {
     return low;
   }
 
-  #window(): Row[] {
+  #canPin(header: Row): boolean {
+    // Leave room for an item below the header, including in compact viewports.
+    return header.height + this.#rows[header.index + 1].height <= this.#viewportHeight;
+  }
+
+  #pinnedHeader() {
+    const top = this.#scrollTop - this.#leading;
+    const first = this.#rows[this.#rowAt(top)];
+    if (!first?.item) return undefined;
+    const row = this.#byId.get(rowId(first.group.value, true));
+    if (!row || !this.#canPin(row)) return undefined;
+    const next = this.#rows[row.index + 1 + row.group.items.length];
+    const start = Math.min(top, (next?.start ?? this.#totalHeight) - row.height);
+    return { row, start };
+  }
+
+  #window(pinned = this.#pinnedHeader()?.row): Row[] {
     const top = this.#scrollTop - this.#leading;
     const start = this.#rowAt(top);
     const end = this.#rowAt(top + this.#viewportHeight);
     const rows = this.#rows.slice(Math.max(0, start - 3), end + 4);
     const active = this.#byId.get(this.#active);
     const focused = Boolean(this.#grid?.matches(':focus-within') || this.#focusTo);
-    if (active && !rows.includes(active) && focused) return [...rows, active].sort((a, b) => a.index - b.index);
+    // The pinned header is the original grid row, even after it leaves overscan.
+    if (pinned && !rows.includes(pinned)) rows.unshift(pinned);
+    if (active && !rows.includes(active) && focused) {
+      rows.push(active);
+      rows.sort((a, b) => a.index - b.index);
+    }
     return rows;
   }
 
@@ -532,10 +554,12 @@ export class MetroLongListSelector extends LitElement {
     if (active && (this.#focusTo || this.#grid?.matches(':focus-within'))) return active;
     const top = this.#scrollTop - this.#leading;
     const bottom = top + this.#viewportHeight;
-    const contained = (row: Row) => row.start >= top && row.start + row.height <= bottom;
+    const pinned = this.#pinnedHeader();
+    const unobscuredTop = pinned ? pinned.start + pinned.row.height : top;
+    const contained = (row: Row) => row.start >= unobscuredTop && row.start + row.height <= bottom;
     if (active && contained(active)) return active;
     return enabled.find(contained)
-      ?? enabled.find(row => row.start < bottom && row.start + row.height > top)
+      ?? enabled.find(row => row.start < bottom && row.start + row.height > unobscuredTop)
       ?? enabled[0];
   }
 
@@ -551,7 +575,13 @@ export class MetroLongListSelector extends LitElement {
 
   #revealRow(row: Row): void {
     const start = this.#leading + row.start;
-    if (start < this.#scrollTop || row.height > this.#viewportHeight) this.#position(start);
+    const header = row.item && this.#byId.get(rowId(row.group.value, true));
+    const reserve = header && this.#canPin(header) ? header.height : 0;
+    const pinned = this.#pinnedHeader();
+    const unobscuredTop = pinned ? this.#leading + pinned.start + pinned.row.height : this.#scrollTop;
+    if (start < (row.item ? unobscuredTop : this.#scrollTop) || row.height > this.#viewportHeight) {
+      this.#position(start - reserve);
+    }
     else if (start + row.height > this.#scrollTop + this.#viewportHeight) {
       this.#position(start + row.height - this.#viewportHeight);
     }
@@ -730,11 +760,12 @@ export class MetroLongListSelector extends LitElement {
     else this.shadowRoot?.querySelector<HTMLButtonElement>('.overview')?.focus({ preventScroll: true });
   }
 
-  #renderRow(row: Row, selected: Set<string>, active: string) {
+  #renderRow(row: Row, selected: Set<string>, active: string, pinnedStart?: number) {
     const item = row.item;
     const tabIndex = !this.disabled ? (row.id === active ? '0' : '-1') : nothing;
     return html`<div class="row" part="row" role="row" aria-rowindex=${row.index + 1} data-row=${row.id}
-      style="inset-block-start: ${row.start}px; block-size: ${row.height}px">
+      ?data-pinned=${pinnedStart !== undefined}
+      style="inset-block-start: ${pinnedStart ?? row.start}px; block-size: ${row.height}px">
       ${item ? html`
         <div class="cell" part="item" role="gridcell" data-row-focus=${row.id}
           tabindex=${item.disabled ? nothing : tabIndex} aria-label=${item.label || item.value}
@@ -766,7 +797,8 @@ export class MetroLongListSelector extends LitElement {
   }
 
   protected override render() {
-    const visible = this.#window();
+    const pinned = this.#pinnedHeader();
+    const visible = this.#window(pinned?.row);
     const active = this.#tabStop(visible)?.id ?? '';
     const selected = new Set(this.selectedValues);
     const jumpLabel = this.jumpLabel || 'Groups';
@@ -782,7 +814,8 @@ export class MetroLongListSelector extends LitElement {
           @focusin=${this.#onFocus} @focusout=${() => this.requestUpdate()}
           @keydown=${this.#onKey} @pointerdown=${() => { this.#pointerOrigin = this.#active; }}>
           <div class="window" role="presentation" style="block-size: ${this.#totalHeight}px">
-            ${repeat(visible, row => row.id, row => this.#renderRow(row, selected, active))}
+             ${repeat(visible, row => row.id, row => this.#renderRow(row, selected, active,
+               pinned?.row === row ? pinned.start : undefined))}
           </div>
         </div>
         <div class="after-rows">

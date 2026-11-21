@@ -80,6 +80,83 @@ test('alphabet overview uses 99 pixel square tiles with bottom-aligned initials 
   expect(bounds.bottom - letter.bottom).toBeLessThan(letter.top - bounds.top);
 });
 
+test('pins a single group header and pushes it out at the next group in both scroll directions', async () => {
+  const list = mount('<metro-long-list-selector label="Authors"><div slot="header" style="height:40px"></div></metro-long-list-selector>');
+  list.groups = [createGroup('a', 'A', 40), createGroup('empty', 'E', 0), createGroup('b', 'B', 40)];
+  await list.updateComplete;
+  const root = list.shadowRoot!;
+  const viewport = root.querySelector<HTMLElement>('[part="viewport"]')!;
+  const headerOffset = (group: string) => {
+    const rows = root.querySelectorAll(`[data-row="group:${group}"]`);
+    expect(rows.length).toBeLessThanOrEqual(1);
+    return rows[0] && Math.round(rows[0].getBoundingClientRect().top - viewport.getBoundingClientRect().top);
+  };
+  const boundary = 40 + list.groupHeight + 40 * list.itemHeight;
+  expect(headerOffset('a')).toBe(40);
+  viewport.scrollTop = 900;
+  await expect.poll(() => headerOffset('a')).toBe(0);
+  expect(root.querySelectorAll('[part="row"]').length).toBeLessThan(16);
+
+  viewport.scrollTop = boundary - 30;
+  await expect.poll(() => headerOffset('a')).toBe(30 - list.groupHeight);
+  expect(headerOffset('b')).toBe(30);
+  viewport.scrollTop = boundary + 350;
+  await expect.poll(() => headerOffset('b')).toBe(0);
+  expect(headerOffset('a')).toBeUndefined();
+
+  viewport.scrollTop = boundary - 30;
+  await expect.poll(() => headerOffset('a')).toBe(30 - list.groupHeight);
+  viewport.scrollTop = 900;
+  await expect.poll(() => headerOffset('a')).toBe(0);
+  viewport.scrollTop = 10;
+  await expect.poll(() => headerOffset('a')).toBe(30);
+});
+
+test('opens Quick Jump from a pinned letter and preserves virtual anchors on cancel or jump', async () => {
+  const list = mount();
+  list.groups = [createGroup('a', 'A', 40), createGroup('b', 'B', 40)];
+  await list.updateComplete;
+  const anchor = { key: 'a-22', offset: -12, axis: 'vertical' } as const;
+  expect(list.restoreAnchor(anchor)).toBe(true);
+  const grid = page.getByRole('grid', { name: 'Authors' });
+  const pinned = grid.getByRole('button', { name: 'A', exact: true });
+  const dialog = page.getByRole('dialog', { name: 'Groups' });
+  await pinned.click();
+  await expect.element(dialog).toBeVisible();
+  expect(list.getAnchor()).toEqual(anchor);
+  await userEvent.keyboard('{Escape}');
+  await expect.element(dialog).not.toBeInTheDocument();
+  await expect.poll(() => list.shadowRoot?.activeElement).toBe(pinned.element());
+  expect(list.getAnchor()).toEqual(anchor);
+
+  await userEvent.keyboard('{Enter}');
+  await expect.element(dialog).toBeVisible();
+  const beta = Array.from(list.shadowRoot!.querySelectorAll<HTMLButtonElement>('[part="jump-tile"]'))
+    .find(button => button.textContent?.trim() === 'B')!;
+  await userEvent.click(beta);
+  await expect.poll(() => list.shadowRoot?.activeElement?.textContent?.trim()).toBe('B 0');
+  expect(list.getAnchor()).toEqual({ key: 'b', offset: 0, axis: 'vertical', group: true });
+  expect(list.shadowRoot!.querySelectorAll('[part="row"]').length).toBeLessThan(16);
+});
+
+test('reveals a focused item below the pinned header', async () => {
+  const list = mount();
+  list.groups = [createGroup('a', 'A', 40)];
+  await list.updateComplete;
+  expect(list.restoreAnchor({ key: 'a-22', offset: -12, axis: 'vertical' })).toBe(true);
+  await expect.poll(() => list.getAnchor()?.key).toBe('a-22');
+  expect(list.focusItem('a-23')).toBe(true);
+  const header = list.shadowRoot!.querySelector('[data-row="group:a"]')!;
+  const viewport = list.shadowRoot!.querySelector('[part="viewport"]')!;
+  await expect.poll(() => {
+    const item = list.shadowRoot?.activeElement;
+    if (item?.textContent?.trim() !== 'A 23') return false;
+    const bounds = item.getBoundingClientRect();
+    return bounds.top >= header.getBoundingClientRect().bottom
+      && bounds.bottom <= viewport.getBoundingClientRect().bottom;
+  }).toBe(true);
+});
+
 test('virtualizes rows, keeps offscreen selection and makes keyboard End reach the real final row', async () => {
   const list = mount();
   list.selectionMode = 'multiple';
@@ -225,16 +302,16 @@ test('restores the visible key and pixel offset after group reordering and choos
   await list.updateComplete;
   expect(list.getAnchor()).toEqual({ key: 'b-1', offset: -12, axis: 'vertical' });
 
-  list.focusItem('b-2');
-  await expect.poll(() => list.shadowRoot?.activeElement?.textContent?.trim()).toBe('Beta 2');
+  list.focusItem('b-3');
+  await expect.poll(() => list.shadowRoot?.activeElement?.textContent?.trim()).toBe('Beta 3');
   list.groups = [second, first];
   await list.updateComplete;
   expect(list.getAnchor()).toEqual({ key: 'b-1', offset: -12, axis: 'vertical' });
-  expect(list.shadowRoot?.activeElement?.textContent?.trim()).toBe('Beta 2');
-
-  list.groups = [{ ...second, items: second.items.filter(item => item.value !== 'b-2') }, first];
-  await list.updateComplete;
   expect(list.shadowRoot?.activeElement?.textContent?.trim()).toBe('Beta 3');
+
+  list.groups = [{ ...second, items: second.items.filter(item => item.value !== 'b-3') }, first];
+  await list.updateComplete;
+  expect(list.shadowRoot?.activeElement?.textContent?.trim()).toBe('Beta 4');
   expect(list.getAnchor()).toEqual({ key: 'b-1', offset: -12, axis: 'vertical' });
 });
 
