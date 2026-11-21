@@ -149,7 +149,11 @@ search.addEventListener('metro-query', ({ detail: { query, queryId } }) => {
 });
 ```
 
-Use `suggestions-label`, `clear-label`, `loading-label`, `empty-label`, and `error-label` to localize suggestions and states. The list opens below the field inside the component. A container with a restrictive `overflow` value can clip the list. To style the control, use the `label`, `control`, `input`, `clear`, `popup`, `list`, `option`, and `status` parts.
+The suggestion list opens below the field by default. If there is not enough room below and there is more room above, the list opens above the field.
+
+When a container with `overflow: auto` scrolls, the open list adjusts its position to follow the field. The list uses the Popover API, so the container does not clip it.
+
+Use `suggestions-label`, `clear-label`, `loading-label`, `empty-label`, and `error-label` to localize suggestions and states. To style the control, use the `label`, `control`, `input`, `clear`, `popup`, `list`, `option`, and `status` parts.
 
 ## Dialogs and flyout menus
 
