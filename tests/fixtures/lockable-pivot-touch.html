@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lockable Pivot touch checks</title>
+<style>body { margin: 0; } .area { min-height: 9rem; }</style>
+<metro-pivot id="outer" value="outside-a" label="Outer sections">
+  <metro-pivot-item value="outside-a" label="Outside A">
+    <metro-lockable-pivot id="inner" value="a" label="Inner sections" locked>
+      <metro-pivot-item value="a" label="Alpha"><div class="area" id="alpha">First panel</div></metro-pivot-item>
+      <metro-pivot-item value="b" label="Beta"><div class="area" id="beta">Second panel</div></metro-pivot-item>
+    </metro-lockable-pivot>
+  </metro-pivot-item>
+  <metro-pivot-item value="outside-b" label="Outside B">Other outer section</metro-pivot-item>
+</metro-pivot>
+<script type="module">
+  import '/src/lockable-pivot.ts';
+  const events = [];
+  document.addEventListener('metro-change', event => events.push({ id: event.target.id, value: event.detail.value }));
+  window.readPivots = () => {
+    const inner = document.querySelector('#inner');
+    const viewport = inner.shadowRoot.querySelector('[part="viewport"]');
+    return { outer: document.querySelector('#outer').value, inner: inner.value, events,
+      dragging: viewport.hasAttribute('data-dragging'), offset: viewport.style.getPropertyValue('--_metro-pivot-drag') };
+  };
+</script>
+</html>

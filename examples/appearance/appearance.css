@@ -1,0 +1,17 @@
+:root {
+  color-scheme: var(--metro-color-scheme, light dark);
+  font-family: 'Segoe WP', 'Segoe UI', system-ui, sans-serif;
+  background: Canvas; color: CanvasText;
+}
+body { margin: 0; }
+main { max-inline-size: 38rem; margin-inline: auto; padding: 1rem; }
+h1, h2 { overflow-wrap: anywhere; }
+h1 { font-weight: 300; font-size: clamp(2.75rem, 9vw, 4rem); margin: .25rem 0 1.5rem; }
+h2 { font-weight: 400; margin: 1.25rem 0 .75rem; }
+figure { margin: 0 0 1rem; }
+figure img { width: min(100%, 27rem); height: auto; display: block; }
+figcaption { margin-block-start: .25rem; }
+a, button { color: inherit; }
+button { background: transparent; border: 2px solid; padding: .5rem .75rem; font: inherit; }
+button:disabled { opacity: .55; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: 1rem; }

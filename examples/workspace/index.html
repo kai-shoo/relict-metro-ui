@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проекты · Metro UI</title>
+  <link rel="stylesheet" href="./workspace.css">
+  <script type="module" src="../../dist/metro-ui.js"></script>
+  <script type="module" src="./workspace.js"></script>
+  <main>
+    <h1>Рабочая область</h1>
+    <metro-button id="detach">Открыть блокнот в новом окне</metro-button>
+    <p id="notice" role="status" hidden></p>
+    <metro-tab-view id="documents" label="Документы" close-label="Закрыть" value="projects" reorderable detachable>
+      <metro-tab-view-item value="projects" label="Проекты">
+        <metro-list-details id="projects" list-label="Проекты" details-label="Карточка проекта" back-label="Назад">
+          <ul slot="list">
+            <li><button type="button" data-metro-focus="north">Северный маршрут</button></li>
+            <li><button type="button" data-metro-focus="garden">Городской сад</button></li>
+          </ul>
+          <section slot="details" class="editor">
+            <h2 id="project-title"></h2>
+            <metro-calendar-date-picker id="project-date" label="Дата сдачи" locale="ru-RU"
+              placeholder="Выберите дату" dialog-label="Дата сдачи" clear-label="Очистить"
+              apply-label="Применить" cancel-label="Отмена"
+              previous-label="Предыдущий месяц" next-label="Следующий месяц"></metro-calendar-date-picker>
+            <metro-text-box id="project-notes" label="Заметка" multiline></metro-text-box>
+          </section>
+          <p slot="empty">Выберите проект</p>
+        </metro-list-details>
+      </metro-tab-view-item>
+    </metro-tab-view>
+    <p id="detach-zone">Перетащите заголовок «Блокнот» сюда, чтобы открыть его в отдельном окне.</p>
+    <metro-dialog id="confirm" label="Закрыть блокнот?">
+      <p>Изменения останутся в этом сеансе до закрытия страницы.</p>
+      <button slot="actions" type="button" data-metro-value="cancel">Остаться</button>
+      <button slot="actions" type="button" data-metro-value="close">Закрыть</button>
+    </metro-dialog>
+  </main>
+</html>

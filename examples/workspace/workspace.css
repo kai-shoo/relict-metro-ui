@@ -1,0 +1,62 @@
+:root {
+  color-scheme: dark;
+  --metro-color-scheme: dark;
+  background: Canvas;
+  color: CanvasText;
+  font-family: 'Segoe WP', 'Segoe UI', system-ui, sans-serif;
+}
+
+body { margin: 0; }
+
+main {
+  max-inline-size: 58rem;
+  margin-inline: auto;
+  padding-block: clamp(.75rem, 2vi, 1.5rem);
+  padding-inline: clamp(10px, 3vi, 1.5rem);
+}
+
+h1, h2 {
+  margin-block: .5em;
+  font-weight: 300;
+  overflow-wrap: anywhere;
+}
+
+h1 { font-size: clamp(2.25rem, 8vw, 4rem); }
+h2 { font-size: 2rem; }
+metro-tab-view { margin-block: 1.25rem; }
+#detach-zone { border: 1px dashed GrayText; padding: .75rem; }
+metro-list-details ul { margin: 0; padding: 0; list-style: none; }
+
+metro-list-details li button {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: 2.75rem;
+  padding-block: .65rem;
+  padding-inline: .5rem .75rem;
+  border: 0;
+  border-inline-start: .25rem solid transparent;
+  color: inherit;
+  background: transparent;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+
+metro-list-details li button:hover { background: #1f1f1f; }
+metro-list-details li button:focus-visible {
+  outline: 2px solid var(--metro-focus, currentColor);
+  outline-offset: -2px;
+}
+
+metro-list-details li button[aria-current="true"] {
+  border-inline-start-color: var(--metro-accent, #0050ef);
+  font-weight: 600;
+}
+
+@media (forced-colors: active) {
+  metro-list-details li button[aria-current="true"] { border-inline-start-color: Highlight; }
+}
+
+.editor, metro-tab-view-item > metro-text-box { padding: .75rem; }
+.editor { display: grid; gap: .75rem; }

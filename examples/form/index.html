@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inspection form</title>
+    <link rel="stylesheet" href="./form.css">
+    <script type="module" src="./start.js"></script>
+  </head>
+  <body>
+    <main>
+      <metro-frame id="frame" value="reports">
+        <metro-page value="reports" label="reports">
+          <button id="open" type="button" data-metro-focus="report" disabled>Open inspection report</button>
+          <p id="overview-status" role="status"></p>
+        </metro-page>
+        <metro-page value="editor" label="inspection report">
+          <form id="report" novalidate>
+            <fieldset id="fields">
+              <metro-text-box id="summary" name="summary" label="Report title" required maxlength="100">
+                <div slot="description" class="summary-description">
+                  <p id="summary-error" class="error" hidden></p>
+                  <span>Use a short title for the inspection.</span>
+                </div>
+              </metro-text-box>
+              <metro-date-picker id="date" name="date" label="Inspection date" presentation="phone"
+                min="2028-01-01" max="2032-12-31" required></metro-date-picker>
+            </fieldset>
+            <div class="commands" role="group" aria-label="Report commands">
+              <button id="back" type="button" aria-keyshortcuts="Alt+ArrowLeft">Back</button>
+              <button id="save" type="submit">Save</button>
+            </div>
+            <metro-progress-bar id="form-progress" label="Saving inspection report" indeterminate hidden></metro-progress-bar>
+            <p id="form-status" role="status"></p>
+            <p id="form-error" class="error" role="alert" hidden>Save failed. Your changes are still here.</p>
+          </form>
+        </metro-page>
+      </metro-frame>
+      <metro-dialog id="leave" label="Leave the report?">
+        <p>You have unsaved changes.</p>
+        <metro-progress-bar id="leave-progress" label="Saving inspection report" indeterminate hidden></metro-progress-bar>
+        <p id="leave-status" role="status" hidden>Saving the report…</p>
+        <p id="leave-error" class="error" role="alert" hidden>Save failed. Your changes are still here.</p>
+        <button id="stay" type="button" slot="actions" data-metro-value="stay" autofocus>Keep editing</button>
+        <button id="discard" type="button" slot="actions" data-metro-value="discard">Discard changes</button>
+        <button id="save-leave" type="button" slot="actions">Save and leave</button>
+      </metro-dialog>
+    </main>
+  </body>
+</html>

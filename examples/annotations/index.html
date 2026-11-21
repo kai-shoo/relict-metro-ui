@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru" data-metro-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Полевые листы · Metro UI</title>
+    <link rel="stylesheet" href="./annotations.css">
+    <script type="module" src="./annotations.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Полевые листы</h1>
+      <div class="actions">
+        <button type="button" id="edit" aria-pressed="false" aria-controls="tools">Аннотации</button>
+        <button type="button" id="back" hidden>← Назад</button>
+      </div>
+
+      <section class="tools" id="tools" aria-label="Инструменты аннотаций" hidden>
+        <div class="actions">
+          <button type="button" data-tool="pen" aria-pressed="true">Перо</button>
+          <button type="button" data-tool="eraser" aria-pressed="false">Ластик</button>
+          <button type="button" id="undo" disabled>Отменить штрих</button>
+        </div>
+        <div class="settings">
+          <label for="color">Цвет <input id="color" type="color" value="#a81839"></label>
+          <label for="width">Толщина <input id="width" type="range" min="1" max="32" value="4"></label>
+          <label><input id="touch" type="checkbox"> Рисовать пальцем</label>
+          <label for="caption">Подпись следующей пометки <input id="caption" type="text" maxlength="100"></label>
+        </div>
+      </section>
+
+      <div class="layout">
+        <section class="viewer" aria-label="Маршрутный журнал">
+          <nav id="sheets" aria-label="Листы документа">
+            <a href="#bridge">Переправа</a>
+            <a href="#lookout">Наблюдательная точка</a>
+          </nav>
+          <div class="document" id="document" role="region" aria-label="Листы маршрута" tabindex="0">
+            <section id="bridge" data-page aria-labelledby="bridge-title">
+              <h2 id="bridge-title" tabindex="-1">Переправа</h2>
+              <figure class="sheet">
+                <img src="./bridge.svg" alt="Маршрут от лагеря через верёвочную переправу и таблица времени проверок" width="640" height="800">
+                <metro-ink-canvas label="Штрихи на листе Переправа" disabled></metro-ink-canvas>
+                <span class="pin" tabindex="-1" role="group" hidden></span>
+              </figure>
+            </section>
+            <section id="lookout" data-page aria-labelledby="lookout-title">
+              <h2 id="lookout-title" tabindex="-1">Наблюдательная точка</h2>
+              <figure class="sheet">
+                <img src="./lookout.svg" alt="Профиль подъёма от переправы к наблюдательной площадке и журнал измерений" width="640" height="800">
+                <metro-ink-canvas label="Штрихи на листе Наблюдательная точка" disabled></metro-ink-canvas>
+                <span class="pin" tabindex="-1" role="group" hidden></span>
+              </figure>
+            </section>
+          </div>
+        </section>
+
+        <aside aria-labelledby="list-title">
+          <h2 id="list-title">Пометки</h2>
+          <p id="empty">Пометок пока нет.</p>
+          <ul id="notes" role="list"></ul>
+          <p id="status" role="status"></p>
+        </aside>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800" viewBox="0 0 640 800">
+  <title>Переправа. Маршрутный журнал</title>
+  <rect width="640" height="800" fill="#fcf8ed"/>
+  <path d="M52 126h536M52 618h536M52 700h536" stroke="#bbb5a7" stroke-width="2"/>
+  <g fill="#763b28" font-family="sans-serif" font-size="19">
+    <text x="53" y="52">СЕВЕРНЫЙ МАРШРУТ</text>
+    <text x="518" y="52">ЛИСТ 01</text>
+  </g>
+  <text x="50" y="107" fill="#222b27" font-family="sans-serif" font-size="40">Переправа</text>
+  <rect x="52" y="155" width="536" height="382" fill="#eae8d6"/>
+  <path d="M0 324c145-84 226-53 315-2s183 83 325 25v64c-167 59-255 21-350-30S95 326 0 399Z" fill="#abc9cd" transform="translate(52 0) scale(.8375 1)"/>
+  <path d="M88 264c107-60 172-81 229-61m107 230c73 12 122-13 145-35M77 465c107-30 154-22 210 14m69-300c73 12 118 42 189 31" fill="none" stroke="#c7c5a7" stroke-width="3"/>
+  <path d="m98 439 72-36 57 14 64-90 56-97 119-19 68 41" fill="none" stroke="#834733" stroke-width="5" stroke-dasharray="10 8"/>
+  <path d="m273 343 33-44 18 11-31 45z" fill="#54513d"/>
+  <g fill="#723e2e">
+    <circle cx="98" cy="439" r="7"/><circle cx="347" cy="230" r="7"/><circle cx="534" cy="252" r="7"/>
+  </g>
+  <g fill="#29342f" font-family="sans-serif" font-size="22">
+    <text x="81" y="478">Лагерь</text><text x="382" y="271">Сухой берег</text>
+    <text x="80" y="190">Север ↑</text><text x="81" y="582">Метки маршрута</text>
+  </g>
+  <g fill="#495750" font-family="sans-serif" font-size="19">
+    <text x="53" y="649">08:15</text><text x="164" y="649">Проверка верёвок перед переходом</text>
+    <text x="53" y="684">09:00</text><text x="164" y="684">Сухой берег. Место сбора группы</text>
+    <text x="53" y="749">Наблюдения группы · Полевая карта</text>
+  </g>
+</svg>

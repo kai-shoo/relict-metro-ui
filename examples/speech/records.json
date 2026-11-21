@@ -1,0 +1,10 @@
+{
+  "north": {
+    "title": "North depot",
+    "description": "Check the loading gate and confirm the marked delivery lanes."
+  },
+  "west": {
+    "title": "West depot",
+    "description": "Review the equipment register before the next stock count."
+  }
+}

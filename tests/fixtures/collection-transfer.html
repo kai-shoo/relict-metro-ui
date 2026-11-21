@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Collection transfer checks</title>
+<style>
+  .lists { display: flex; gap: 32px; }
+  metro-reorder-list { width: 12rem; }
+  #outside { margin-top: 2rem; padding: 2rem; }
+</style>
+<metro-collection-transfer controls-hidden>
+  <div class="lists">
+    <metro-reorder-list id="source" label="Source list" transfer="move copy"></metro-reorder-list>
+    <metro-reorder-list id="target" label="Target list" transfer="move copy"></metro-reorder-list>
+  </div>
+</metro-collection-transfer>
+<div id="outside">Outside both lists</div>
+<script type="module">
+  import '/src/collection-transfer.ts';
+  const scope = document.querySelector('metro-collection-transfer');
+  const source = document.querySelector('#source');
+  const target = document.querySelector('#target');
+  source.items = [{ value: 'one', label: 'One' }, { value: 'two', label: 'Two' }];
+  target.items = [{ value: 'three', label: 'Three' }];
+  const moves = [];
+  const approvals = [];
+  const previews = [];
+  const report = ({ source, target, value, before, operation, input }) => ({ source: source.id, target: target.id, value, before, operation, input });
+  target.addEventListener('metro-before-transfer', event => { approvals.push(report(event.detail)); event.detail.accept(); });
+  scope.addEventListener('metro-transfer-preview', event => previews.push(report(event.detail)));
+  scope.addEventListener('metro-transfer', event => {
+    const { sourceValues, targetValues } = event.detail;
+    const records = new Map([...source.items, ...target.items].map(item => [item.value, item]));
+    source.items = sourceValues.map(value => records.get(value));
+    target.items = targetValues.map(value => records.get(value));
+    moves.push(report(event.detail));
+  });
+  window.readTransfer = () => ({ source: source.values, target: target.values, moves, approvals, previews,
+    focus: target.shadowRoot.activeElement?.dataset.reorderHandle ?? null });
+</script>
+</html>

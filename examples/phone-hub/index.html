@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru" data-metro-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Каталог маршрутов · Metro UI</title>
+    <link rel="stylesheet" href="./phone-hub.css">
+    <script type="module" src="./phone-hub.js"></script>
+  </head>
+  <body>
+    <main class="phone">
+      <button class="back" id="back" type="button" disabled>← Назад</button>
+      <metro-frame id="frame" value="hub">
+        <metro-page value="hub">
+          <metro-hub id="hub" profile="phone" heading="Маршруты" label="Каталог маршрутов" value="overview">
+            <metro-hub-section id="overview" value="overview" label="Обзор">
+              <div class="cover" aria-hidden="true"></div>
+              <p>Маршруты полевой группы и записи с последних выходов.</p>
+            </metro-hub-section>
+            <metro-hub-section id="recent" value="recent" label="Недавние">
+              <div class="records" id="recent-scroll" role="region" aria-label="Недавние маршруты" tabindex="0">
+                <ul id="recent-list" role="list"></ul>
+                <p id="recent-empty" hidden>Недавних маршрутов нет.</p>
+              </div>
+            </metro-hub-section>
+            <metro-hub-section id="favorites" value="favorites" label="Избранное">
+              <ul class="favorites" role="list">
+                <li>Северный сад</li>
+                <li>Лесная набережная</li>
+              </ul>
+            </metro-hub-section>
+          </metro-hub>
+        </metro-page>
+        <metro-page value="record" id="record">
+          <p id="description"></p>
+        </metro-page>
+      </metro-frame>
+      <metro-command-bar id="commands" label="Команды каталога" mode="minimal" more-label="Ещё"></metro-command-bar>
+      <p id="status" role="status"></p>
+
+      <metro-dialog id="confirm" label="Очистить недавние маршруты?">
+        <p>Изменится список недавних маршрутов.</p>
+        <button slot="actions" type="button" data-metro-value="cancel" autofocus>Отмена</button>
+        <button slot="actions" type="button" data-metro-value="clear">Очистить</button>
+      </metro-dialog>
+      <metro-dialog id="about" label="О каталоге">
+        <p>Маршруты в примере хранятся в этой странице.</p>
+        <button slot="actions" type="button" data-metro-value="close">Закрыть</button>
+      </metro-dialog>
+    </main>
+  </body>
+</html>

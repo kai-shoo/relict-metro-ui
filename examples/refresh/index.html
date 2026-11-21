@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Service requests</title>
+    <link rel="stylesheet" href="./refresh.css">
+    <script type="module" src="./refresh.js"></script>
+  </head>
+  <body>
+    <main>
+      <a href="../start/">Start</a>
+      <h1>Service requests</h1>
+      <div class="tools">
+        <button id="filter-toggle" type="button" aria-expanded="false" aria-controls="filters">Filters</button>
+        <button id="cancel-refresh" type="button" hidden>Cancel refresh</button>
+      </div>
+      <form id="filters" class="tools" hidden>
+        <label>Request state
+          <select id="filter-state">
+            <option value="all">All requests</option>
+            <option value="open">Open</option>
+            <option value="review">In review</option>
+            <option value="closed">Closed</option>
+          </select>
+        </label>
+        <button type="submit">Apply filter</button>
+      </form>
+      <div id="refresh-error" class="error" hidden>
+        <p role="alert">The refresh failed. The existing requests are still available.</p>
+        <button id="refresh-retry" type="button">Retry refresh</button>
+      </div>
+      <metro-command-bar id="commands" label="Selected request commands"></metro-command-bar>
+      <p id="results-status" role="status"></p>
+      <metro-refresh-container id="requests" label="Request list" refreshing-label="Refreshing requests">
+        <p id="loading">Loading requests…</p>
+        <p id="unloaded" hidden>Choose Refresh to load requests.</p>
+        <div id="initial-error" class="error" hidden>
+          <p role="alert">Requests could not be loaded.</p>
+          <button id="initial-retry" type="button">Try again</button>
+        </div>
+        <p id="empty" hidden></p>
+        <div id="groups"></div>
+      </metro-refresh-container>
+    </main>
+    <metro-menu-flyout id="row-menu" label="Request actions"></metro-menu-flyout>
+    <metro-dialog id="details" label="Request details">
+      <p id="details-description"></p>
+      <button type="button" slot="actions" data-metro-value="close">Close details</button>
+    </metro-dialog>
+  </body>
+</html>

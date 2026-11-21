@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Collection reorder checks</title>
+<style>metro-reorder-list { width: 18rem; } #outside { width: 18rem; height: 6rem; margin-block-start: 2rem; }</style>
+<metro-reorder-list label="Queue"></metro-reorder-list>
+<div id="outside">Outside the list</div>
+<script type="module">
+  import '/src/reorder-list.ts';
+  const list = document.querySelector('metro-reorder-list');
+  const items = [{ value: 'a', label: 'Alpha' }, { value: 'b', label: 'Beta' }, { value: 'c', label: 'Gamma' }];
+  const commits = [];
+  const previews = [];
+  list.items = items;
+  list.addEventListener('metro-reorder-preview', event => previews.push(event.detail));
+  list.addEventListener('metro-reorder', event => {
+    commits.push(event.detail);
+    list.items = event.detail.values.map(key => items.find(item => item.value === key));
+  });
+  window.readOrder = () => ({ values: list.values, commits, previews, focused: list.shadowRoot.activeElement?.dataset.reorderHandle,
+    proposal: list.proposal });
+</script>
+</html>

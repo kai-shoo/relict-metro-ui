@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 480">
+  <defs>
+    <linearGradient id="road" x2="0" y2="1">
+      <stop stop-color="#8b8180"/><stop offset="1" stop-color="#343e4c"/>
+    </linearGradient>
+    <g id="windows"><path fill="#313b47" d="M0 0h26v40H0zm49 0h26v40H49zM0 67h26v40H0zm49 0h26v40H49z"/><path fill="#cab495" d="M53 5h17v21H53zM4 72h17v18H4z" opacity=".66"/></g>
+  </defs>
+  <path fill="#8f95a0" d="M0 0h768v480H0z"/>
+  <path fill="url(#road)" d="M0 302l371-31 397 24v185H0z"/>
+  <path fill="#65656f" d="M0 0h102v313L0 359z"/>
+  <path fill="#a17d73" d="M101 52l124 35v212l-124 26z"/>
+  <path fill="#757e72" d="M225 94l92 32v161l-92 14z"/>
+  <path fill="#a09683" d="M317 169l57 20v86l-57 11z"/>
+  <path fill="#8a7b78" d="M768 31l-133 38v251l133 38z"/>
+  <path fill="#b48a76" d="M635 86l-146 35v172l146 36z"/>
+  <path fill="#68757c" d="M489 137l-87 42v104l87 19z"/>
+  <use href="#windows" transform="translate(126 115) skewY(12)"/>
+  <use href="#windows" transform="translate(242 140) skewY(10) scale(.75)"/>
+  <use href="#windows" transform="translate(516 143) skewY(-12)"/>
+  <use href="#windows" transform="translate(660 110) skewY(-13) scale(1.2)"/>
+  <path fill="#d6a98a" opacity=".62" d="M137 354h35l-34 37H66zm57 39h35l-8 12h-61zm368-47h35l83 42h-55zm-66 19h21l28 27h-29z"/>
+  <path fill="none" stroke="#b7a396" opacity=".75" d="M24 403h159m80-40h68m32 34h171m64 32h148m-660 22h226m121 9h146"/>
+</svg>

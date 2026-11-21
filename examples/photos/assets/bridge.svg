@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 480">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#434f71"/><stop offset="1" stop-color="#ac7b80"/>
+    </linearGradient>
+    <linearGradient id="river" x2="0" y2="1">
+      <stop stop-color="#676579"/><stop offset="1" stop-color="#343949"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h768v346H0z"/>
+  <path fill="#504d62" d="M0 287h40v-38h61v26h25v-53h52v39h36v-15h38v19h38v-14h40v44h49v-39h75v15h42v-45h48v59h60v-36h62v34h45v-47h57v75H0z"/>
+  <path fill="#d9b597" d="M56 263h12v6H56zm24 0h12v6H80zm59-27h11v7h-11zm19 0h11v7h-11zm79 27h9v5h-9zm241-18h11v6h-11zm21 0h11v6h-11zm125 17h12v5h-12zm112-10h10v5h-10z"/>
+  <path fill="url(#river)" d="M0 305h768v175H0z"/>
+  <path fill="none" stroke="#bd9a8f" opacity=".6" d="M46 316h83m8 22h63m234-11h134m84 17h75m-667 21h181m127 1h69m84 14h222m-507 37h213m138 18h114"/>
+  <path fill="#272933" fill-rule="evenodd" d="M0 245l768-39v21L0 277zm0 28l768-49v135h-76c-11-62-30-107-66-103-40 4-59 50-58 103h-37c-12-61-44-99-85-94-46 4-72 44-76 94h-37c-18-48-57-81-105-76-51 5-81 42-89 76h-40c-16-34-53-57-99-55z"/>
+  <path stroke="#bea296" stroke-opacity=".75" stroke-width="3" fill="none" d="M109 232h5m288-14h6m247-14h6"/>
+</svg>

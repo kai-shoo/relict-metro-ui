@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Настройки почты · Metro UI</title>
+  <link rel="stylesheet" href="./controls.css">
+  <script type="module" src="../../dist/metro-ui.js"></script>
+  <main>
+    <a href="../start/">Главная</a>
+    <h1>Настройки почты</h1>
+    <form id="settings">
+      <metro-toggle-switch name="sync" label="Фоновая синхронизация" on-label="Вкл." off-label="Выкл." checked></metro-toggle-switch>
+      <metro-checkbox name="previews" label="Предпросмотр писем" checked></metro-checkbox>
+      <metro-radio-group name="delivery" label="Проверка почты" value="auto" required>
+        <metro-radio value="auto" label="Автоматически"></metro-radio>
+        <metro-radio value="manual" label="Вручную"></metro-radio>
+      </metro-radio-group>
+      <div class="actions">
+        <metro-button type="submit">Сохранить</metro-button>
+        <metro-menu-flyout id="actions" trigger-label="Ещё" label="Действия с настройками"></metro-menu-flyout>
+        <metro-flyout trigger-label="О синхронизации" label="О синхронизации">
+          <p>Фоновая синхронизация получает новые письма автоматически.</p>
+          <button type="button" data-metro-close>Понятно</button>
+        </metro-flyout>
+      </div>
+    </form>
+    <metro-dialog id="reset" label="Восстановить настройки?">
+      <p>Параметры почты вернутся к исходным значениям.</p>
+      <button type="button" slot="actions" data-metro-value="cancel" autofocus>Отмена</button>
+      <button type="button" slot="actions" data-metro-value="reset">Восстановить</button>
+    </metro-dialog>
+    <metro-info-bar id="result" severity="success" heading="Настройки применены" dismissible dismiss-label="Закрыть"></metro-info-bar>
+  </main>
+  <script type="module" src="./controls.js"></script>
+</html>

@@ -1,0 +1,32 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+  color: light-dark(#222, #fff);
+  background: light-dark(#fff, #000);
+  --metro-accent: #0050ef;
+}
+body { margin: 0; }
+[hidden] { display: none; }
+main { max-inline-size: 40rem; margin-inline: auto; padding: 1.5rem 1rem 3rem; }
+metro-page::part(heading) { font-size: min(clamp(2rem, 10vi, 3.5rem), 15vi); }
+fieldset { display: grid; gap: .5rem; min-inline-size: 0; margin: 0; padding: 0; border: 0; }
+fieldset > :is(metro-text-box, metro-date-picker) { max-inline-size: none; margin-inline: -.75rem; }
+.commands { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: 1rem .5rem; }
+.commands button { max-inline-size: 100%; padding-inline: min(.75rem, 3vi); overflow-wrap: anywhere; }
+button {
+  box-sizing: border-box;
+  min-block-size: 2.75rem;
+  padding: .25rem .75rem;
+  border: 3px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+button:enabled:active { background: var(--metro-accent); color: #fff; }
+button:disabled { opacity: .5; cursor: default; }
+.error { margin-block: .25rem; color: light-dark(#a3241a, #ff978f); }
+.summary-description .error { margin-block: 0 .25rem; }

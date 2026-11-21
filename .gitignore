@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.vitest/
+playwright-report/
+test-results/
+*.tgz
+
+# Local configuration, caches, and logs
+.env
+.env.*
+.npmrc
+coverage/
+*.log
+*.tsbuildinfo
+.DS_Store

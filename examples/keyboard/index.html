@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact editor</title>
+    <link rel="stylesheet" href="./keyboard.css">
+    <script type="module" src="./keyboard.js"></script>
+  </head>
+  <body>
+    <main id="workspace">
+      <metro-frame id="frame" value="contact">
+        <metro-page value="contact" label="contact">
+          <div class="contact">
+            <h2>North depot</h2>
+            <p id="saved" role="status"></p>
+            <button id="edit" type="button" data-metro-focus="edit">Edit contact</button>
+          </div>
+        </metro-page>
+        <metro-page value="editor">
+          <form id="editor" novalidate>
+            <div id="fields">
+              <h1>edit contact</h1>
+              <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" autocomplete="name" value="North depot">
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email">
+                <p id="email-error" class="error" hidden></p>
+              </div>
+              <div class="field">
+                <label for="website">Website</label>
+                <input id="website" name="website" type="url" inputmode="url" autocomplete="url"
+                  autocapitalize="none" spellcheck="false" placeholder="https://example.org">
+                <p id="website-error" class="error" hidden></p>
+              </div>
+              <div class="field">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="commands" role="group" aria-label="Editor commands">
+              <button id="back" type="button">Back</button>
+              <button id="more" type="button" aria-label="Options" aria-haspopup="menu" aria-expanded="false"><span aria-hidden="true">•••</span></button>
+              <button type="submit">Save</button>
+            </div>
+          </form>
+          <metro-menu-flyout id="menu" label="Contact options"></metro-menu-flyout>
+        </metro-page>
+      </metro-frame>
+    </main>
+    <dialog id="leave" aria-labelledby="leave-title">
+      <h2 id="leave-title">Leave the editor?</h2>
+      <p>Your draft will be here when you return.</p>
+      <form method="dialog" class="choices">
+        <button value="stay" autofocus>Keep editing</button>
+        <button value="leave">Leave editor</button>
+      </form>
+    </dialog>
+  </body>
+</html>

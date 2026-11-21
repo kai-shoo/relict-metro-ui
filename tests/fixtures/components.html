@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metro component checks</title>
+<style>
+  body { margin: 0; }
+  metro-pivot { max-width: 32rem; }
+  .scroll { height: 16rem; overflow-y: auto; touch-action: pan-y pinch-zoom; }
+  .scroll a { display: block; min-height: 4rem; }
+</style>
+<script type="module" src="/dist/metro-ui.js"></script>
+<h1>Metro component checks</h1>
+<metro-pivot id="folders" label="Folders" value="inbox">
+  <metro-pivot-item value="inbox" label="Inbox">
+    <div class="scroll" id="scroll">
+      <a href="#opened">First letter</a>
+      <a href="#opened">Next letter</a>
+      <a href="#opened">Second letter</a>
+      <a href="#opened">Third letter</a>
+      <a href="#opened">Fourth letter</a>
+      <a href="#opened">Fifth letter</a>
+      <a href="#opened">Sixth letter</a>
+      <a href="#opened">Seventh letter</a>
+    </div>
+  </metro-pivot-item>
+  <metro-pivot-item value="later" label="Later" disabled><p>Disabled folder</p></metro-pivot-item>
+  <metro-pivot-item value="sent" label="Sent"><p>Sent letters</p></metro-pivot-item>
+</metro-pivot>
+<metro-pivot id="calendar" label="Calendar">
+  <metro-pivot-item value="today" label="Today"><p>Today's entries</p></metro-pivot-item>
+  <metro-pivot-item value="tomorrow" label="Tomorrow"><p>Tomorrow's entries</p></metro-pivot-item>
+</metro-pivot>
+<metro-command-bar id="commands" label="Folder actions"></metro-command-bar>
+<metro-tile size="medium" label="Go to Start" href="/examples/start/">
+  <span aria-hidden="true">↗</span>
+</metro-tile>
+<button id="outside" type="button">Outside</button>
+<script type="module">
+  await customElements.whenDefined('metro-command-bar');
+  document.querySelector('#commands').commands = [
+    { id: 'new', label: 'New mail', icon: '+' },
+    { id: 'mute', label: 'Mute', placement: 'secondary', disabled: true },
+    { id: 'archive', label: 'Archive folder', placement: 'secondary' },
+    { id: 'export', label: 'Export', placement: 'secondary' },
+  ];
+</script>
+</html>

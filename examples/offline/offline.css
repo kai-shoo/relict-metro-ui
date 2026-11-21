@@ -1,0 +1,29 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+  color: light-dark(#202020, #fff);
+  background: light-dark(#fff, #000);
+  --metro-accent: light-dark(#0050ef, #85baff);
+}
+body { margin: 0; }
+main { max-inline-size: 42rem; margin-inline: auto; padding: 1.5rem 1rem 2.5rem; }
+[hidden] { display: none; }
+a { color: inherit; }
+h1 { font-size: clamp(2.75rem, 10vw, 4.5rem); font-weight: 300; margin: .6rem 0 .85rem; line-height: 1.05; }
+h2 { margin-block: .6rem .3rem; }
+h2 metro-checkbox { font-weight: 600; }
+p { margin-block: .4rem; overflow-wrap: anywhere; }
+#transfer-result:empty, #availability:empty { display: none; }
+ul { list-style: none; padding: 0; margin: 0; }
+.group { margin-block: 1.1rem; container-type: inline-size; }
+.group metro-checkbox::part(control) {
+  gap: min(var(--metro-space, .75rem), 5cqi);
+  padding-inline: min(var(--metro-space, .75rem), 5cqi);
+}
+.group-transfer { margin-block: .5rem; }
+.file-row { padding-block: .2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .3rem .65rem;
+  border-block-end: 1px solid light-dark(#ccc, #555); }
+.file-row button { min-block-size: 2.75rem; border: 2px solid currentColor; border-radius: 0;
+  padding-inline: .6rem; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+:is(a, button):focus-visible { outline: 2px solid var(--metro-accent); outline-offset: 3px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; }

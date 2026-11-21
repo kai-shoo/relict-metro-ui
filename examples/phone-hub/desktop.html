@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru" data-metro-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Маршрутный архив · Metro UI</title>
+    <link rel="stylesheet" href="./desktop-hub.css">
+    <script type="module" src="./desktop-hub.js"></script>
+  </head>
+  <body>
+    <main>
+      <button id="desktop-back" class="action" type="button" hidden>← Назад</button>
+      <metro-frame id="desktop-frame" value="archive">
+        <metro-page value="archive">
+          <metro-semantic-zoom id="archive-zoom" overview-label="Обзор секций" detail-label="Вернуться к каталогу">
+            <div id="archive-detail" slot="detail">
+              <metro-hub id="desktop-hub" profile="desktop" heading="Маршрутный архив" label="Секции архива" value="featured">
+                <metro-hub-section id="featured" value="featured" label="Рекомендация" hero>
+                  <a data-route="ridge" data-metro-focus="featured-ridge" class="feature" href="?record=ridge">
+                    <span class="feature-cover" aria-hidden="true"></span>
+                    <strong>Край хребта</strong><span>Подъём к площадке над рекой</span>
+                  </a>
+                </metro-hub-section>
+                <metro-hub-section id="collections" value="collections" label="Подборки" href="?view=collections">
+                  <ul class="entries" role="list">
+                    <li><a href="?record=bank" data-route="bank" data-metro-focus="collection-bank">Лесная набережная</a></li>
+                    <li><a href="?record=garden" data-route="garden" data-metro-focus="collection-garden">Северный сад</a></li>
+                  </ul>
+                </metro-hub-section>
+                <metro-hub-section id="latest" value="latest" label="Недавние">
+                  <ul class="entries" role="list">
+                    <li><a href="?record=stream" data-route="stream" data-metro-focus="recent-stream">Лесной ручей</a></li>
+                    <li><a href="?record=garden" data-route="garden" data-metro-focus="recent-garden">Северный сад</a></li>
+                  </ul>
+                </metro-hub-section>
+                <metro-hub-section id="help" value="help" label="Справка">
+                  <div id="help-body" aria-busy="false">
+                    <p id="help-status" role="status"></p>
+                    <dl id="help-topics" hidden></dl>
+                    <button id="retry-help" class="action" type="button" hidden>Повторить загрузку справки</button>
+                  </div>
+                </metro-hub-section>
+              </metro-hub>
+            </div>
+          </metro-semantic-zoom>
+        </metro-page>
+        <metro-page id="route-page" value="route">
+          <p id="route-text"></p>
+        </metro-page>
+        <metro-page value="collections" label="Все подборки">
+          <ul class="entries" role="list">
+            <li><a href="?record=bank" data-route="bank" data-metro-focus="all-bank">Лесная набережная</a></li>
+            <li><a href="?record=garden" data-route="garden" data-metro-focus="all-garden">Северный сад</a></li>
+          </ul>
+        </metro-page>
+      </metro-frame>
+    </main>
+  </body>
+</html>

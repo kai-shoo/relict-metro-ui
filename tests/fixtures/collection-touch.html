@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collection touch checks</title>
+<style>
+  body { margin: 0; }
+  #list { --metro-refresh-height: 310px; --metro-motion: 0ms; }
+  .entry { display: block; min-height: 60px; }
+  #nested-scroll { height: 85px; overflow: auto; }
+  #nested-scroll div { height: 350px; }
+  .filler { height: 520px; }
+</style>
+<metro-pivot value="one" label="Entries">
+  <metro-pivot-item value="one" label="One">
+    <metro-refresh-container id="list" label="Entries list">
+      <metro-swipe-control value="record">
+        <a class="entry" href="#opened">Open entry</a>
+      </metro-swipe-control>
+      <div id="nested-scroll"><div>Independent nested scroll</div></div>
+      <div class="filler">More entries</div>
+    </metro-refresh-container>
+  </metro-pivot-item>
+  <metro-pivot-item value="two" label="Two">Other section</metro-pivot-item>
+</metro-pivot>
+<script type="module">
+  import '/src/pivot.ts';
+  import '/src/swipe-control.ts';
+  import '/src/refresh-container.ts';
+  const actions = [];
+  const refreshes = [];
+  const row = document.querySelector('metro-swipe-control');
+  const refresh = document.querySelector('metro-refresh-container');
+  row.actions = [{ id: 'archive', label: 'Archive' }];
+  row.addEventListener('metro-swipe-action', event => actions.push(event.detail));
+  refresh.addEventListener('metro-refresh', event => {
+    refreshes.push(event.detail.source);
+    refresh.refreshing = true;
+  });
+  window.readState = () => ({
+    selected: document.querySelector('metro-pivot').value,
+    open: row.openSide,
+    actions,
+    refreshes,
+    hash: location.hash,
+    scrolling: refresh.scrollViewport.scrollTop,
+    nested: document.querySelector('#nested-scroll').scrollTop,
+    busy: refresh.refreshing,
+    pulling: refresh.shadowRoot.querySelector('[part="body"]').hasAttribute('data-pulling'),
+  });
+</script>
+</html>

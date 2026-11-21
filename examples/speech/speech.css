@@ -1,0 +1,31 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+  color: light-dark(#222, #fff);
+  background: light-dark(#fff, #000);
+  --metro-accent: #0050ef;
+}
+body { margin: 0; }
+[hidden] { display: none; }
+main { max-inline-size: 40rem; margin-inline: auto; padding: 1.5rem 1rem 3rem; }
+.navigation { display: flex; align-items: center; flex-wrap: wrap; gap: .75rem; margin-block-end: 1rem; }
+#command-status { margin: 0; }
+#command-status:empty { display: none; }
+h2 { font-size: 1.5rem; font-weight: 400; }
+form { display: grid; justify-items: start; gap: .5rem; }
+metro-speech-text-box { inline-size: min(100%, 28rem); margin-inline: -.75rem; }
+ul { display: grid; gap: .5rem; list-style: none; padding-inline-start: 0; }
+button {
+  box-sizing: border-box;
+  min-block-size: 2.75rem;
+  padding: .25rem .75rem;
+  border: 3px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:active { background: var(--metro-accent); color: #fff; }
+:is(button, h2):focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }

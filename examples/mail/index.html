@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-metro-theme="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dispatch mail</title>
+    <link rel="stylesheet" href="./mail.css">
+    <script type="module" src="../../dist/metro-ui.js"></script>
+    <script type="module" src="./mail.js"></script>
+  </head>
+  <body>
+    <main class="mail">
+      <header class="mail-header">
+        <a class="back-link" href="../start/">← Start</a>
+        <h1 id="mail-title" tabindex="-1">Dispatch mail</h1>
+      </header>
+
+      <section class="mail-folders" aria-labelledby="mail-title" id="folder-view">
+        <metro-pivot id="mail-pivot" label="Mail folders" value="inbox">
+          <metro-pivot-item value="inbox" label="Inbox">
+            <div class="message-scroll" data-mail-list="inbox">
+              <ul class="message-list" aria-label="Inbox messages"></ul>
+              <p class="empty-message" hidden>No messages in Inbox.</p>
+            </div>
+          </metro-pivot-item>
+          <metro-pivot-item value="flagged" label="Flagged">
+            <div class="message-scroll" data-mail-list="flagged">
+              <ul class="message-list" aria-label="Flagged messages"></ul>
+              <p class="empty-message" hidden>No flagged messages.</p>
+            </div>
+          </metro-pivot-item>
+          <metro-pivot-item value="archive" label="Archive">
+            <div class="message-scroll" data-mail-list="archive">
+              <ul class="message-list" aria-label="Archived messages"></ul>
+              <p class="empty-message" hidden>No archived messages.</p>
+            </div>
+          </metro-pivot-item>
+        </metro-pivot>
+      </section>
+
+      <article class="message-view" id="message-view" aria-labelledby="message-title" hidden>
+        <button class="back-link" data-mail-back type="button">← Back to mail</button>
+        <h2 id="message-title" tabindex="-1"></h2>
+        <p class="message-meta"><span id="message-sender"></span><time id="message-date"></time></p>
+        <div id="message-body" class="message-body"></div>
+      </article>
+
+      <footer id="mail-footer" class="mail-footer">
+        <p id="mail-status" class="mail-status" role="status"></p>
+        <metro-command-bar id="mail-commands" label="Inbox actions"></metro-command-bar>
+      </footer>
+    </main>
+
+    <template id="message-row">
+      <li>
+        <a class="message-link">
+          <span class="message-from"></span>
+          <time class="message-time"></time>
+          <span class="message-subject"></span>
+          <span class="message-preview"></span>
+          <span class="unread-status" hidden>Unread</span>
+        </a>
+      </li>
+    </template>
+  </body>
+</html>

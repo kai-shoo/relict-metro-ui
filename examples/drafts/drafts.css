@@ -1,0 +1,50 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+  background: light-dark(#fff, #000);
+  color: light-dark(#202020, #fff);
+  --metro-accent: #0050ef;
+}
+
+body { margin: 0; }
+main { max-inline-size: 58rem; margin-inline: auto; padding: 1.5rem 1rem 3rem; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+h1, h2 { overflow-wrap: anywhere; }
+h1 { margin: .25rem 0 1.5rem; font-size: clamp(2.75rem, 7vw, 4.5rem); font-weight: 300; }
+h2 { margin: 0 0 .75rem; font-size: 1.75rem; font-weight: 400; }
+.workspace { display: grid; grid-template-columns: minmax(10rem, 1fr) minmax(0, 3fr); gap: 1.5rem; }
+nav, form, #outbox { display: grid; grid-template-columns: minmax(0, 1fr); gap: .625rem; }
+nav { align-content: start; }
+form > :is(metro-text-box, metro-calendar-date-picker, metro-file-picker) { margin-inline: -.75rem; }
+metro-file-picker::part(summary) { display: none; }
+button {
+  box-sizing: border-box;
+  min-block-size: 2.75rem;
+  padding: .25rem .625rem;
+  border: 3px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+button:active, button[aria-pressed="true"] { background: var(--metro-accent); color: white; }
+button:disabled { opacity: .55; cursor: default; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.hint { margin: 0; color: light-dark(#555, #ccc); font-size: .9375rem; }
+#draft-status { margin: 0; min-block-size: 1.3rem; }
+#attachment { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+#attachment[hidden] { display: none; }
+#attachment-download { overflow-wrap: anywhere; }
+#error { margin: .25rem 0 0; color: light-dark(#a80026, #ff617c); }
+.queue { margin-block-start: 2.5rem; }
+.queue .hint { margin-block: .5rem; }
+#offline-status:empty { display: none; }
+#outbox { margin-block-start: .75rem; }
+@media (max-width: 620px) {
+  .workspace { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  nav { display: flex; flex-wrap: wrap; }
+}

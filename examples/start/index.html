@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" data-metro-theme="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Start · Dispatch</title>
+    <link rel="stylesheet" href="./start.css">
+    <script type="module" src="../../dist/metro-ui.js"></script>
+    <script type="module" src="./start.js"></script>
+  </head>
+  <body>
+    <main class="start">
+      <h1>Start</h1>
+      <section class="tiles" aria-label="Pinned tiles">
+        <metro-tile class="mail-tile" href="../mail/" label="Mail" size="wide">
+          <span class="envelope" aria-hidden="true"></span>
+        </metro-tile>
+
+        <metro-tile class="flagged-tile" href="../mail/?folder=flagged" label="Flagged mail" size="medium">
+          <span class="flag" aria-hidden="true"></span>
+        </metro-tile>
+
+        <metro-tile class="date-tile" label="Today" size="medium">
+          <time id="today" class="tile-date">
+            <span class="day-number"></span>
+            <span class="month-name"></span>
+          </time>
+        </metro-tile>
+      </section>
+    </main>
+  </body>
+</html>

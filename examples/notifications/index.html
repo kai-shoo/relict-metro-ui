@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Updates</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <main>
+      <a href="../start/">Start</a>
+      <section id="updates" aria-labelledby="updates-title">
+        <h1 id="updates-title" tabindex="-1">Updates <metro-info-badge id="unread" hidden></metro-info-badge></h1>
+        <button id="enable" type="button" disabled>Enable system notifications</button>
+        <p id="system-status" role="status">Checking system notifications…</p>
+        <ul id="records">
+          <li data-record="delivery">
+            <a href="?event=delivery">Equipment delivery</a>
+            <p>The equipment is ready for collection at the north depot.</p>
+            <button type="button" data-notify disabled>Notify about equipment delivery</button>
+          </li>
+          <li data-record="survey">
+            <a href="?event=survey">Survey briefing</a>
+            <p>The briefing starts at 09:30 in meeting room 2.</p>
+            <button type="button" data-notify disabled>Notify about survey briefing</button>
+          </li>
+        </ul>
+        <p id="empty" hidden>No updates are available.</p>
+      </section>
+      <section id="event" aria-labelledby="event-title" hidden>
+        <a id="back" href="./">Back to updates</a>
+        <h1 id="event-title" tabindex="-1"></h1>
+        <p id="event-description"></p>
+        <button id="remove" type="button">Remove event</button>
+      </section>
+    </main>
+  </body>
+</html>

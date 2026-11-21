@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 480">
+  <defs>
+    <linearGradient id="air" x2="0" y2="1">
+      <stop stop-color="#8da3ae"/><stop offset="1" stop-color="#e3d6c7"/>
+    </linearGradient>
+    <linearGradient id="water" x2="0" y2="1">
+      <stop stop-color="#829994"/><stop offset="1" stop-color="#47646b"/>
+    </linearGradient>
+    <path id="tree" d="M0-76l-15 32h7l-14 22h9L-26 0h52L13-22h9L8-44h7z"/>
+  </defs>
+  <path fill="url(#air)" d="M0 0h768v244H0z"/>
+  <path fill="#8e9a94" d="M0 216l100-56 63 15 99-55 100 73 110 12 139-53 157 55v29H0z"/>
+  <path fill="#61746d" d="M0 223l158-35 104 15 133 25 160-29 92-10 121 23v34H0z"/>
+  <path fill="url(#water)" d="M0 235h768v245H0z"/>
+  <g fill="#344d4b" id="banks">
+    <use href="#tree" x="19" y="231"/><use href="#tree" x="49" y="235"/><use href="#tree" x="78" y="235"/>
+    <use href="#tree" x="667" y="233"/><use href="#tree" x="692" y="236"/><use href="#tree" x="723" y="239"/><use href="#tree" x="756" y="236"/>
+    <path d="M0 228l90 6 37 7H0zm641 13l34-12 93-2v14z"/>
+  </g>
+  <use href="#banks" transform="translate(0 480) scale(1 -1)" opacity=".39"/>
+  <path fill="none" stroke="#b9c2b6" opacity=".6" d="M146 252h413m-339 15h125m80 21h117m-420 20h178m218 11h197M22 368h246m88 3h186m-343 34h456"/>
+</svg>

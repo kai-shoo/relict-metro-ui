@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Metro UI HTML package consumer</title>
+  <main>
+    <h1>HTML</h1>
+    <button type="button">Select two programmatically</button>
+    <output id="events">0:</output>
+    <metro-pivot label="Folders" value="one">
+      <metro-pivot-item label="One" value="one">First folder</metro-pivot-item>
+      <metro-pivot-item label="Two" value="two">Second folder</metro-pivot-item>
+    </metro-pivot>
+  </main>
+  <script type="module">
+    import './metro-ui.js';
+
+    const pivot = document.querySelector('metro-pivot');
+    const output = document.querySelector('#events');
+    const choices = [];
+
+    document.querySelector('button').addEventListener('click', () => {
+      pivot.value = 'two';
+    });
+    pivot.addEventListener('metro-change', (event) => {
+      choices.push(event.detail.value);
+      output.textContent = `${choices.length}:${choices.join(',')}`;
+    });
+  </script>
+</html>

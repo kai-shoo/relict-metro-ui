@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slider touch checks</title>
+<style>
+  body { margin: 0; }
+  #scroll { height: 420px; overflow: auto; }
+  #scroll::before { content: ""; display: block; height: 235px; }
+  #scroll::after { content: ""; display: block; height: 700px; }
+</style>
+<script type="module" src="/src/slider.ts"></script>
+<div id="scroll"><metro-slider label="Brightness" value="2"></metro-slider></div>
+</html>

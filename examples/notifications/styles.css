@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+  background: light-dark(#fff, #000);
+  color: light-dark(#202020, #fff);
+  --metro-accent: light-dark(#0050ef, #6cb1ff);
+}
+
+body { margin: 0; }
+main { max-inline-size: 42rem; margin-inline: auto; padding: 1.5rem 1rem 3rem; }
+[hidden] { display: none; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+h1 { margin: .75rem 0 1rem; font-size: clamp(2.75rem, 8vw, 4rem); font-weight: 300; line-height: 1.05; }
+h1, h2 { overflow-wrap: anywhere; }
+#updates-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .25em;
+  font-size: min(clamp(2.75rem, 8vi, 4rem), 15vi);
+}
+#event { margin-block-start: 1.25rem; }
+#event-description { font-size: 1.125rem; line-height: 1.5; }
+#records { list-style: none; margin: 1.5rem 0 0; padding: 0; }
+#records li { border-block-start: 1px solid light-dark(#bbb, #666); padding-block: 1rem; }
+#records a { font-size: 1.375rem; }
+#records p { margin-block: .25rem .75rem; }
+button {
+  min-block-size: 2.75rem;
+  padding: .25rem .625rem;
+  border: 3px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:enabled:active { color: light-dark(#fff, #000); background: var(--metro-accent); }
+button:disabled { opacity: .55; cursor: default; }

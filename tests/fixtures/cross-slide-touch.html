@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cross-slide checks</title>
+<style>
+  body { margin: 0; }
+  #scroll { height: 250px; overflow-y: auto; }
+  #record { height: 60px; display: block; }
+  #strip { width: 95vw; height: 110px; overflow: auto hidden; }
+  #strip > div { width: 800px; }
+  #side { width: 800px; height: 100px; display: block; }
+</style>
+<metro-pivot label="Library" value="one">
+  <metro-pivot-item value="one" label="One">
+    <div id="scroll">
+      <metro-cross-slide value="record" label="Recording"><a href="#record" id="record">Recording</a></metro-cross-slide>
+      <div style="height:550px"></div>
+    </div>
+  </metro-pivot-item>
+  <metro-pivot-item value="two" label="Two">Another view</metro-pivot-item>
+</metro-pivot>
+<div id="strip"><div><metro-cross-slide axis="vertical" value="side"><div id="side">Horizontal strip</div></metro-cross-slide></div></div>
+<script type="module">
+  import '/src/cross-slide.ts';
+  import '/src/pivot.ts';
+  const events = [];
+  document.addEventListener('metro-cross-slide-change', event => events.push(event.detail));
+  window.readCrossSlide = () => ({ events, section: document.querySelector('metro-pivot').value,
+    vertical: document.querySelector('#scroll').scrollTop, horizontal: document.querySelector('#strip').scrollLeft,
+    hash: location.hash });
+</script>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nearby places</title>
+  <link rel="stylesheet" href="./map.css">
+  <script type="module" src="./map.js"></script>
+</head>
+<body>
+  <main>
+    <a class="back-link" href="../start/">Start</a>
+    <metro-frame value="hub" id="frame">
+      <metro-page value="hub">
+        <metro-hub heading="Explore" label="Explore sections" value="nearby" loop="never" id="hub">
+          <metro-hub-section value="nearby" label="Nearby">
+            <button type="button" id="open-map" class="preview-button" data-metro-focus="open-map">
+              <span class="preview" aria-hidden="true"><span class="pin"></span></span>
+              Open map
+            </button>
+            <ul><li>Riverside library</li><li>Market square</li></ul>
+          </metro-hub-section>
+          <metro-hub-section value="saved" label="Saved">
+            <p>Riverside library</p>
+          </metro-hub-section>
+        </metro-hub>
+      </metro-page>
+
+      <metro-page value="map" label="Map">
+        <button type="button" data-back>Back to Explore</button>
+        <metro-map-view id="places-map" label="Nearby map" places-label="Nearby places" locatable>
+          <section class="summary" id="summary" slot="details" hidden>
+            <h2 id="summary-title"></h2>
+            <p id="summary-description"></p>
+            <button type="button" id="open-place" data-metro-focus="open-place">Open place</button>
+          </section>
+        </metro-map-view>
+        <p role="status" id="location-status"></p>
+      </metro-page>
+
+      <metro-page value="place" id="place-page">
+        <button type="button" data-back>Back to map</button>
+        <p id="place-description"></p>
+      </metro-page>
+    </metro-frame>
+  </main>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Survey drafts</title>
+    <link rel="stylesheet" href="./drafts.css">
+    <script type="module" src="./drafts.js"></script>
+  </head>
+  <body>
+    <main>
+      <a href="../start/">Start</a>
+      <h1>Survey drafts</h1>
+      <div class="workspace">
+        <nav aria-label="Survey records">
+          <button type="button" data-record="north">North depot</button>
+          <button type="button" data-record="west">West depot</button>
+        </nav>
+        <section aria-labelledby="title">
+          <h2 id="title"></h2>
+          <form id="draft">
+            <metro-text-box id="summary" name="summary" label="Summary" maxlength="100" required></metro-text-box>
+            <metro-text-box id="notes" name="notes" label="Notes" multiline rows="4" maxlength="8000"></metro-text-box>
+            <metro-calendar-date-picker id="due" name="due" label="Review date"></metro-calendar-date-picker>
+            <metro-file-picker id="picker" choose-label="Attach a file" empty-label=""></metro-file-picker>
+            <p class="hint">One attachment, up to 128 KB.</p>
+            <div id="attachment" hidden>
+              <a id="attachment-download" download></a>
+              <button id="remove-attachment" type="button">Remove attachment</button>
+            </div>
+            <div class="actions">
+              <button type="submit">Save on this device</button>
+              <button id="enqueue" type="button">Queue for later</button>
+            </div>
+            <p id="draft-status" role="status"></p>
+            <p id="error" role="alert" hidden></p>
+          </form>
+        </section>
+      </div>
+      <section class="queue" aria-labelledby="queue-title">
+        <h2 id="queue-title">Outbox</h2>
+        <p class="hint">Send queued answers and attachments to the local demo server. Offline attempts resume when this page reconnects.</p>
+        <button id="send-queued" type="button" disabled>Send queued revisions</button>
+        <p id="offline-status" class="hint" role="status"></p>
+        <p id="empty-queue">No queued revisions.</p>
+        <div id="outbox"></div>
+      </section>
+    </main>
+    <metro-dialog id="leave" label="Leave this draft?">
+      <p>Save the current edits or discard them before switching records.</p>
+      <button type="button" slot="actions" data-metro-value="stay" autofocus>Keep editing</button>
+      <button type="button" slot="actions" data-metro-value="discard">Discard changes</button>
+      <button type="button" slot="actions" data-metro-value="save">Save and switch</button>
+    </metro-dialog>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru" data-metro-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Фото · Metro UI</title>
+    <link rel="stylesheet" href="./photos.css">
+    <script type="module" src="./photos.js"></script>
+  </head>
+  <body>
+    <main class="photos">
+      <a class="back-link" href="../start/">← Пуск</a>
+      <metro-navigation-transition transition="connected">
+        <metro-frame id="photos-frame" value="gallery">
+          <metro-page id="gallery" value="gallery" label="Фото">
+            <metro-pivot id="photo-pivot" label="Разделы фото" value="collection">
+              <metro-pivot-item value="collection" label="Коллекция">
+                <section class="feed" data-feed="collection" aria-label="Снимки коллекции"></section>
+              </metro-pivot-item>
+              <metro-pivot-item value="albums" label="Альбомы">
+                <section class="feed" data-feed="albums" aria-label="Снимки из альбомов"></section>
+              </metro-pivot-item>
+            </metro-pivot>
+            <metro-navigation-view id="photo-menu" label="Разделы фото" menu-label="Разделы">
+              <section class="feed" data-feed="collection" aria-label="Снимки коллекции"></section>
+              <section class="feed" data-feed="albums" aria-label="Снимки из альбомов" hidden></section>
+            </metro-navigation-view>
+          </metro-page>
+          <metro-page id="photo-page" value="photo">
+            <button class="back-link" id="photo-back" type="button">← К снимкам</button>
+            <metro-multi-scale-image id="photo-image" zoom-in-label="Увеличить" zoom-out-label="Уменьшить"
+              reset-label="Сбросить масштаб"></metro-multi-scale-image>
+            <p class="description" id="photo-description"></p>
+          </metro-page>
+        </metro-frame>
+      </metro-navigation-transition>
+    </main>
+    <template id="photo-card">
+      <li>
+        <a class="photo-card">
+          <img alt="" decoding="async" width="768" height="480">
+          <span></span>
+        </a>
+      </li>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+  color: light-dark(#202020, #fff);
+  background: light-dark(#fff, #000);
+  --metro-accent: #0050ef;
+}
+body { margin: 0; }
+[hidden] { display: none; }
+main {
+  position: fixed;
+  left: var(--visible-x, 0px);
+  top: var(--visible-y, 0px);
+  inline-size: var(--visible-width, 100%);
+  block-size: var(--usable-height, 100dvh);
+  overflow: auto;
+}
+metro-frame { max-inline-size: 38rem; margin-inline: auto; }
+metro-page::part(heading), .contact { padding: 1rem; }
+.contact h2 { font-weight: 400; }
+#editor {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  block-size: var(--usable-height, 100dvh);
+}
+#fields { overflow: auto; overscroll-behavior: contain; padding: .75rem min(1rem, 4vi); }
+h1 { margin: 0 0 .75rem; font-size: clamp(2rem, 7vw, 3.5rem); font-weight: 300; line-height: 1; }
+.field { margin-block: .75rem; }
+label { display: block; margin-block-end: .25rem; }
+input, textarea, button {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  min-block-size: 2.75rem;
+  padding: .25rem .5rem;
+  border: 2px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+input, textarea { display: block; inline-size: 100%; }
+#fields input { min-block-size: max(44px, 1.5em); padding-block: .125em; }
+textarea { resize: vertical; }
+button { padding-inline: .75rem; font-weight: 600; cursor: pointer; }
+button:active, button[type="submit"] { background: var(--metro-accent); color: #fff; }
+:is(button, input, textarea):focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.commands, .choices { display: flex; flex-wrap: wrap; gap: .5rem; }
+.commands {
+  justify-content: flex-end;
+  gap: min(.5rem, 2vi);
+  padding: min(.5rem, 2vi) min(1rem, 4vi);
+  border-block-start: 1px solid light-dark(#999, #777);
+  background: light-dark(#ececec, #262626);
+}
+.commands button { min-block-size: max(44px, 1.5em); padding: .125em min(.5rem, 2vi); }
+#more { min-inline-size: 44px; letter-spacing: .125em; }
+.error { margin: .25rem 0 0; color: light-dark(#a3241a, #ff978f); }
+.field .error { font-size: .9375em; }
+dialog { max-inline-size: min(30rem, calc(100% - 2rem)); }
+dialog::backdrop { background: #0009; }

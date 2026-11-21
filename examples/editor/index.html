@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Заметки · Metro UI</title>
+  <link rel="stylesheet" href="./editor.css">
+  <script type="module" src="./editor.js"></script>
+  <main>
+    <metro-frame value="notes">
+      <metro-page label="Заметки" value="notes">
+        <button data-metro-focus="open" id="open" type="button">Открыть редактор</button>
+        <p id="host-status" role="status"></p>
+      </metro-page>
+      <metro-page label="Редактор" value="editor">
+        <div class="tools">
+          <button data-back type="button">Назад</button>
+          <button id="select" type="button" aria-pressed="false">Выбрать заметки</button>
+          <button id="category" type="button">Категория</button>
+        </div>
+        <label for="note">Документ</label>
+        <select id="note">
+          <option value="north">Северный маршрут</option>
+          <option value="garden">Городской сад</option>
+        </select>
+        <label for="text">Текст заметки</label>
+        <textarea id="text" rows="6"></textarea>
+        <metro-command-bar id="actions" label="Команды редактора" more-label="Ещё"></metro-command-bar>
+        <div id="tips" class="tips" hidden></div>
+        <p id="status" role="status"></p>
+        <metro-flyout id="categories" label="Категории">
+          <p>Рабочие заметки</p>
+          <button data-back type="button">Назад</button>
+        </metro-flyout>
+        <metro-dialog id="confirm" label="Выйти из редактора?">
+          <p>В заметке есть несохранённый текст.</p>
+          <button slot="actions" data-back type="button" autofocus>Остаться</button>
+          <button slot="actions" type="button" data-metro-value="discard">Выйти</button>
+        </metro-dialog>
+      </metro-page>
+    </metro-frame>
+  </main>
+</html>

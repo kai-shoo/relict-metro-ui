@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Selection across groups</title>
+  <link rel="stylesheet" href="./collections.css">
+  <script type="module" src="./selection.js"></script>
+</head>
+<body>
+  <main class="selection-page">
+    <a class="back" href="./">Library and queue</a>
+    <h1>Recordings</h1>
+    <button type="button" class="outline" id="open-selection" aria-haspopup="dialog">Selection (0)</button>
+    <metro-pivot label="Recording groups" value="field">
+      <metro-pivot-item value="field" label="Field">
+        <metro-cross-slide value="field-notes" label="Field notes"><a href="#field-notes">Field notes</a></metro-cross-slide>
+        <metro-cross-slide value="evening-report" label="Evening report"><a href="#evening-report">Evening report</a></metro-cross-slide>
+      </metro-pivot-item>
+      <metro-pivot-item value="broadcast" label="Broadcast">
+        <metro-cross-slide value="radio-archive" label="Radio archive"><a href="#radio-archive">Radio archive</a></metro-cross-slide>
+        <metro-cross-slide value="morning-bulletin" label="Morning bulletin"><a href="#morning-bulletin">Morning bulletin</a></metro-cross-slide>
+      </metro-pivot-item>
+    </metro-pivot>
+    <p role="status" id="recording"></p>
+
+    <h2>Queue</h2>
+    <ol id="queue-positions"></ol>
+
+    <metro-dialog id="selection" label="Selection">
+      <ul id="selected-recordings"></ul>
+      <button type="button" class="outline" id="enqueue" disabled>Add to queue</button>
+      <p role="status" id="queue-update" tabindex="-1"></p>
+      <button type="button" slot="actions" data-metro-value="close">Back</button>
+    </metro-dialog>
+  </main>
+</body>
+</html>

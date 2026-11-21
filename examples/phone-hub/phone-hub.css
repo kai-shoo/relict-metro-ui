@@ -1,0 +1,62 @@
+:root {
+  color-scheme: dark;
+  --metro-color-scheme: dark;
+  --metro-bg: #111820;
+  --metro-chrome: #1f2c38;
+  --metro-accent: #7adebc;
+  --metro-on-accent: #051d18;
+  --metro-focus: #a9efd8;
+  background: var(--metro-bg);
+  color: #f5fafb;
+  font: 1rem/1.45 "Segoe WP", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+.phone { width: min(100%, 38rem); margin-inline: auto; padding: clamp(.75rem, 3vi, 1.65rem); }
+.back {
+  min-height: 2.75rem;
+  padding-inline: .25rem;
+  border: 0;
+  background: transparent;
+  color: #aaeed6;
+  font: inherit;
+  cursor: pointer;
+}
+.back:disabled { opacity: .45; cursor: default; }
+:is(button, a, .records):focus-visible { outline: 2px solid var(--metro-focus); outline-offset: -2px; }
+
+metro-hub { --metro-hub-background: linear-gradient(130deg, #19302e, #101923 65%); }
+metro-hub::part(container) { min-block-size: clamp(21rem, 64dvh, 35rem); }
+metro-hub::part(heading) { font-size: clamp(2.5rem, 14vi, 4.8rem); }
+metro-hub-section::part(heading) { font-size: clamp(2rem, 10vi, 4.1rem); }
+metro-hub-section p { max-width: 32ch; }
+.cover {
+  width: min(100%, 22rem);
+  aspect-ratio: 2;
+  background: linear-gradient(165deg, transparent 62%, #507b70 63%, transparent 64%),
+    linear-gradient(17deg, #2b4b50 24%, #9ed1b1 24.8%, #3c625f 25.6%, #162d39 75%, #324a5e 75.8%);
+}
+.records {
+  height: clamp(12rem, 39dvh, 22rem);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  touch-action: pan-y pinch-zoom;
+}
+.records ul, .favorites { margin: 0; padding: 0; list-style: none; }
+.records a, .favorites li {
+  display: block;
+  min-height: 2.75rem;
+  margin-block: .2rem;
+  padding: .55rem .35rem;
+  border-block-end: 1px solid #9db9c74a;
+  color: inherit;
+  text-decoration: none;
+}
+.records a:hover { color: var(--metro-accent); }
+.records a small { display: block; color: #b8c9ce; }
+#record { min-block-size: 17rem; margin-block-start: .7rem; }
+#description, #status { padding-inline: var(--metro-space, .75rem); }
+#status { color: var(--metro-accent); }
+#status:empty { display: none; }

@@ -1,0 +1,6 @@
+[
+  { "value": "north-route", "group": "maps", "label": "North route", "path": "./files/north-route.txt" },
+  { "value": "south-route", "group": "maps", "label": "South route", "path": "./files/south-route.txt" },
+  { "value": "old-route", "group": "maps", "label": "Retired route", "path": "./files/grid-map.txt", "disabled": true },
+  { "value": "depot-notes", "group": "notes", "label": "Depot notes", "path": "./files/depot-notes.txt" }
+]

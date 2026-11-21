@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="800" viewBox="0 0 640 800">
+  <title>Наблюдательная точка. Маршрутный журнал</title>
+  <rect width="640" height="800" fill="#fcf8ed"/>
+  <path d="M52 126h536M52 618h536M52 703h536" stroke="#bbb5a7" stroke-width="2"/>
+  <g fill="#763b28" font-family="sans-serif" font-size="19">
+    <text x="53" y="52">СЕВЕРНЫЙ МАРШРУТ</text>
+    <text x="518" y="52">ЛИСТ 02</text>
+  </g>
+  <text x="50" y="107" fill="#222b27" font-family="sans-serif" font-size="37">Наблюдательная точка</text>
+  <rect x="52" y="155" width="536" height="382" fill="#edf0e5"/>
+  <path d="M78 237h474M78 310h474M78 383h474M78 456h474" fill="none" stroke="#c5ccb9" stroke-width="2" stroke-dasharray="5 7"/>
+  <path d="M78 464l73-28 58-14 51-70 54-12 43-92 40 16 61-54 94 19v269H78z" fill="#bdc9a7"/>
+  <path d="M78 464l73-28 58-14 51-70 54-12 43-92 40 16 61-54 94 19" fill="none" stroke="#53634b" stroke-width="5"/>
+  <path d="M458 211v-38m0 1 37 11-37 12" fill="#873d29" stroke="#873d29" stroke-width="3"/>
+  <g fill="#29342f" font-family="sans-serif" font-size="22">
+    <text x="81" y="497">Переправа</text><text x="409" y="294">Площадка</text>
+    <text x="79" y="190">Профиль высоты</text><text x="81" y="582">Журнал измерений</text>
+  </g>
+  <g fill="#495750" font-family="sans-serif" font-size="19">
+    <text x="53" y="649">09:30</text><text x="164" y="649">У начала подъёма</text>
+    <text x="53" y="684">10:20</text><text x="164" y="684">Наблюдение с площадки</text>
+    <text x="53" y="749">Наблюдения группы · Профиль рельефа</text>
+  </g>
+</svg>

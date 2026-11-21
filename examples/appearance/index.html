@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Оформление · Metro UI</title>
+    <link rel="stylesheet" href="./appearance.css">
+    <script type="module" src="./appearance.js"></script>
+  </head>
+  <body>
+    <main>
+      <a href="../start/">← Пуск</a>
+      <h1>Оформление</h1>
+      <metro-radio-group id="scheme" label="Тема" value="system">
+        <metro-radio value="system" label="Системная"></metro-radio>
+        <metro-radio value="light" label="Светлая"></metro-radio>
+        <metro-radio value="dark" label="Тёмная"></metro-radio>
+      </metro-radio-group>
+      <metro-toggle-switch id="captions" label="Подписи к фотографиям" on-label="Вкл." off-label="Выкл." checked></metro-toggle-switch>
+
+      <form id="brightness">
+        <h2>Яркость изображения</h2>
+        <figure>
+          <img id="preview" src="../photos/assets/coast.svg" width="768" height="480" alt="Маяк у побережья">
+          <figcaption>Маяк на мысе</figcaption>
+        </figure>
+        <metro-slider id="slider" label="Яркость, %" min="25" max="175" step="1" value="100" show-bounds></metro-slider>
+        <metro-number-box id="exact" label="Точная яркость, %" min="25" max="175" step="1" value="100" required></metro-number-box>
+        <div class="actions">
+          <button type="submit">Сохранить яркость</button>
+          <button id="discard" type="button">Отменить правки</button>
+        </div>
+      </form>
+      <p role="status" id="status"></p>
+      <button id="retry" type="button" hidden>Повторить запись</button>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 480">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1">
+      <stop stop-color="#5d7481"/><stop offset="1" stop-color="#a8afa3"/>
+    </linearGradient>
+    <path id="grass" d="M0 0q-4-26-14-36M0 0q1-30 13-48M0 0q5-20 23-22M0 0q-9-15-24-20"/>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h768v480H0z"/>
+  <path fill="#8b856e" d="M0 282c178-94 229-69 403-60 130 6 233-67 365-49v307H0z"/>
+  <path fill="#b8a583" d="M0 310c191-20 294 36 487-48 118-51 171-76 281-81v299H0z"/>
+  <path fill="#ccba97" d="M0 369c166-32 241-30 375-11 160 24 288-73 393-109v231H0z"/>
+  <path fill="#91816d" d="M0 465c104-63 209-52 381-67 197-16 292-41 387-76v158H0z"/>
+  <g fill="none" stroke="#4c5045" stroke-linecap="round" stroke-width="2">
+    <use href="#grass" x="193" y="331"/><use href="#grass" x="213" y="336"/><use href="#grass" x="455" y="348"/>
+    <use href="#grass" x="516" y="341"/><use href="#grass" x="683" y="329"/><use href="#grass" x="707" y="317"/>
+    <use href="#grass" transform="translate(59 452) scale(1.55)"/><use href="#grass" transform="translate(370 457) scale(1.3)"/>
+    <use href="#grass" transform="translate(665 427) scale(1.38)"/>
+  </g>
+</svg>

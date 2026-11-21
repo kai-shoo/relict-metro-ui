@@ -1,0 +1,19 @@
+:root {
+  color-scheme: dark;
+  --metro-color-scheme: dark;
+  background: #0c0c0c;
+  color: #fff;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  --metro-accent: #0078d7;
+}
+
+body { margin: 0; }
+main { max-inline-size: 42rem; margin-inline: auto; padding: clamp(1rem, 4vw, 3rem); }
+.tools { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-end: 1.5rem; }
+button, select, textarea { font: inherit; color: inherit; }
+button, select, textarea { background: #202020; border: 1px solid #9a9a9a; border-radius: 0; padding: .4rem .65rem; }
+button[aria-pressed="true"] { background: var(--metro-accent); }
+select, label, textarea { display: block; margin-block-end: .5rem; }
+textarea { box-sizing: border-box; inline-size: 100%; }
+.tips { margin-block-start: .5rem; }
+kbd { background: #fff; color: #101010; padding: .2rem .35rem; }

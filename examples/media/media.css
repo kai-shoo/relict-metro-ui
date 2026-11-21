@@ -1,0 +1,35 @@
+:root {
+  color-scheme: dark;
+  --metro-color-scheme: dark;
+  color: CanvasText;
+  background: Canvas;
+  font-family: 'Segoe WP', 'Segoe UI', system-ui, sans-serif;
+}
+
+body { margin: 0; }
+
+main {
+  max-width: 58rem;
+  margin-inline: auto;
+  padding: min(clamp(.75rem, 3vi, 1.5rem), 5vi);
+}
+
+metro-text-block[level="1"] { margin-block: 1.2rem; --metro-text-size: min(2rem, 16vi); }
+metro-title-bar { --metro-space: min(.75rem, 3vi); }
+metro-title-bar::part(title) { font-size: min(1.125rem, 10vi); }
+.workspace { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); }
+#native { --metro-space: min(.75rem, 3vi); }
+#native::part(control) {
+  flex-wrap: wrap;
+  padding-block: min(1.25rem, 4vi);
+  font-size: min(1.4167rem, 10vi);
+}
+#native::part(label) { flex: 1 1 min(100%, 13ch); }
+#announce { box-sizing: border-box; max-inline-size: 100%; overflow-wrap: anywhere; }
+#announce::part(button) { font-size: min(1.4167rem, 10vi); padding-inline: min(.75rem, 3vi); }
+#activation-status:empty { display: none; }
+metro-notification-center { margin-block-start: 1.25rem; }
+
+@media (min-width: 42rem) {
+  .workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}

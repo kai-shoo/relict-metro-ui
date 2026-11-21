@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ru" data-detached>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Блокнот · Metro UI</title>
+  <link rel="stylesheet" href="./workspace.css">
+  <script type="module" src="../../dist/metro-ui.js"></script>
+  <script type="module" src="./workspace.js"></script>
+  <main>
+    <h1>Блокнот</h1>
+    <metro-button id="return">Вернуть в рабочую область</metro-button>
+    <metro-tab-view id="documents" label="Документы" close-label="Закрыть" reorderable>
+      <p slot="empty">Блокнот закрыт.</p>
+    </metro-tab-view>
+    <metro-dialog id="confirm" label="Закрыть блокнот?">
+      <p>Изменения останутся в этом сеансе до закрытия страницы.</p>
+      <button slot="actions" type="button" data-metro-value="cancel">Остаться</button>
+      <button slot="actions" type="button" data-metro-value="close">Закрыть</button>
+    </metro-dialog>
+  </main>
+</html>

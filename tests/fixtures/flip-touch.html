@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nested gallery touch checks</title>
+<script type="module" src="/src/hub.ts"></script>
+<script type="module" src="/src/flip-view.ts"></script>
+<metro-hub heading="Collection" style="width: 370px">
+  <metro-hub-section value="gallery" label="Gallery">
+    <metro-flip-view label="Pictures" style="width: 330px">
+      <div data-value="one" style="height: 160px; overflow-y: auto">
+        <button style="width: 100%; height: 72px">Open photo</button>
+        <div style="height: 440px"></div>
+      </div>
+      <div data-value="two" style="height: 160px">Another photo</div>
+    </metro-flip-view>
+  </metro-hub-section>
+  <metro-hub-section value="more" label="More">More</metro-hub-section>
+</metro-hub>
+</html>

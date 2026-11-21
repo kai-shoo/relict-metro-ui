@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Компоненты · Windows Phone Metro UI</title>
+    <link rel="stylesheet" href="./catalog.css">
+    <script type="module" src="../../dist/metro-ui.js"></script>
+    <script type="module" src="./catalog.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1 aria-label="Компоненты">Ком&shy;по&shy;ненты</h1>
+      <label id="tag-label" for="tag">Тег компонента</label>
+      <button type="button" id="tag" class="tag-picker" aria-labelledby="tag-label tag-name" disabled
+        aria-haspopup="dialog" aria-controls="tag-dialog" aria-expanded="false"><span id="tag-name"></span></button>
+      <dialog id="tag-dialog" aria-labelledby="tag-title">
+        <h2 id="tag-title">Тег компонента</h2>
+        <metro-long-list-selector id="tag-list" label="Компоненты" jump-label="Перейти к букве"
+          cancel-label="Отмена" item-height="44" group-height="52" activatable></metro-long-list-selector>
+        <form method="dialog"><button>Закрыть</button></form>
+      </dialog>
+      <p id="module"></p>
+      <h2 id="title"></h2>
+      <section id="stage" aria-labelledby="title"></section>
+      <p><a id="application" hidden>Открыть пример целиком</a></p>
+      <details id="source"><summary>Код примера</summary><pre tabindex="0" aria-label="Исходный код"><code id="code"></code></pre></details>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Survey locations</title>
+    <link rel="stylesheet" href="./speech.css">
+    <script type="module" src="./speech.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="navigation">
+        <button id="back" type="button" aria-keyshortcuts="Alt+ArrowLeft">Back</button>
+        <p id="command-status" role="status"></p>
+        <button id="retry" type="button" hidden>Retry opening</button>
+      </div>
+      <metro-frame id="frame" value="locations">
+        <metro-page value="locations" label="survey locations">
+          <form id="search" role="search" aria-label="Find a location">
+            <metro-speech-text-box id="phrase" name="phrase" label="Place name" use-label="Run voice command"
+              description="Say “open North depot” or type a place name."></metro-speech-text-box>
+            <button type="submit">Find destination</button>
+          </form>
+          <section id="matches" aria-labelledby="matches-heading" hidden>
+            <h2 id="matches-heading" tabindex="-1">Choose a matching place</h2>
+            <ul id="results"></ul>
+          </section>
+          <section aria-labelledby="places-heading">
+            <h2 id="places-heading">Destinations</h2>
+            <ul id="places">
+              <li><button type="button" data-place="north" data-metro-focus="north">North depot</button></li>
+              <li><button type="button" data-place="west" data-metro-focus="west">West depot</button></li>
+            </ul>
+          </section>
+        </metro-page>
+        <metro-page value="record">
+          <h1 id="record-title" slot="title"></h1>
+          <p id="record-details"></p>
+        </metro-page>
+      </metro-frame>
+    </main>
+  </body>
+</html>

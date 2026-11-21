@@ -1,0 +1,27 @@
+{
+  "name": "Metro survey imports",
+  "short_name": "Survey imports",
+  "description": "Review incoming survey notes and choose where to import them.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#0050ef",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "share_target": {
+    "action": "./incoming-share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [ { "name": "files", "accept": ["text/plain", "text/markdown", ".txt", ".md"] } ]
+    }
+  },
+  "file_handlers": [
+    { "action": "./", "accept": { "text/plain": [".txt"], "text/markdown": [".md"] } }
+  ]
+}

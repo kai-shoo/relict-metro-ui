@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 480">
+  <defs>
+    <linearGradient id="light" x2="0" y2="1">
+      <stop stop-color="#3e4a62"/><stop offset="1" stop-color="#dfa679"/>
+    </linearGradient>
+    <linearGradient id="floor" x2="0" y2="1">
+      <stop stop-color="#85756d"/><stop offset="1" stop-color="#433f43"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#light)" d="M0 0h768v480H0z"/>
+  <path fill="#2f303b" d="M0 0h768v51L389 201 0 104z"/>
+  <path fill="#494650" d="M0 215l393-13 375 50v228H0z"/>
+  <path fill="url(#floor)" d="M0 254l400-34-73 260H0z"/>
+  <path fill="#a8a0a0" d="M398 227L491 480h-12l-84-252zm14-1l268 254h-14L408 227z"/>
+  <path fill="none" stroke="#e3b56b" stroke-width="4" d="M385 229L281 480"/>
+  <path fill="#262831" d="M52 0h20v434H52zm114 55h13v283h-13zm86 60h9v171h-9zm64 33h6v108h-6zm50 28h4v62h-4z"/>
+  <path fill="#c99c7e" d="M72 147h94v6H72zM179 176h73v4h-73zM261 191h55v3h-55zM322 198h44v2h-44z"/>
+  <path fill="none" stroke="#685d5f" d="M23 386l337-107M82 480l278-185M23 318l365-82m169 87 211 15M605 375l163 18"/>
+</svg>

@@ -1,0 +1,40 @@
+:root {
+  color-scheme: light dark;
+  --metro-bg: light-dark(#fff, #000);
+  --metro-fg: light-dark(#151515, #fff);
+  --metro-accent: light-dark(#0050ef, #85baff);
+  --metro-on-accent: light-dark(#fff, #172438);
+  background: var(--metro-bg);
+  color: var(--metro-fg);
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+}
+
+body { margin: 0; }
+main { max-inline-size: 52rem; margin-inline: auto; padding: 1.5rem clamp(1rem, 5vw, 3rem); }
+.back-link { color: var(--metro-accent); text-underline-offset: .22em; }
+metro-frame { margin-block-start: 1.25rem; }
+metro-map-view { margin-block-start: 1rem; --metro-map-height: clamp(14rem, 37dvh, 22rem); }
+button {
+  min-block-size: 2.75rem;
+  padding: .25rem .75rem;
+  border: 2px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+button:focus-visible { outline: 2px solid var(--metro-accent); outline-offset: 3px; }
+.preview-button { display: grid; gap: .5rem; inline-size: min(100%, 20rem); padding: .5rem; text-align: start; }
+.preview {
+  display: grid;
+  min-block-size: 7rem;
+  place-items: center;
+  background:
+    repeating-linear-gradient(32deg, transparent 0 24px, #c6d2cd99 25px 28px, transparent 29px 56px),
+    repeating-linear-gradient(112deg, transparent 0 22px, #c6d2cd99 23px 26px, transparent 27px 49px),
+    light-dark(#e8eeeb, #283631);
+}
+.pin { inline-size: 1.35rem; block-size: 1.35rem; border: 3px solid white; background: var(--metro-accent); }
+.summary:not([hidden]) { margin-block-start: .5rem; padding: .75rem; background: light-dark(#eee, #1f1f1f); }
+.summary h2 { margin: 0; font-size: 1.5rem; font-weight: 400; }

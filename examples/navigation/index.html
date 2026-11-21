@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru" data-metro-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Проекты · Metro UI</title>
+    <link rel="stylesheet" href="./navigation.css">
+    <script type="module" src="./navigation.js"></script>
+  </head>
+  <body>
+    <main>
+      <metro-navigation-view id="sections" placement="top" value="projects"
+        label="Разделы проекта" menu-label="Разделы" back-label="Назад" show-back>
+        <metro-frame id="routes" value="projects">
+          <metro-page value="projects" label="Проекты">
+            <a id="open-task" data-metro-focus="north" href="?project=north">Северный маршрут</a>
+          </metro-page>
+          <metro-page value="people" label="Команда">
+            <ul>
+              <li>Анна · проектирование</li>
+              <li>Михаил · полевые работы</li>
+            </ul>
+          </metro-page>
+          <metro-page value="task" label="Северный маршрут">
+            <metro-breadcrumb-bar id="trail" label="Расположение проекта"></metro-breadcrumb-bar>
+            <p>Подготовить карту тропы и проверить переход через реку.</p>
+          </metro-page>
+        </metro-frame>
+      </metro-navigation-view>
+    </main>
+  </body>
+</html>

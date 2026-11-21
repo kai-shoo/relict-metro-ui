@@ -1,0 +1,105 @@
+:root {
+  color-scheme: dark;
+  --metro-color-scheme: dark;
+  --metro-bg: #111;
+  --metro-chrome: #1f1f1f;
+  --metro-fg: #fff;
+  --metro-accent: #ad92ff;
+  --metro-focus: #d0bcff;
+  background: var(--metro-bg);
+  color: var(--metro-fg);
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+
+.photos {
+  width: min(100%, 76rem);
+  margin: auto;
+  padding: clamp(.75rem, 3vw, 2.75rem);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-block-end: .65rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--metro-focus);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.back-link:hover { text-decoration: underline; }
+:is(.back-link, .photo-card):focus-visible { outline: 2px solid var(--metro-focus); outline-offset: -2px; }
+
+metro-frame, metro-page, metro-pivot, metro-navigation-view { display: block; }
+metro-page::part(heading) { color: var(--metro-fg); margin-block-end: 1rem; }
+
+#photo-pivot::part(tab) { padding-inline: .125rem; }
+#photo-menu { display: none; --metro-navigation-width: 12rem; }
+
+.feed {
+  container: photo-feed / inline-size;
+  height: clamp(16rem, 56dvh, 33rem);
+  overflow-y: auto;
+  padding: 0 .35rem .45rem .15rem;
+  scrollbar-gutter: stable;
+  touch-action: pan-y pinch-zoom;
+}
+
+.feed h2 { margin: 0 0 .55rem; font-size: 1.25rem; font-weight: 400; }
+.feed h2:not(:first-child) { margin-block-start: 1.25rem; }
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.photo-card {
+  display: block;
+  height: 100%;
+  background: var(--metro-chrome);
+  color: inherit;
+  text-decoration: none;
+}
+
+.photo-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+}
+
+.photo-card span {
+  display: block;
+  padding: .5rem .6rem;
+  line-height: 1.25;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+.photo-card:hover span { color: var(--metro-focus); }
+
+#photo-page { max-width: 56rem; }
+#photo-image { --metro-image-aspect: 8 / 5; }
+.description { margin-block: .75rem 0; color: #d0d0d0; }
+
+@media (min-width: 48rem) {
+  #photo-pivot { display: none; }
+  #photo-menu { display: block; }
+  .photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@container photo-feed (inline-size < 15rem) {
+  .photo-grid { grid-template-columns: minmax(0, 1fr); }
+}

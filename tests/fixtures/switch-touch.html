@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Switch touch checks</title>
+<style>
+  body { margin: 0; }
+  #scroll { height: 420px; overflow: auto; }
+  #scroll::before { content: ""; display: block; height: 235px; }
+  #scroll::after { content: ""; display: block; height: 700px; }
+</style>
+<script type="module" src="/src/toggle-switch.ts"></script>
+<div id="scroll"><metro-toggle-switch label="Bluetooth"></metro-toggle-switch></div>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Camera attachments</title>
+    <link rel="stylesheet" href="./camera.css">
+    <script type="module" src="./camera.js"></script>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="../start/">Start</a>
+      <metro-frame id="frame" value="capture">
+        <metro-page value="capture" label="Camera">
+          <metro-combo-box id="destination" label="Attach to" value="inspection">
+            <metro-option value="inspection">Inspection report</metro-option>
+            <metro-option value="inventory">Inventory note</metro-option>
+          </metro-combo-box>
+          <metro-checkbox id="direct" label="Save camera shots immediately"></metro-checkbox>
+          <metro-camera-capture id="camera" context-key="inspection" file-fallback></metro-camera-capture>
+          <p id="status" role="status"></p>
+          <section id="attachment" aria-labelledby="attachment-title" hidden>
+            <h2 id="attachment-title">Confirmed photo</h2>
+            <img id="photo" alt="">
+            <a id="download" download>Download photo</a>
+            <a id="edit-photo" data-metro-focus="editor">Edit photo</a>
+          </section>
+        </metro-page>
+        <metro-page value="editor" label="Photo editor">
+          <a id="return" href="./">Back to camera</a>
+          <p id="edit-status" role="status"></p>
+          <img id="edit-preview" alt="Editing preview" hidden>
+          <div class="actions">
+            <button id="rotate" type="button" disabled>Rotate clockwise</button>
+            <button id="save-copy" type="button" disabled>Save a copy</button>
+            <a id="saved-copy" hidden>Open saved copy</a>
+          </div>
+        </metro-page>
+      </metro-frame>
+    </main>
+  </body>
+</html>

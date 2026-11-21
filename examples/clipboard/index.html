@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Survey notes</title>
+    <link rel="stylesheet" href="./clipboard.css">
+    <script type="module" src="./clipboard.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>survey notes</h1>
+      <div class="view-options">
+        <label for="document">Document</label>
+        <select id="document">
+          <option value="north">North depot</option>
+          <option value="west">West depot</option>
+        </select>
+        <label class="read-only"><input id="read-only" type="checkbox"> Read only</label>
+      </div>
+      <metro-rich-edit-box id="editor" label="Note contents" document-key="north"></metro-rich-edit-box>
+    </main>
+  </body>
+</html>

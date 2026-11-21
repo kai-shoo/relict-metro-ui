@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Library and queue</title>
+  <link rel="stylesheet" href="./collections.css">
+  <script type="module" src="./collections.js"></script>
+</head>
+<body>
+  <main>
+    <a class="back" href="../start/">Start</a>
+    <h1>Library and queue</h1>
+    <p>Select recordings across groups. Drag a selected row by its handle, or slide it sideways and continue to the destination with touch. You can also pick an insertion point in the transfer controls.</p>
+    <p><a class="back" href="./selection.html">Selection across groups</a></p>
+
+    <metro-collection-transfer id="transfer" label="Transfer recordings">
+      <div class="lists">
+        <section aria-labelledby="library-title">
+          <h2 id="library-title">Library</h2>
+          <metro-reorder-list id="library" group-key="library-recordings" label="Library" transfer="move copy">
+            <p slot="empty">The library is empty.</p>
+          </metro-reorder-list>
+        </section>
+        <section aria-labelledby="archive-title">
+          <h2 id="archive-title">Archive</h2>
+          <metro-reorder-list id="archive" group-key="archive-recordings" label="Archive" transfer="move copy">
+            <p slot="empty">The archive is empty.</p>
+          </metro-reorder-list>
+        </section>
+        <section aria-labelledby="queue-title">
+          <h2 id="queue-title">Queue</h2>
+          <metro-reorder-list id="queue" group-key="queue-recordings" label="Queue" transfer="move copy">
+            <p slot="empty">The queue is empty.</p>
+          </metro-reorder-list>
+        </section>
+      </div>
+    </metro-collection-transfer>
+  </main>
+</body>
+</html>

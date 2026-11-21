@@ -1,0 +1,41 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe WP", "Segoe UI", system-ui, sans-serif;
+  color: light-dark(#202020, #fff);
+  background: light-dark(#fff, #000);
+  --metro-accent: #0050ef;
+}
+body { margin: 0; }
+main { max-inline-size: 42rem; margin-inline: auto; padding: 1.5rem 1rem 3rem; }
+[hidden] { display: none; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+h1 { margin: .75rem 0 .5rem; font-size: clamp(2.75rem, 8vw, 4rem); font-weight: 300; }
+#splash { max-inline-size: 22rem; }
+#splash p { margin-block: .25rem .75rem; }
+metro-frame { margin-block-start: .75rem; }
+.records { margin: .25rem 0 0; padding: 0; list-style: none; }
+.records a {
+  display: flex;
+  align-items: center;
+  min-block-size: 3.25rem;
+  padding-inline: .5rem;
+  border-block-end: 1px solid light-dark(#bbb, #555);
+  font-size: 1.375rem;
+  text-decoration: none;
+}
+.records a:active, button:active { background: var(--metro-accent); color: #fff; }
+button {
+  min-block-size: 2.75rem;
+  padding: .25rem .625rem;
+  border: 3px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+#details { margin-block-start: 1rem; }
+#status:empty { margin: 0; }
+#description { font-size: 1.125rem; line-height: 1.5; }

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ru" data-metro-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Радиоархив · Metro UI</title>
+    <link rel="stylesheet" href="./music.css">
+    <script type="module" src="./music.js"></script>
+  </head>
+  <body>
+    <main>
+      <header class="toolbar">
+        <button class="back" id="back" type="button" hidden>← Назад</button>
+        <a href="?" id="home-link">Радиоархив</a>
+      </header>
+      <p class="status" id="status" role="status"></p>
+      <metro-frame id="frame" value="home">
+        <metro-page value="home">
+          <metro-panorama id="overview" heading="Слушать" label="Радиоархив" loop="never">
+            <metro-hub-section value="library" label="Библиотека" href="?view=library">
+              <p>Полевые записи и короткие пьесы.</p>
+              <metro-tile href="?track=beacon&amp;entry=tile" label="Маяк в тумане" size="wide">
+                <metro-icon name="volume"></metro-icon>
+              </metro-tile>
+            </metro-hub-section>
+            <metro-hub-section value="recent" label="Недавние" href="?view=recent">
+              <p>Вернитесь к записям, которые слушали недавно.</p>
+            </metro-hub-section>
+            <metro-hub-section value="search" label="Поиск" href="?view=search">
+              <p>Найдите запись по названию или автору.</p>
+            </metro-hub-section>
+          </metro-panorama>
+          <nav class="destinations" aria-label="Разделы архива">
+            <a href="?view=library" data-view="library">Библиотека</a>
+            <a href="?view=recent" data-view="recent">Недавние</a>
+            <a href="?view=search" data-view="search">Поиск</a>
+          </nav>
+          <button class="action" type="button" id="manage-access">Войти в демонстрационный режим</button>
+        </metro-page>
+
+        <metro-page value="library" label="Библиотека">
+          <div class="feed" data-feed="library" tabindex="0" role="region" aria-label="Записи библиотеки">
+            <ul role="list"></ul>
+          </div>
+        </metro-page>
+
+        <metro-page value="recent" label="Недавние">
+          <div class="feed" data-feed="recent" tabindex="0" role="region" aria-label="Недавние записи">
+            <ul role="list"></ul>
+          </div>
+        </metro-page>
+
+        <metro-page value="search" label="Поиск">
+          <metro-text-box id="search" label="Найти запись" type="search" placeholder="Название или автор"></metro-text-box>
+          <p class="status" id="no-results" role="status" hidden>Записей не найдено.</p>
+          <div class="feed" data-feed="search" tabindex="0" role="region" aria-label="Результаты поиска">
+            <ul role="list"></ul>
+          </div>
+        </metro-page>
+
+        <metro-page value="signin" label="Демонстрационный вход">
+          <p id="signin-destination"></p>
+          <p class="help">Для примера введите <kbd>demo</kbd>. Код проверяется локально.</p>
+          <form id="signin-form">
+            <metro-text-box id="code" name="code" label="Код демонстрации" autocomplete="off" required></metro-text-box>
+            <div class="actions">
+              <button class="action" id="submit-code" type="submit">Войти</button>
+              <button class="action" id="cancel-signin" type="button">Отмена</button>
+            </div>
+            <p class="status" id="signin-status" role="status"></p>
+          </form>
+        </metro-page>
+
+        <metro-page value="player">
+          <div class="recording">
+            <div class="art" aria-hidden="true"></div>
+            <div class="recording-controls">
+              <p id="record-credit"></p>
+              <metro-media-player id="player" kind="audio" preload="metadata"></metro-media-player>
+              <div class="actions">
+                <button class="action" id="open-record-menu" type="button" aria-haspopup="menu" aria-expanded="false">Команды записи</button>
+                <metro-menu-flyout id="record-menu" pass-through></metro-menu-flyout>
+              </div>
+              <p class="status" id="player-status" role="status"></p>
+            </div>
+          </div>
+        </metro-page>
+      </metro-frame>
+    </main>
+    <template id="track-row">
+      <li>
+        <a class="track">
+          <span class="cover" aria-hidden="true"></span>
+          <span class="track-name"></span>
+          <span class="track-artist"></span>
+        </a>
+      </li>
+    </template>
+  </body>
+</html>

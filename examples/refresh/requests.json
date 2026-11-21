@@ -1,0 +1,16 @@
+[
+  { "id": "101", "label": "Entrance lighting", "state": "open", "description": "Check the light above the main entrance." },
+  { "id": "102", "label": "Loading bay access", "state": "open", "description": "Confirm the available times with the warehouse team." },
+  { "id": "103", "label": "Workshop ventilation", "state": "open", "description": "Check the intake filters on the ground floor." },
+  { "id": "104", "label": "North stair handrail", "state": "open", "description": "Inspect the handrail at the second landing." },
+  { "id": "105", "label": "Equipment calibration", "state": "open", "description": "Schedule a calibration for the portable meters." },
+  { "id": "106", "label": "Meeting room projector", "state": "open", "description": "Replace the cable at the wall connection." },
+  { "id": "107", "label": "Delivery route signs", "state": "open", "description": "Place the revised signs at the depot gate." },
+  { "id": "108", "label": "Elevator inspection", "state": "open", "description": "Record the inspection date in the site register." },
+  { "id": "109", "label": "Workshop supplies", "state": "open", "description": "Check stock levels before the next shift." },
+  { "id": "110", "label": "Visitor entrance mat", "state": "open", "description": "Measure the existing recessed area." },
+  { "id": "111", "label": "South gate keypad", "state": "open", "description": "Verify that the new access code works." },
+  { "id": "112", "label": "Storage inventory", "state": "open", "description": "Reconcile the stock count against the equipment list." },
+  { "id": "203", "label": "Service desk queue", "state": "review", "description": "Review the ticket counts from this week." },
+  { "id": "204", "label": "Cycle rack extension", "state": "review", "description": "Check the proposed location and required clearance." }
+]

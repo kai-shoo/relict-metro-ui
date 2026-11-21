@@ -1,0 +1,58 @@
+:root {
+  color-scheme: dark;
+  --metro-color-scheme: dark;
+  --metro-bg: #111820;
+  --metro-chrome: #233440;
+  --metro-accent: #7adebc;
+  --metro-on-accent: #071b16;
+  --metro-focus: #a9efd8;
+  background: var(--metro-bg);
+  color: #f5fafb;
+  font: 1rem/1.45 "Segoe WP", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+main { width: min(100%, 82rem); margin-inline: auto; padding: clamp(.75rem, 3vi, 2rem); }
+.action {
+  min-height: 2.75rem;
+  padding: .35rem .6rem;
+  border: 2px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+#desktop-back { margin-block-end: .6rem; }
+:is(a, button):focus-visible { outline: 2px solid var(--metro-focus); outline-offset: 2px; }
+
+metro-hub { --metro-hub-background: linear-gradient(125deg, #19302e, #101923 70%); }
+metro-hub::part(container) { min-block-size: 20rem; }
+metro-hub-section { min-height: 16rem; }
+.feature {
+  display: grid;
+  margin: .25rem 0 .8rem;
+  padding: .75rem;
+  color: inherit;
+  background: #1e3236;
+  text-decoration: none;
+}
+.feature-cover {
+  display: block;
+  height: clamp(6rem, 16vi, 13rem);
+  background: linear-gradient(166deg, transparent 60%, #85b39d 61% 62%, transparent 63%),
+    linear-gradient(15deg, #223f49 24%, #97ccad 24.5%, #40625c 25%, #142630 73%, #374e67 74%);
+}
+.feature strong { margin-block-start: .6rem; font-size: 1.45rem; font-weight: 400; }
+.feature > span:last-child { color: #c7d8d8; }
+.entries { list-style: none; padding: 0; margin: 0 0 .75rem; }
+.entries a { display: block; min-height: 2.75rem; padding: .55rem .2rem; border-block-end: 1px solid #9db9c74a; color: inherit; }
+a:hover { color: var(--metro-accent); }
+dt { font-weight: 600; }
+dd { margin: .2rem 0 .9rem; color: #c7d8d8; }
+
+@media (max-width: 42rem) {
+  metro-hub-section { min-height: 12rem; }
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Survey library</title>
+    <link rel="stylesheet" href="./launch.css">
+    <script type="module" src="./launch.js"></script>
+  </head>
+  <body>
+    <main>
+      <a href="../start/">Start</a>
+      <div id="splash" role="status">
+        <h1>Survey library</h1>
+        <p>Opening the library…</p>
+        <metro-progress-bar label="Preparing the library" indeterminate></metro-progress-bar>
+      </div>
+      <metro-frame id="frame" value="library" hidden>
+        <metro-page id="library" value="library" label="Survey library">
+          <ul class="records">
+            <li><a href="?record=north" data-record="north" data-metro-focus="north">North depot</a></li>
+            <li><a href="?record=west" data-record="west" data-metro-focus="west">West depot</a></li>
+          </ul>
+        </metro-page>
+        <metro-page id="record" value="record" label="Survey record">
+          <button id="back" type="button">Back to library</button>
+          <p id="status" role="status"></p>
+          <section id="details" aria-label="Record details">
+            <metro-progress-bar id="progress" label="Loading the record" indeterminate hidden></metro-progress-bar>
+            <p id="description" hidden></p>
+            <button id="retry" type="button" hidden>Retry</button>
+          </section>
+        </metro-page>
+      </metro-frame>
+    </main>
+  </body>
+</html>

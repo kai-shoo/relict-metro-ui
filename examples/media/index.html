@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Архив записей · Metro UI</title>
+  <link rel="stylesheet" href="./media.css">
+  <script type="module" src="./media.js"></script>
+  <main>
+    <metro-title-bar heading="Архив записей"></metro-title-bar>
+    <metro-text-block level="1" variant="title2">Полевые записи</metro-text-block>
+    <div class="workspace">
+      <metro-stack-panel>
+        <metro-list-view id="queue" label="Записи" selection-mode="single" activatable value="dawn">
+          <metro-list-item value="dawn">На рассвете</metro-list-item>
+          <metro-list-item value="lake">У озера</metro-list-item>
+        </metro-list-view>
+        <metro-text-block id="now" variant="title3" level="2"></metro-text-block>
+        <p id="activation-status" role="status"></p>
+        <metro-media-player id="recording" kind="audio" preload="metadata"></metro-media-player>
+        <metro-checkbox id="native">Использовать управление браузера</metro-checkbox>
+        <metro-button id="announce" type="button">Создать уведомление о записи</metro-button>
+        <metro-toast id="toast" label="Новое уведомление" open-label="Открыть" dismiss-label="Скрыть уведомление"></metro-toast>
+      </metro-stack-panel>
+      <metro-multi-scale-image id="preview" label="Просмотр схемы" alt="Схема мест записи у озера"
+        zoom-in-label="Увеличить" zoom-out-label="Уменьшить" reset-label="Сбросить масштаб"></metro-multi-scale-image>
+    </div>
+    <metro-notification-center id="notifications" heading="Уведомления" empty-label="Уведомлений нет"
+      open-label="Открыть" clear-label="Очистить всё" dismiss-label="Удалить"></metro-notification-center>
+  </main>
+</html>
