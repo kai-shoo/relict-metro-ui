@@ -112,7 +112,13 @@ try {
     assert.equal(response.status(), 200, `Direct navigation failed: ${route}`);
     assert.equal(await page.locator('main h1').count(), 1, `Expected one h1: ${route}`);
     assert.equal(await page.locator('html').getAttribute('lang'), 'en', `Wrong language: ${route}`);
-    assert.doesNotMatch(await page.locator('main').innerText(), /[А-Яа-яЁё]/, `Untranslated content: ${route}`);
+    const englishText = await page.locator('main').evaluate((main) => {
+      const copy = main.cloneNode(true);
+      // The typography comparison contains intentional Russian samples.
+      copy.querySelectorAll('span[lang="ru"]').forEach((sample) => sample.remove());
+      return copy.textContent;
+    });
+    assert.doesNotMatch(englishText, /[А-Яа-яЁё]/, `Untranslated content: ${route}`);
     anchors.set(basePath + route, new Set(await page.locator('[id]').evaluateAll((nodes) => nodes.map((node) => node.id))));
     assert.equal(await page.locator('main').evaluate((main) => main.scrollWidth <= main.clientWidth + 2), true, `Overflow: ${route}`);
     for (const href of await page.locator('a[href]').evaluateAll((links) => links.map((link) => link.href))) {
