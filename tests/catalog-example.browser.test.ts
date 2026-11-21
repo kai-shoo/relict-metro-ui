@@ -521,7 +521,7 @@ test('the Russian schedule example opens the phone time picker and shows localiz
 
   const start = catalog.getByRole('button', { name: 'Начало', exact: true });
   await start.click();
-  await expect.element(catalog.getByRole('dialog', { name: 'Время начала' })).toBeVisible();
+  await expect.element(catalog.getByRole('main', { name: 'Время начала' })).toBeVisible();
   for (const name of ['Часы', 'Минуты']) {
     const column = catalog.getByRole('spinbutton', { name });
     await expect.element(column).toBeVisible();
@@ -545,7 +545,7 @@ test('the Russian schedule example opens the phone time picker and shows localiz
   await start.click();
   const hours = catalog.getByRole('spinbutton', { name: 'Часы' });
   await expect.poll(() => time.shadowRoot?.activeElement).toBe(hours.element());
-  const surface = catalog.getByRole('dialog', { name: 'Время начала' }).element();
+  const surface = catalog.getByRole('main', { name: 'Время начала' }).element();
   const heading = catalog.getByRole('heading', { name: 'Время начала' }).element();
   const selected = hours.element().querySelector('[part~="selected-cell"]')!;
   for (const item of [heading, selected]) {

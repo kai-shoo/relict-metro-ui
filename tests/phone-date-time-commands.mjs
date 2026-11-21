@@ -12,6 +12,75 @@ async function swipeHour(session, box) {
 }
 
 export const phoneDateTimeCommands = {
+  async phonePickerPageNavigation({ context, page }) {
+    const demo = await context.newPage();
+    try {
+      demo.setDefaultTimeout(3000);
+      const url = new URL('/__metro-test/phone-picker-page', page.url()).href;
+      await demo.route(url, route => route.fulfill({
+        contentType: 'text/html; charset=utf-8',
+        body: `<!doctype html>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <script type="module" src="/src/date-picker.ts"></script>
+          <script type="module" src="/src/time-picker.ts"></script>
+          <button>Other action</button>
+          <form>
+            <metro-date-picker presentation="phone" locale="ja-JP" label="Date" value="2028-02-29"></metro-date-picker>
+            <metro-time-picker presentation="phone" locale="ko-KR" label="Time" value="11:30"></metro-time-picker>
+          </form>`,
+      }));
+      await demo.goto(url);
+      await demo.evaluate(() => history.replaceState({ form: 'preserved' }, ''));
+      for (const [orientation, viewport] of [{ width: 360, height: 640 }, { width: 640, height: 360 }].entries()) {
+        await demo.setViewportSize(viewport);
+        for (const { label, tag, columns, values } of [
+          { label: 'Date', tag: 'metro-date-picker', columns: ['year', 'month', 'day'], values: ['2028-02-01', '2028-02-02'] },
+          { label: 'Time', tag: 'metro-time-picker', columns: ['period', 'hour', 'minute'], values: ['11:31', '11:32'] },
+        ]) {
+          const trigger = demo.getByRole('button', { name: label, exact: true });
+          const surface = demo.getByRole('main', { name: label });
+          const bar = surface.getByRole('group', { name: 'Application Bar' });
+          for (const action of ['Cancel', 'Back', 'Done']) {
+            const previous = await demo.locator(tag).evaluate(element => element.value);
+            await trigger.click();
+            await surface.waitFor();
+            const layout = await surface.evaluate(element => {
+              const { x, y, width, height } = element.getBoundingClientRect();
+              return { x, y, width, height, columns: [...element.querySelectorAll('[data-column]')].map(wheel => wheel.dataset.column) };
+            });
+            const isolated = await demo.locator('body > button').evaluate(button => {
+              button.focus();
+              return button.inert && !button.matches(':focus');
+            });
+            const barBottom = await bar.evaluate(element => element.getBoundingClientRect().bottom);
+            if (layout.x !== 0 || layout.y !== 0 || layout.width !== viewport.width || layout.height !== viewport.height ||
+                layout.columns.join() !== columns.join() || barBottom !== viewport.height ||
+                await demo.getByRole('dialog').count() || !isolated) {
+              throw new Error(`Unexpected ${label} page layout: ${JSON.stringify({ ...layout, isolated })}`);
+            }
+            const wheel = surface.getByRole('spinbutton').last();
+            await wheel.press('ArrowUp');
+            const selected = await wheel.getAttribute('aria-valuenow');
+            if (Number(selected) !== Number(values[orientation].slice(-2))) {
+              throw new Error(`${label} did not stage the expected value: ${selected}`);
+            }
+            if (action === 'Back') await demo.goBack();
+            else await bar.getByRole('button', { name: action }).click();
+            await surface.waitFor({ state: 'hidden' });
+            await demo.waitForFunction(() => history.state?.form === 'preserved' && Object.keys(history.state).length === 1);
+            const next = await demo.locator(tag).evaluate(element => element.value);
+            if (!(await trigger.evaluate(element => element.matches(':focus'))) ||
+                await demo.locator('body > button').evaluate(button => button.inert) ||
+                next !== (action === 'Done' ? values[orientation] : previous)) {
+              throw new Error(`${label} did not return to the field correctly on ${action}: ${previous} → ${next}`);
+            }
+          }
+        }
+      }
+    } finally {
+      await demo.close();
+    }
+  },
   async phonePickerLayout({ context, page }) {
     const demo = await context.newPage();
     try {
@@ -30,10 +99,10 @@ export const phoneDateTimeCommands = {
       await demo.goto(url);
       const trigger = demo.getByRole('button', { name: 'Дата', exact: true });
       await trigger.click();
-      const dialog = demo.getByRole('dialog', { name: 'Дата' });
-      const { width, headingVisible } = await dialog.evaluate(element => {
+      const pickerPage = demo.getByRole('main', { name: 'Дата' });
+      const { width, headingVisible } = await pickerPage.evaluate(element => {
         const surface = element.getBoundingClientRect();
-        const heading = element.querySelector('[part="heading"]').getBoundingClientRect();
+        const heading = element.querySelector('[part="picker-heading"]').getBoundingClientRect();
         return { width: surface.width, headingVisible: heading.top >= surface.top && heading.bottom <= surface.bottom };
       });
       await demo.keyboard.press('Tab');
@@ -57,7 +126,7 @@ export const phoneDateTimeCommands = {
         });
       });
       await demo.keyboard.press('Escape');
-      await dialog.waitFor({ state: 'hidden' });
+      await pickerPage.waitFor({ state: 'hidden' });
       return { width, headingVisible, reachable, completeRows, retainedFocus,
         restoredFocus: await trigger.evaluate(element => element.matches(':focus')) };
     } finally {
@@ -88,8 +157,8 @@ export const phoneDateTimeCommands = {
       await demo.goto(url);
 
       await demo.getByRole('button', { name: 'Arrival' }).tap();
-      const dialog = demo.getByRole('dialog', { name: 'Arrival' });
-      await dialog.waitFor();
+      const pickerPage = demo.getByRole('main', { name: 'Arrival' });
+      await pickerPage.waitFor();
       const hour = demo.getByRole('spinbutton', { name: 'Hour' });
       await demo.waitForFunction(() =>
         document.querySelector('metro-time-picker').shadowRoot.querySelector('[data-column="hour"]')?.scrollTop > 0);
@@ -142,7 +211,7 @@ export const phoneDateTimeCommands = {
       }));
       const staged = await snapshot();
       await demo.getByRole('button', { name: 'Done' }).tap();
-      await dialog.waitFor({ state: 'hidden' });
+      await pickerPage.waitFor({ state: 'hidden' });
       return { hourBefore, swipe, staged, committed: await snapshot() };
     } finally {
       await device.close();

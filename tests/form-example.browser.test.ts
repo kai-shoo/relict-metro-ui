@@ -45,7 +45,7 @@ test('the enlarged narrow inspection form opens the date picker with a pointer c
   const doc = frame!.contentDocument!;
   doc.documentElement.style.fontSize = '200%';
   const trigger = demo.getByRole('button', { name: 'Inspection date' });
-  const dialog = demo.getByRole('dialog', { name: 'Inspection date' });
+  const pickerPage = demo.getByRole('main', { name: 'Inspection date' });
   const date = doc.querySelector('metro-date-picker')!;
   await expect.element(trigger).toBeVisible();
   const actions = doc.querySelector('.commands')!;
@@ -55,9 +55,9 @@ test('the enlarged narrow inspection form opens the date picker with a pointer c
   }
   expect(trigger.element().getBoundingClientRect().right).toBeCloseTo(bounds.right, 0);
   await trigger.click();
-  await expect.element(dialog).toBeVisible();
+  await expect.element(pickerPage).toBeVisible();
   await userEvent.keyboard('{Escape}');
-  await expect.element(dialog).not.toBeInTheDocument();
+  await expect.element(pickerPage).not.toBeInTheDocument();
   expect(date.shadowRoot?.activeElement).toBe(trigger.element());
   expect(doc.documentElement.scrollWidth).toBeLessThanOrEqual(doc.documentElement.clientWidth + 1);
 });
@@ -66,17 +66,17 @@ test('Back and Escape each close the tentative date without dirtying the form', 
   const demo = await mount();
   const date = frame!.contentDocument!.querySelector('metro-date-picker')!;
   const trigger = demo.getByRole('button', { name: 'Inspection date' });
-  const dialog = demo.getByRole('dialog', { name: 'Inspection date' });
+  const pickerPage = demo.getByRole('main', { name: 'Inspection date' });
   const day = demo.getByRole('spinbutton', { name: 'Day' });
   for (const dismiss of [() => userEvent.keyboard('{Escape}'), back]) {
     await userEvent.click(trigger);
-    await expect.element(dialog).toBeVisible();
+    await expect.element(pickerPage).toBeVisible();
     (day.element() as HTMLElement).focus();
     await userEvent.keyboard('{ArrowDown}');
     await expect.element(day).toHaveAttribute('aria-valuenow', '28');
     expect(date.value).toBe('2028-02-29');
     await dismiss();
-    await expect.element(dialog).not.toBeInTheDocument();
+    await expect.element(pickerPage).not.toBeInTheDocument();
     await expect.poll(() => date.shadowRoot?.activeElement).toBe(trigger.element());
     expect(readFrame().value).toBe('editor');
     expect(date.value).toBe('2028-02-29');
