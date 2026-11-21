@@ -131,8 +131,11 @@ list.addEventListener('metro-item-activate', event => {
   void render(chosen);
 });
 window.addEventListener('popstate', () => {
+  const requested = new URL(location.href).searchParams.get('tag');
+  // A picker can return to its field without changing the catalog route.
+  if ((tags.has(requested) ? requested : 'metro-pivot') === trigger.value) return;
   if (dialog.open) dialog.close();
-  void render();
+  void render(requested);
 });
 void render();
 trigger.disabled = false;

@@ -32,24 +32,74 @@ export const phonePickerStyles = css`
     border-block-end: 2px solid currentColor;
     transform: rotate(45deg);
   }
-  .phone-dialog[open]::part(surface) {
-    display: flex;
-    flex-direction: column;
-    inline-size: min(100%, 30rem);
+  .phone-page {
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0;
+    inline-size: 100%;
     max-inline-size: 100%;
     block-size: 100dvh;
-    max-block-size: 100dvh;
-    margin: 0 auto;
+    max-block-size: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--_metro-chrome);
+    color: var(--_metro-fg);
+    font-family: var(--_metro-font);
+    overflow: hidden;
+  }
+  .phone-page:popover-open {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .phone-page-scroll { overflow: auto; overscroll-behavior: contain; }
+  .phone-page-content {
+    box-sizing: border-box;
+    max-inline-size: 42rem;
+    margin-inline: auto;
     padding: clamp(.75rem, 4vi, 1.5rem);
-    padding-block-start: clamp(.75rem, 6dvh, 3rem);
+    padding-block-start: clamp(.75rem, 5dvh, 2rem);
   }
-  .phone-dialog::part(actions) {
-    margin-block-start: auto;
-    justify-content: stretch;
-    flex-wrap: nowrap;
+  .phone-title {
+    margin: 0 0 .75rem;
+    font-size: clamp(1.25rem, 5vi, 1.5rem);
+    font-weight: 600;
+    overflow-wrap: anywhere;
   }
-  .phone-dialog::part(heading) { font-size: clamp(1.25rem, 5vi, 1.5rem); }
-  .phone-action { flex: 1; min-inline-size: 0; overflow-wrap: anywhere; }
+  .phone-app-bar {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    padding: .25rem .75rem max(.25rem, env(safe-area-inset-bottom));
+    background: var(--metro-command-bar-bg, var(--_metro-chrome));
+    border-block-start: 1px solid var(--_metro-border);
+  }
+  .phone-action {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: .125rem;
+    flex: 0 1 8rem;
+    min-inline-size: 0;
+    min-block-size: 44px;
+    padding: .125rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: 600 .833rem / 1.2 var(--_metro-font);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+  .phone-action:disabled { color: var(--_metro-disabled); cursor: default; }
+  .phone-action:focus-visible { outline: 2px solid var(--_metro-focus); outline-offset: -2px; }
+  .phone-action metro-icon {
+    box-sizing: border-box;
+    inline-size: 2rem;
+    block-size: 2rem;
+    padding: .375rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
   .phone-wheels {
     display: flex;
     gap: .375rem;
@@ -195,10 +245,10 @@ export class PhonePickerWheels {
 
   render(columns: readonly PhoneDateTimeColumn[]) {
     return html`<div class="phone-wheels" part="wheels">
-      ${repeat(columns, column => column.id, (column, index) => html`
+      ${repeat(columns, column => column.id, column => html`
         <div class="phone-column" part="column">
           <span class="wheel-name" id="wheel-${column.id}" part="column-label">${column.name}</span>
-          <div class="wheel" part="wheel" data-column=${column.id} role="spinbutton" tabindex="0" ?autofocus=${index === 0}
+          <div class="wheel" part="wheel" data-column=${column.id} role="spinbutton" tabindex="0"
             aria-labelledby="wheel-${column.id}" aria-valuemin=${column.min} aria-valuemax=${column.max}
             aria-valuenow=${column.value} aria-valuetext=${[column.number(column.value), column.caption?.(column.value)].filter(Boolean).join(' ')}
             @keydown=${(event: KeyboardEvent) => this.#keyboard(event, column)} @scroll=${this.#scroll} @scrollend=${this.#scrollend}>

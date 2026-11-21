@@ -83,7 +83,11 @@ Form and JS receive strings of the format `YYYY-MM-DD` and `HH:mm` (with seconds
 <metro-time-picker name="time" label="Meeting time" value="13:45" step="900"></metro-time-picker>
 ```
 
-With `presentation="phone"`, the field opens a phone dialog with scrollable columns. The dialog opens at the start and focuses the first column. In a short window, Tab scrolls the dialog to show the next column or action. The dialog holds the selection as a draft. Confirmation applies a valid selection. If the value changes, the control emits one `input` event and one `change` event. Escape, the cancel button, and `closePicker()` cancel the selection. Use `showPicker()` to open the dialog. Read `pickerOpen` to check its state. Set `locale`, `dialog-label`, `apply-label`, `cancel-label`, and `placeholder` as necessary. Set `pickerLabels` to label the columns, for example `{ day: 'Day', month: 'Month', year: 'Year' }`. To style the picker, use the `trigger`, `picker-surface`, `column`, `wheel`, `selected-cell`, `apply`, and `cancel` parts.
+With `presentation="phone"`, the field opens a separate picker page in portrait and landscape. The page orders the scrollable columns by locale and focuses the first column. The Application Bar contains Done and Cancel. Done applies a valid draft and returns focus to the field. If the value changes, the control emits one `input` event and one `change` event. Cancel, browser Back, Escape, and `closePicker()` return to the field without changing its value.
+
+Use `showPicker()` to open the page. Read `pickerOpen` to check its state. Set `locale` to select the column order and format. Set `dialog-label` to change the page title. Set `apply-label`, `cancel-label`, and `placeholder` to change the other text. Set `pickerLabels` to label the columns, for example `{ day: 'Day', month: 'Month', year: 'Year' }`. To style the page, use the `picker-surface`, `picker-heading`, `picker-actions`, `column`, `wheel`, `selected-cell`, `apply`, and `cancel` parts. Use the `trigger` part to style the field button.
+
+The picker page uses a browser history entry with the same URL as the form. If the app handles `popstate`, keep the form in place when its route does not change.
 
 ```html
 <metro-date-picker presentation="phone" name="day" locale="en-GB" label="Meeting date"

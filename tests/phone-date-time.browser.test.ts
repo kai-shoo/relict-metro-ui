@@ -7,6 +7,7 @@ type TimeFormSnapshot = { value: string; submitted: string | null; events: strin
 
 declare module 'vitest/browser' {
   interface BrowserCommands {
+    phonePickerPageNavigation(): Promise<void>;
     phonePickerLayout(): Promise<{
       width: number; headingVisible: boolean; reachable: boolean; completeRows: boolean; retainedFocus: boolean; restoredFocus: boolean;
     }>;
@@ -30,8 +31,8 @@ function mount(markup: string) {
 
 function expectClosed(picker: HTMLElement & { pickerOpen: boolean }) {
   return expect.poll(() => ({ open: picker.pickerOpen,
-    modal: picker.shadowRoot?.querySelector('metro-dialog')?.shadowRoot?.querySelector('dialog')?.open,
-  })).toEqual({ open: false, modal: false });
+    page: picker.shadowRoot?.querySelector('[part="picker-surface"]'),
+  })).toEqual({ open: false, page: null });
 }
 
 afterEach(() => fixture?.remove());
@@ -55,11 +56,11 @@ test('phone date columns follow locale, stage a leap-day change and restore the 
   const trigger = page.getByRole('button', { name: 'Départ' });
   await expect.element(trigger).toHaveAttribute('aria-expanded', 'false');
   await userEvent.click(trigger);
-  const dialog = page.getByRole('dialog', { name: 'Date de départ' });
+  const pickerPage = page.getByRole('main', { name: 'Date de départ' });
   const day = page.getByRole('spinbutton', { name: 'Jour' });
   const month = page.getByRole('spinbutton', { name: 'Mois' });
   const year = page.getByRole('spinbutton', { name: 'Année' });
-  await expect.element(dialog).toBeVisible();
+  await expect.element(pickerPage).toBeVisible();
   await expect.element(day).toHaveAttribute('aria-valuenow', '29');
   expect(page.getByRole('spinbutton').elements()).toEqual([day.element(), month.element(), year.element()]);
   await expect.poll(() => picker.shadowRoot?.activeElement?.getAttribute('data-column')).toBe('day');
@@ -94,7 +95,7 @@ test('phone date columns follow locale, stage a leap-day change and restore the 
   expect(events).toHaveLength(2);
 
   picker.showPicker();
-  await expect.element(dialog).toBeVisible();
+  await expect.element(pickerPage).toBeVisible();
   picker.value = '2028-03-01';
   await expectClosed(picker);
   expect(events).toHaveLength(2);
@@ -111,7 +112,7 @@ test('phone time applies a localized period, wraps minute cells, and cancels exp
   const picker = container.querySelector('metro-time-picker')!;
   const trigger = page.getByRole('button', { name: 'Pickup' });
   await userEvent.click(trigger);
-  const dialog = page.getByRole('dialog', { name: 'Pickup' });
+  const pickerPage = page.getByRole('main', { name: 'Pickup' });
   const minute = page.getByRole('spinbutton', { name: 'Minute' });
   const seconds = page.getByRole('spinbutton', { name: 'Second' });
   const period = page.getByRole('spinbutton', { name: 'Day period' });
@@ -132,7 +133,7 @@ test('phone time applies a localized period, wraps minute cells, and cancels exp
   expect(new FormData(form).get('time')).toBe('23:00');
 
   picker.showPicker();
-  await expect.element(dialog).toBeVisible();
+  await expect.element(pickerPage).toBeVisible();
   expect(picker.closePicker()).toBe(true);
   await expectClosed(picker);
   expect(picker.closePicker()).toBe(false);
@@ -195,6 +196,10 @@ test('uses the narrow phone viewport and brings the final date column into view 
   expect(await commands.phonePickerLayout()).toEqual({
     width: 320, headingVisible: true, reachable: true, completeRows: true, retainedFocus: true, restoredFocus: true,
   });
+});
+
+test('both phone pickers navigate to a page in portrait and landscape and return on Done, Cancel, or browser Back', async () => {
+  await commands.phonePickerPageNavigation();
 });
 
 test.skipIf(server.browser !== 'chromium')('a native vertical touch scroll changes only the staged phone wheel', async () => {

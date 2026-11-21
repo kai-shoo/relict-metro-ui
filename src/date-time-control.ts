@@ -1,9 +1,10 @@
 import { LitElement, css, html, type PropertyDeclarations } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { dateLocale } from './calendar-date.js';
-import './dialog.js';
+import './icon.js';
 import { formatPhoneDateTime, initialPhoneDateTime, phoneDateTimeColumns, shiftedColumnValue,
   type MetroDateTimeColumn, type MetroDateTimePickerLabels } from './phone-date-time.js';
+import { enterDateTimePage, isolateDateTimePage } from './phone-date-time-page.js';
 import { PhonePickerWheels, phonePickerStyles } from './phone-picker-wheels.js';
 import { metroTheme } from './theme.js';
 
@@ -97,6 +98,8 @@ export abstract class DateTimeControl extends LitElement {
   #dirty = false;
   #fieldsetDisabled = false;
   #draft: string | undefined;
+  #leavePage: (() => void) | undefined;
+  #restoreContent: (() => void) | undefined;
   #focusedWheel: HTMLElement | undefined;
   #wheels = new PhonePickerWheels((id, amount) => this.#changeDraft(id, amount));
 
@@ -206,6 +209,10 @@ export abstract class DateTimeControl extends LitElement {
       return;
     }
     if (!this.isConnected || this.#input.disabled || this.readOnly || this.pickerOpen) return;
+    const view = this.ownerDocument.defaultView;
+    if (!view) return;
+    this.#leavePage = enterDateTimePage(view, () => this.closePicker());
+    if (!this.#leavePage) return;
     this.#draft = initialPhoneDateTime(this.#input);
     this.requestUpdate();
   }
@@ -214,7 +221,13 @@ export abstract class DateTimeControl extends LitElement {
     if (!this.pickerOpen) return false;
     this.#wheels.clear();
     this.#draft = undefined;
-    if (this.#dialog?.open) this.#dialog.close();
+    const page = this.#page;
+    if (page?.matches(':popover-open')) page.hidePopover();
+    this.#restoreContent?.();
+    this.#restoreContent = undefined;
+    this.#leavePage?.();
+    this.#leavePage = undefined;
+    if (this.isConnected) this.focus({ preventScroll: true });
     this.requestUpdate();
     return true;
   }
@@ -273,7 +286,7 @@ export abstract class DateTimeControl extends LitElement {
   }
 
   get #trigger() { return this.shadowRoot?.querySelector<HTMLButtonElement>('.phone-trigger'); }
-  get #dialog() { return this.shadowRoot?.querySelector('metro-dialog'); }
+  get #page() { return this.shadowRoot?.querySelector<HTMLElement>('.phone-page'); }
   get #locale() { return dateLocale(this.locale, this); }
 
   #draftInput() {
@@ -298,8 +311,9 @@ export abstract class DateTimeControl extends LitElement {
   }
 
   #apply = () => {
-    if (!this.#dialog || !this.pickerOpen) return;
-    this.#wheels.settleAll(this.#dialog);
+    const page = this.#page;
+    if (!page || !this.pickerOpen) return;
+    this.#wheels.settleAll(page);
     const draft = this.#draftInput();
     if (!draft.value || !draft.validity.valid) return;
     this.closePicker();
@@ -308,7 +322,9 @@ export abstract class DateTimeControl extends LitElement {
     for (const type of ['input', 'change']) this.dispatchEvent(new Event(type, { bubbles: true, composed: true }));
   };
 
-  #closed = (event: Event) => {
+  #pageKeydown = (event: KeyboardEvent) => {
+    if (event.key !== 'Escape' || event.defaultPrevented) return;
+    event.preventDefault();
     event.stopPropagation();
     this.closePicker();
   };
@@ -320,20 +336,17 @@ export abstract class DateTimeControl extends LitElement {
 
   protected override updated() {
     this.#syncForm();
-    const dialog = this.#dialog;
+    const page = this.#page;
     const focusedWheel = this.#focusedWheel;
     this.#focusedWheel = undefined;
-    if (this.pickerOpen && dialog && !dialog.open) {
-      dialog.show(this.#trigger ?? undefined);
-      void dialog.updateComplete.then(() => {
-        if (!this.isConnected || !this.pickerOpen || !dialog.open) return;
-        dialog.querySelector<HTMLElement>('.wheel')?.focus({ preventScroll: true });
-        this.#wheels.centerAll(dialog);
-        // Native modal autofocus can scroll a tall wheel over the picker title.
-        dialog.shadowRoot?.querySelector('dialog')?.scrollTo({ top: 0, behavior: 'instant' });
-      });
-    } else if (this.pickerOpen && dialog?.open && focusedWheel && !this.shadowRoot?.activeElement) {
-      const target = focusedWheel.isConnected ? focusedWheel : dialog.querySelector<HTMLElement>('.wheel');
+    if (!this.isConnected || !this.pickerOpen || !page) return;
+    if (!page.matches(':popover-open')) {
+      page.showPopover();
+      this.#restoreContent = isolateDateTimePage(page);
+      this.#wheels.centerAll(page);
+      page.querySelector<HTMLElement>('.wheel')?.focus({ preventScroll: true });
+    } else if (focusedWheel && !this.shadowRoot?.activeElement) {
+      const target = focusedWheel.isConnected ? focusedWheel : page.querySelector<HTMLElement>('.wheel');
       target?.focus();
     }
   }
@@ -360,7 +373,7 @@ export abstract class DateTimeControl extends LitElement {
           <slot name="description" @slotchange=${() => this.requestUpdate()}>${this.description}</slot>
         </span>
       </div>
-      ${phone ? this.#phoneDialog(accessibleLabel) : null}
+      ${phone && this.pickerOpen ? this.#phonePage(accessibleLabel) : null}
     `;
   }
 
@@ -369,7 +382,8 @@ export abstract class DateTimeControl extends LitElement {
     const name = accessibleLabel || (hasLabel ? undefined : this.placeholder);
     return html`
       <button id="phone-trigger" class="input phone-trigger" type="button" part="trigger"
-        aria-haspopup="dialog" aria-expanded=${this.pickerOpen} ?disabled=${this.#input.disabled}
+        aria-expanded=${this.pickerOpen} aria-controls=${ifDefined(this.pickerOpen ? 'phone-page' : undefined)}
+        ?disabled=${this.#input.disabled}
         aria-disabled=${this.readOnly ? 'true' : 'false'} aria-label=${ifDefined(name)}
         aria-invalid=${ifDefined(this.getAttribute('aria-invalid') ?? undefined)}
         aria-describedby=${hasDescription ? 'phone-value description' : 'phone-value'} @click=${() => this.showPicker()}>
@@ -378,19 +392,29 @@ export abstract class DateTimeControl extends LitElement {
     `;
   }
 
-  #phoneDialog(accessibleLabel: string) {
+  #phonePage(accessibleLabel: string) {
     const slotted = this.querySelector(':scope > [slot="label"]')?.textContent?.trim();
     const title = this.dialogLabel || accessibleLabel || slotted || this.label || this.placeholder;
-    const draft = this.pickerOpen ? this.#draftInput() : undefined;
-    const invalid = Boolean(draft && (!draft.value || !draft.validity.valid));
+    const draft = this.#draftInput();
     return html`
-      <metro-dialog class="phone-dialog" exportparts="surface: picker-surface, heading: picker-heading, actions: picker-actions"
-        .label=${title} @metro-close=${this.#closed} @metro-before-close=${(event: Event) => event.stopPropagation()}>
-        ${draft ? this.#wheels.render(this.#columns()) : null}
-        ${draft ? html`<p class="phone-picker-error" role="status" part="picker-status">${draft.validationMessage}</p>` : null}
-        <button class="phone-action" part="apply" slot="actions" type="button" ?disabled=${invalid} @click=${this.#apply}>${this.applyLabel}</button>
-        <button class="phone-action" part="cancel" slot="actions" type="button" @click=${this.closePicker}>${this.cancelLabel}</button>
-      </metro-dialog>
+      <main id="phone-page" class="phone-page" part="picker-surface" popover="manual"
+        aria-labelledby="phone-title" @keydown=${this.#pageKeydown}>
+        <div class="phone-page-scroll">
+          <div class="phone-page-content">
+            <h1 id="phone-title" class="phone-title" part="picker-heading">${title}</h1>
+            ${this.#wheels.render(this.#columns())}
+            <p class="phone-picker-error" role="status" part="picker-status">${draft.validationMessage}</p>
+          </div>
+        </div>
+        <div class="phone-app-bar" role="group" aria-label="Application Bar" part="picker-actions">
+          <button class="phone-action" part="apply" type="button" ?disabled=${!draft.value || !draft.validity.valid} @click=${this.#apply}>
+            <metro-icon name="check"></metro-icon>${this.applyLabel}
+          </button>
+          <button class="phone-action" part="cancel" type="button" @click=${this.closePicker}>
+            <metro-icon name="cancel"></metro-icon>${this.cancelLabel}
+          </button>
+        </div>
+      </main>
     `;
   }
 }
