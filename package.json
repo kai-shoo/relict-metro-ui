@@ -640,7 +640,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "node scripts/clean-dist.mjs && tsc && esbuild dist/index.js --bundle --format=esm --target=es2022 --outfile=dist/metro-ui.js --legal-comments=eof",
-    "test": "npm run build && vitest run",
+    "test": "node --test tests/release-tag.test.mjs && npm run build && vitest run",
     "test:package": "npm run build && node scripts/verify-package.mjs",
     "serve": "node scripts/serve.mjs",
     "docs:dev": "npm --prefix website run dev",

@@ -1,10 +1,10 @@
 import { strict as assert } from 'node:assert';
 import { execFileSync } from 'node:child_process';
-import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
-import { join, posix } from 'node:path';
+import { basename, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium } from 'playwright';
 
@@ -33,12 +33,25 @@ const workspace = await mkdtemp(join(tmpdir(), 'metro-package-'));
 let browser;
 let server;
 try {
-  const report = JSON.parse(npm(['pack', '--ignore-scripts', '--json', '--pack-destination', workspace], root));
-  const pack = Array.isArray(report) ? report[0] : report[packageName];
-  assert(pack, `npm pack did not report ${packageName}`);
-  assert.equal(pack.name, packageName);
-  const files = new Set(pack.files.map(({ path }) => path));
-  assert(files.has('dist/metro-ui.js'), 'Run npm run build before verifying the archive');
+  const archive = process.argv[2]
+    ? resolve(process.argv[2])
+    : join(workspace, npm(['pack', '--ignore-scripts', '--loglevel=error', '--pack-destination', workspace], root).trim());
+  assert(archive.endsWith('.tgz'), 'Provide an npm .tgz archive');
+  console.log(`Installing ${archive}`);
+  await cp(join(root, 'tests/consumers'), workspace, { recursive: true });
+  await cp(join(workspace, 'fixture-package.json'), join(workspace, 'package.json'));
+  npm(['install', '--no-audit', '--no-fund', '--no-package-lock', '--ignore-scripts', archive], workspace, 'inherit');
+
+  const installed = join(workspace, 'node_modules', packageName);
+  const manifest = JSON.parse(await readFile(join(installed, 'package.json'), 'utf8'));
+  const source = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
+  assert.equal(manifest.name, packageName);
+  assert.equal(manifest.version, source.version);
+  assert.equal(manifest.license, 'MIT');
+  const files = new Set((await readdir(installed, { recursive: true, withFileTypes: true }))
+    .filter(entry => entry.isFile())
+    .map(entry => relative(installed, join(entry.parentPath, entry.name)).split(sep).join('/')));
+  assert(files.has('dist/metro-ui.js'), 'The archive is missing dist/metro-ui.js');
   assert(files.has('package.json'));
   assert(files.has('README.md'));
   assert(files.has('LICENSE'), 'Missing MIT license');
@@ -50,16 +63,7 @@ try {
   for (const pathname of examplePages) {
     assert(files.has(pathname), `Missing copyable example ${pathname}`);
   }
-  console.log(`Inspecting ${pack.filename} (${files.size} files)`);
-
-  await cp(join(root, 'tests/consumers'), workspace, { recursive: true });
-  await cp(join(workspace, 'fixture-package.json'), join(workspace, 'package.json'));
-  npm(['install', '--no-audit', '--no-fund', '--no-package-lock', '--ignore-scripts', `./${pack.filename}`], workspace, 'inherit');
-
-  const installed = join(workspace, 'node_modules', packageName);
-  const manifest = JSON.parse(await readFile(join(installed, 'package.json'), 'utf8'));
-  assert.equal(manifest.version, pack.version);
-  assert.equal(manifest.license, 'MIT');
+  console.log(`Inspecting ${basename(archive)} (${files.size} installed files)`);
   async function loadsBrowserModule(path, visited) {
     assert(files.has(path), `Missing example module ${path}`);
     if (path === 'dist/metro-ui.js') return true;
