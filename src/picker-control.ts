@@ -207,7 +207,7 @@ export abstract class PickerControl extends LitElement {
 
   #internals = this.attachInternals();
   #requested: readonly string[] | undefined;
-  #mode: 'inline' | 'dialog' | undefined;
+  #mode: 'inline' | 'dialog' | 'page' | undefined;
   #draft: readonly string[] = [];
   #activeKey: string | undefined;
   #opening = 0;
@@ -239,8 +239,10 @@ export abstract class PickerControl extends LitElement {
   }
 
   override disconnectedCallback(): void {
+    const mode = this.#mode;
     this.#mode = undefined;
     this.#opening++;
+    if (mode === 'page') this.dismissPage();
     const dialog = this.#dialog;
     if (dialog) dialog.open = false;
     this.requestUpdate();
@@ -339,6 +341,21 @@ export abstract class PickerControl extends LitElement {
   protected abstract get initialSelection(): readonly string[];
   protected get multipleMode() { return false; }
   protected get fullScreenMode() { return false; }
+  protected get expandedMode(): 'dialog' | 'page' { return 'dialog'; }
+
+  protected presentPage(): void {}
+  protected dismissPage(): void {}
+
+  protected renderPage(_title: string, _list: ReturnType<typeof html>, _applyDisabled: boolean) {
+    return html``;
+  }
+
+  protected applyDraft(): void {
+    if (this.#mode !== 'page' || this.#controlDisabled) return;
+    const draft = this.#draft;
+    this.close();
+    this.#commit(draft);
+  }
 
   protected get currentSelection(): readonly string[] {
     return this.#normalize(this.#requested ?? this.initialSelection);
@@ -371,8 +388,8 @@ export abstract class PickerControl extends LitElement {
   get #enabledChoices() { return this.choices.filter(choice => !choice.disabled); }
   get #listHasFocus() { return this.shadowRoot?.activeElement?.matches('[data-choice], .list') ?? false; }
 
-  get #preferredMode(): 'inline' | 'dialog' {
-    return this.multipleMode || this.fullScreenMode || this.choices.length > 5 ? 'dialog' : 'inline';
+  get #preferredMode() {
+    return this.multipleMode || this.fullScreenMode || this.choices.length > 5 ? this.expandedMode : 'inline';
   }
 
   #normalize(values: readonly string[]): string[] {
@@ -413,7 +430,7 @@ export abstract class PickerControl extends LitElement {
     if (dialog) {
       dialog.show(this.#trigger ?? undefined);
       await dialog.updateComplete;
-    }
+    } else if (this.#mode === 'page') this.presentPage();
     if (opening === this.#opening && this.open) this.#focusChoice();
   }
 
@@ -431,8 +448,10 @@ export abstract class PickerControl extends LitElement {
   }
 
   #dismiss(restoreFocus: boolean): void {
+    const mode = this.#mode;
     this.#mode = undefined;
     this.#opening++;
+    if (mode === 'page') this.dismissPage();
     if (restoreFocus) this.focus({ preventScroll: true });
     this.requestUpdate();
   }
@@ -560,6 +579,7 @@ export abstract class PickerControl extends LitElement {
     const hasLabel = Boolean(this.label || this.querySelector(':scope > [slot="label"]'));
     const ariaLabel = this.#accessibleLabel(hasLabel);
     const title = this.dialogLabel || this.label || ariaLabel || 'Choose an option';
+    const mode = this.#mode ?? this.#preferredMode;
     return html`
       <div class="field" @focusout=${this.#onFocusout}>
         <label class="label" part="label" id="label" for="trigger" ?hidden=${!hasLabel}>
@@ -568,7 +588,7 @@ export abstract class PickerControl extends LitElement {
         <button type="button" class="trigger" part="trigger" id="trigger"
           aria-label=${ifDefined(ariaLabel ? `${ariaLabel}, ${text}` : undefined)}
           aria-labelledby=${ifDefined(hasLabel && !ariaLabel ? 'label value' : undefined)}
-          aria-haspopup=${(this.#mode ?? this.#preferredMode) === 'dialog' ? 'dialog' : 'listbox'}
+          aria-haspopup=${ifDefined(mode === 'page' ? undefined : mode === 'dialog' ? 'dialog' : 'listbox')}
           aria-expanded=${String(this.open)} aria-controls=${ifDefined(this.open ? 'picker' : undefined)}
           aria-invalid=${ifDefined(this.getAttribute('aria-invalid') ?? undefined)}
           ?disabled=${this.#controlDisabled} @click=${this.#onTrigger}
@@ -597,6 +617,9 @@ export abstract class PickerControl extends LitElement {
             ?disabled=${this.required && !this.#normalize(this.#draft).length}>${this.applyLabel}</button>` : null}
         </metro-dialog>
       ` : null}
+      ${this.#mode === 'page'
+        ? this.renderPage(title, this.#renderList(choices, title), this.required && !this.#normalize(this.#draft).length)
+        : null}
     `;
   }
 }

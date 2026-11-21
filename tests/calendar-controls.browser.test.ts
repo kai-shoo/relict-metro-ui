@@ -2,7 +2,6 @@ import { afterEach, describe, expect, test } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import '../src/calendar-date-picker.js';
 import '../src/color-picker.js';
-import '../src/list-picker.js';
 
 let fixture: HTMLDivElement | undefined;
 
@@ -21,7 +20,6 @@ afterEach(() => {
 test.each([
   ['metro-calendar-date-picker', '<metro-calendar-date-picker label="Review date" name="review" value="2025-05-14"></metro-calendar-date-picker>', 'review'],
   ['metro-color-picker', '<metro-color-picker label="Accent color" name="accent" value="#123456"></metro-color-picker>', 'accent'],
-  ['metro-list-picker', '<metro-list-picker label="Folder" name="folder" value="archive" full-screen><metro-option value="archive">Archive</metro-option></metro-list-picker>', 'folder'],
 ] as const)('%s discards its dialog when moved and can open again', async (tag, markup, name) => {
   const container = mount(`<form>${markup}<input aria-label="Other field"></form>`);
   const picker = container.querySelector(tag)!;

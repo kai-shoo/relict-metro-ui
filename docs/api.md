@@ -105,11 +105,13 @@ With `presentation="phone"`, the field opens a phone dialog with scrollable colu
 
 ## List selection and recurring days
 
-`metro-list-picker` receives direct children of `metro-option`. The short list opens next to the field. For a long list and `full-screen`, dialog is used. In `multiple` mode, the confirmation applies the entire draft, and `selectedValues` returns the array of keys. The initial multiple selection can be set by the `selected` attribute on the variants. If an application assigns `value` or `selectedValues` to an open list, the new choice immediately replaces the draft.
+`metro-list-picker` takes direct `metro-option` children. A single-selection list with up to five options expands in the form. A longer list, `full-screen`, or `multiple` opens a separate picker page. The page shows the first selected option and gives it focus. In single-selection mode, choose an option to apply it and return to the form. In `multiple` mode, select Done to apply the draft. Select Cancel or Back, or press Escape, to return without applying the draft. The picker page does not change browser history.
+
+Read `selectedValues` to get the confirmed keys. Set `selected` on options to set the initial multiple selection. Set `value` or `selectedValues` while the picker is open to replace the draft. Use `dialog-label` to set the picker page heading. Use `apply-label`, `cancel-label`, and `back-label` to set the action labels. To style the page, use the `page`, `page-heading`, `back`, `actions`, `apply`, and `cancel` parts.
 
 `metro-recurring-days-picker` takes `value="mon wed fri"` or the `selectedDays` DOM property. `locale` and `first-day-of-week` change the order of days. Confirmed keys keep the order Monday-Sunday. Multiple selections are sent by single values under a single name in `FormData`.
 
-Both components have available `name`, `required`, `disabled`, `label` or slot `label`, `placeholder`, `value`, `defaultValue`, `showPicker()` and `close()`. Only the user confirmation calls `input` and `change`. Parts are available through `label`, `trigger`, `value`, `list`, `option`, `status`, `dialog`, `actions`, `apply` and `cancel`.
+Both components support `name`, `required`, `disabled`, `label` or the `label` slot, `placeholder`, `value`, `defaultValue`, `showPicker()`, and `close()`. When the user changes the confirmed selection, the picker emits `input` and `change`. Both components expose the `label`, `trigger`, `value`, `list`, `option`, `status`, `actions`, `apply`, and `cancel` parts. `metro-recurring-days-picker` also exposes the `dialog` part.
 
 ```html
 <metro-list-picker name="folder" label="Folder" value="inbox">
