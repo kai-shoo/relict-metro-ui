@@ -380,7 +380,7 @@ export const browserCommands = {
       await approach();
       await send('touchEnd');
       await demo.waitForFunction(() => document.querySelector('#queue').values.length === 3);
-      return demo.evaluate(canceled => ({
+      return await demo.evaluate(canceled => ({
         canceled,
         library: [...document.querySelector('#library').values],
         archive: [...document.querySelector('#archive').values],
