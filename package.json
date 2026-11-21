@@ -4,6 +4,10 @@
   "description": "Windows Phone 8-inspired Metro web components",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kai-shoo/relict-metro-ui.git"
+  },
   "engines": {
     "node": ">=22.12"
   },
