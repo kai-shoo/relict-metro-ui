@@ -1,4 +1,4 @@
-import { LitElement, css, html, type PropertyValues } from 'lit';
+import { LitElement, css, html, nothing, type PropertyValues } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { repeat } from 'lit/directives/repeat.js';
 import './app-bar-button.js';
@@ -8,8 +8,7 @@ import './app-bar-separator.js';
 import type { MetroAppBarSeparator } from './app-bar-separator.js';
 import { defineElement } from './define.js';
 import { revealVertically, tryFocus } from './focus-target.js';
-import './icon.js';
-import type { MetroIconName } from './icon.js';
+import { metroIconNames, type MetroIconName } from './icon.js';
 import { metroTheme } from './theme.js';
 
 export interface MetroCommand {
@@ -25,7 +24,8 @@ export interface MetroCommand {
 
 export interface MetroCommandDetail { id: string; checked?: boolean; }
 export type MetroCommandEvent = CustomEvent<MetroCommandDetail>;
-export type MetroCommandBarMode = 'default' | 'compact' | 'minimal';
+export type MetroCommandBarMode = 'default' | 'compact' | 'minimal' | 'minimized';
+export type MetroCommandBarProfile = 'standard' | 'wp8';
 
 interface BarAction { type: 'action'; command: MetroCommand; source?: MetroAppBarButton; }
 interface BarSeparator { type: 'separator'; source: MetroAppBarSeparator; }
@@ -52,6 +52,8 @@ export class MetroCommandBar extends LitElement {
     label: { type: String },
     moreLabel: { type: String, attribute: 'more-label' },
     open: { type: Boolean, reflect: true },
+    profile: { type: String, reflect: true },
+    opacity: { type: Number },
     mode: { type: String, reflect: true },
     orientation: { type: String, reflect: true },
     hideSecondary: { type: Boolean, attribute: 'hide-secondary' },
@@ -80,17 +82,17 @@ export class MetroCommandBar extends LitElement {
       gap: .25rem;
     }
 
-    :host([mode="compact"]:not([open]):not([orientation="vertical"])) .row {
+    :host([mode="compact"]:not([open], [orientation="vertical"], [profile="wp8"])) .row {
       min-block-size: var(--metro-command-bar-compact-height, 3.59375rem);
       padding-block: .3125rem;
     }
-    :host([mode="compact"]:not([open]):not([orientation="vertical"])) .icon { inline-size: 2.40625rem; }
+    :host([mode="compact"]:not([open], [orientation="vertical"], [profile="wp8"])) .icon { inline-size: 2.40625rem; }
 
-    :host([mode="minimal"]:not([open]):not([orientation="vertical"])) .row {
+    :host([mode="minimal"]:not([open], [orientation="vertical"], [profile="wp8"])) .row {
       min-block-size: var(--metro-command-bar-minimal-height, 2.75rem);
       padding-block: 0;
     }
-    :host([mode="minimal"]:not([open]):not([orientation="vertical"])) .toggle { grid-column: 2; }
+    :host([mode="minimal"]:not([open], [orientation="vertical"], [profile="wp8"])) .toggle { grid-column: 2; }
 
     .primary {
       display: flex;
@@ -232,6 +234,72 @@ export class MetroCommandBar extends LitElement {
     :host(:not([orientation="vertical"])) .overflow { padding-inline: min(.75rem, 4%); }
     :host(:not([orientation="vertical"])) .overflow button { padding-inline: min(.5rem, 4%); }
 
+    :host([profile="wp8"]) {
+      position: relative;
+      background: none;
+    }
+
+    :host([profile="wp8"]:not([data-wp8-active])) { display: none; }
+
+    :host([profile="wp8"]) [part="bar"] {
+      --_wp8-background: color-mix(in srgb, var(--metro-command-bar-bg, var(--_metro-chrome))
+        calc(var(--_wp8-opacity) * 100%), transparent);
+    }
+
+    :host([profile="wp8"][open]) [part="bar"] {
+      --_wp8-background: var(--metro-command-bar-bg, var(--_metro-chrome));
+    }
+
+    :host([profile="wp8"]) :is(.row, .overflow) { background: var(--_wp8-background); }
+    :host([profile="wp8"]) .row { padding-block: 8px; }
+    :host([profile="wp8"]) .row button { min-block-size: 44px; }
+    :host([profile="wp8"]) .toggle { inline-size: 44px; line-height: 32px; }
+    :host([profile="wp8"]) .icon { inline-size: 48px; font-size: 24px; }
+
+    :host([profile="wp8"]:not([orientation="vertical"])) [part="bar"]:not([hidden]) {
+      display: grid;
+      /* Keep the closed footprint; anchor the expanded tracks to the bottom edge. */
+      align-content: end;
+      grid-template-rows: max-content max-content;
+      block-size: 72px;
+    }
+
+    :host([profile="wp8"]:not([orientation="vertical"])) .row {
+      min-block-size: 72px;
+      padding-inline: min(.75rem, 3%);
+    }
+
+    :host([profile="wp8"][mode="minimized"]:not([orientation="vertical"])) [part="bar"] {
+      block-size: 30px;
+    }
+
+    :host([profile="wp8"][mode="minimized"]:not([open], [orientation="vertical"])) .row {
+      min-block-size: 30px;
+      padding-block: 0;
+    }
+
+    :host([profile="wp8"][mode="minimized"]:not([open], [orientation="vertical"])) .toggle {
+      grid-column: 2;
+      min-block-size: 30px;
+      line-height: 1;
+      align-content: center;
+      outline-offset: -2px;
+    }
+
+    :host([profile="wp8"][orientation="vertical"]) { inline-size: 72px; }
+    :host([profile="wp8"][orientation="vertical"]) [part="bar"] { block-size: 100%; }
+    :host([profile="wp8"][orientation="vertical"]) .row {
+      block-size: 100%;
+      overflow: auto;
+    }
+
+    :host([profile="wp8"][orientation="vertical"]) .overflow {
+      inset-inline: auto 100%;
+      max-inline-size: max(0px, calc(100cqi - 72px));
+    }
+
+    :host([profile="wp8"]) .overflow button { text-transform: lowercase; }
+
     @media (hover: hover) {
       button:enabled:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
     }
@@ -249,6 +317,8 @@ export class MetroCommandBar extends LitElement {
   declare label: string;
   declare moreLabel: string;
   declare open: boolean;
+  declare profile: MetroCommandBarProfile;
+  declare opacity: number;
   declare mode: MetroCommandBarMode;
   declare orientation: 'horizontal' | 'vertical';
   declare hideSecondary: boolean;
@@ -264,6 +334,7 @@ export class MetroCommandBar extends LitElement {
   #extent = 0;
   #resizeFrame?: number;
   #resize = new ResizeObserver(([entry]) => {
+    if (this.#wp8) return;
     const extent = Math.round(this.orientation === 'vertical' ? entry.contentRect.height : entry.contentRect.width);
     if (extent === this.#extent) return;
     this.#extent = extent;
@@ -283,6 +354,8 @@ export class MetroCommandBar extends LitElement {
     this.label = 'Commands';
     this.moreLabel = 'More commands';
     this.open = false;
+    this.profile = 'standard';
+    this.opacity = 1;
     this.mode = 'default';
     this.orientation = 'horizontal';
     this.hideSecondary = false;
@@ -328,6 +401,8 @@ export class MetroCommandBar extends LitElement {
   }
 
   protected override updated(changed: PropertyValues<this>) {
+    this.toggleAttribute('data-wp8-active', this.#wp8 && this.#keys.size > 0);
+    this.toggleAttribute('data-wp8-overlay', this.#wp8 && this.#backgroundOpacity < 1);
     this.#placeRailMenu();
     if (changed.has('open') && this.isConnected) {
       this.observeOutside(this.open);
@@ -344,6 +419,16 @@ export class MetroCommandBar extends LitElement {
         this.focusTrigger();
       }
     }
+  }
+
+  get #wp8() { return this.profile === 'wp8'; }
+
+  get #backgroundOpacity() {
+    return Number.isFinite(this.opacity) ? Math.max(0, Math.min(1, this.opacity)) : 1;
+  }
+
+  get #minimized() {
+    return this.orientation !== 'vertical' && this.mode === (this.#wp8 ? 'minimized' : 'minimal');
   }
 
   #partition(): void {
@@ -364,8 +449,18 @@ export class MetroCommandBar extends LitElement {
         entries.push({ type: 'separator', source: child as MetroAppBarSeparator });
       }
     }
-    this.#keys = ids;
     const candidates = entries.filter((item): item is BarAction => item.type === 'action' && item.command.placement !== 'secondary');
+    if (this.#wp8) {
+      const primary = candidates.filter(({ command }) =>
+        command.icon?.trim() || (command.iconName && metroIconNames.includes(command.iconName))).slice(0, 4);
+      const secondary = entries.filter((item): item is BarAction => item.type === 'action' && item.command.placement === 'secondary');
+      this.#primary = primary;
+      this.#overflow = secondary;
+      this.#keys = new Set([...primary, ...secondary].map(({ command }) => command.id));
+      return;
+    }
+
+    this.#keys = ids;
     const priority = (item: BarAction) => {
       const value = item.command.priority ?? 0;
       return Number.isFinite(value) ? value : 0;
@@ -389,7 +484,7 @@ export class MetroCommandBar extends LitElement {
   };
 
   #placeRailMenu = () => {
-    if (!this.open || this.orientation !== 'vertical') return;
+    if (this.#wp8 || !this.open || this.orientation !== 'vertical') return;
     const menu = this.shadowRoot?.querySelector<HTMLElement>('#overflow');
     if (!menu || menu.hidden) return;
     const bar = this.getBoundingClientRect();
@@ -478,7 +573,7 @@ export class MetroCommandBar extends LitElement {
     if (action) {
       action.focus();
       this.#revealOverflowItem(action);
-    } else if (this.mode === 'minimal' && this.orientation !== 'vertical') {
+    } else if (this.#minimized) {
       Array.from(this.renderRoot.querySelectorAll<HTMLButtonElement>('.primary button:enabled')).at(index)?.focus();
     }
   }
@@ -538,7 +633,7 @@ export class MetroCommandBar extends LitElement {
   protected override render() {
     const primary = this.#primary;
     const overflow = this.#overflow;
-    const minimal = this.mode === 'minimal' && this.orientation !== 'vertical';
+    const minimal = this.#minimized;
     const canExpand = overflow.length > 0 || (minimal && this.#keys.size > 0)
       || primary.some(entry => entry.type === 'action' && (entry.command.iconName || entry.command.icon));
     const key = (entry: BarEntry) => entry.type === 'action' ? entry.command.id : entry.source;
@@ -546,6 +641,7 @@ export class MetroCommandBar extends LitElement {
 
     return html`
       <div part="bar" role="group" aria-label=${this.label} @keydown=${this.handleKeydown}
+        style=${this.#wp8 ? `--_wp8-opacity: ${this.#backgroundOpacity}` : nothing}
         ?hidden=${this.#keys.size === 0}>
         <div class="row">
           <div class="primary" part="primary" ?hidden=${minimal && !this.open}>
@@ -558,7 +654,8 @@ export class MetroCommandBar extends LitElement {
                 @click=${() => this.activate(entry)}>
                 ${command.iconName || command.icon ? html`
                   <span class="icon" part="icon" aria-hidden="true">
-                    ${command.iconName ? html`<metro-icon name=${command.iconName}></metro-icon>` : command.icon}
+                    ${command.iconName && (!this.#wp8 || metroIconNames.includes(command.iconName))
+                      ? html`<metro-icon name=${command.iconName}></metro-icon>` : command.icon}
                   </span>
                 ` : null}
                 <span class="label">${command.label}</span>
