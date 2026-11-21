@@ -1,0 +1,22 @@
+---
+import Docs from '../layouts/Docs.astro';
+import Demo from '../components/Demo.astro';
+import { tags } from '../lib/content';
+import { withBase } from '../lib/paths';
+---
+<Docs title="Components" wide>
+  <div class="eyebrow">DOCUMENTATION / UI KIT</div>
+  <h1>components<span class="accent">.</span></h1>
+  <p class="lead">{tags.length} building blocks. One visual language. Choose a tag to see its import, markup, and example in the interactive catalog.</p>
+  <Demo code={`<metro-text-box label="Your name" placeholder="What should we call you?"></metro-text-box>\n<metro-checkbox checked>Keep me updated</metro-checkbox>\n<metro-button>Continue</metro-button>`} title="From components to an interface">
+    <metro-text-box label="Your name" placeholder="What should we call you?"></metro-text-box>
+    <metro-checkbox checked>Keep me updated</metro-checkbox>
+    <metro-button>Continue</metro-button>
+  </Demo>
+  <div class="catalog-heading"><metro-text-box id="component-filter" type="search" label="Find a component" placeholder="Try button, picker, tile…" autocomplete="off"></metro-text-box><p id="component-count" role="status">{tags.length} components</p></div>
+  <div class="component-grid">
+    {tags.map((tag) => <a data-component={tag} href={withBase(`/examples/catalog/?tag=${tag}`)} data-astro-reload><span>{tag.slice(6)}</span><code>&lt;{tag}&gt;</code><span class="component-arrow" aria-hidden="true">↗</span></a>)}
+  </div>
+  <p id="component-empty" hidden>No components found. Try another name.</p>
+  <p class="muted">Find attributes, events, and slots in the <a href={withBase('/reference/api/')}>API reference →</a>.</p>
+</Docs>

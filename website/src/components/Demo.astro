@@ -1,0 +1,10 @@
+---
+import Code from './Code.astro';
+interface Props { code: string; title?: string }
+const { code, title = 'Live example' } = Astro.props;
+---
+<section class="demo" aria-label={title}>
+  <div class="demo-label"><span class="status-dot"></span>{title}<span>try it yourself ↙</span></div>
+  <div class="demo-stage"><slot /></div>
+  <Code code={code} />
+</section>

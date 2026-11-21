@@ -1,0 +1,41 @@
+---
+import Docs from '../layouts/Docs.astro';
+import Code from '../components/Code.astro';
+import Demo from '../components/Demo.astro';
+import { withBase } from '../lib/paths';
+const headings = [
+  { slug: 'install', text: 'Installation' },
+  { slug: 'astro', text: 'Using Astro' },
+  { slug: 'events', text: 'Properties & events' },
+  { slug: 'theme', text: 'Your theme' },
+  { slug: 'next', text: 'Next steps' },
+];
+---
+<Docs title="Getting started" headings={headings}>
+  <div class="eyebrow">DOCUMENTATION / FIRST STEPS</div>
+  <h1>getting started.</h1>
+  <p class="lead">From installation to your first component in a few lines. The library works with Astro, React, Vue, and plain HTML.</p>
+  <div class="prose">
+    <h2 id="install">01 / installation</h2>
+    <p>The package is available on npm. Import components individually to include just what you use.</p>
+    <Code code="npm install relict-metro-ui" lang="bash" />
+    <h2 id="astro">02 / using Astro</h2>
+    <p>Import the component inside an Astro-processed <code>&lt;script&gt;</code> tag. It runs in the browser and registers the custom element.</p>
+    <Code code={`---\n// src/pages/index.astro\n---\n<script>\n  import 'relict-metro-ui/button';\n</script>\n\n<metro-button>Get started</metro-button>`} label="src/pages/index.astro" />
+    <p>Keep this import out of the server-side frontmatter between <code>---</code> delimiters. Web Components do not need <code>client:load</code> directives or React wrappers.</p>
+    <Demo code={`<metro-button>Get started</metro-button>\n<metro-button disabled>Unavailable</metro-button>`}><metro-button>Get started</metro-button><metro-button disabled>Unavailable</metro-button></Demo>
+    <h2 id="events">03 / properties & events</h2>
+    <p>Pass simple values through attributes and objects or arrays through DOM properties. Attach page-specific listeners on <code>astro:page-load</code>, which fires on both the initial load and client-side navigation.</p>
+    <Code code={`<script>\n  import 'relict-metro-ui/pivot';\n\n  document.addEventListener('astro:page-load', () => {\n    const pivot = document.querySelector('metro-pivot');\n    pivot?.addEventListener('metro-change', (event) => {\n      console.log(event.detail.value);\n    });\n  });\n</script>\n\n<metro-pivot label="Folders" value="inbox">\n  <metro-pivot-item value="inbox" label="inbox">\n    New messages\n  </metro-pivot-item>\n  <metro-pivot-item value="archive" label="archive">\n    Saved messages\n  </metro-pivot-item>\n</metro-pivot>`} label="Pivot + client-side navigation" />
+    <Demo code={`<metro-pivot label="Folders" value="inbox">\n  <metro-pivot-item value="inbox" label="inbox">New messages</metro-pivot-item>\n  <metro-pivot-item value="archive" label="archive">Saved messages</metro-pivot-item>\n</metro-pivot>`}>
+      <metro-pivot label="Folders" value="inbox"><metro-pivot-item value="inbox" label="inbox"><p>New messages</p></metro-pivot-item><metro-pivot-item value="archive" label="archive"><p>Saved messages</p></metro-pivot-item></metro-pivot>
+    </Demo>
+    <p>Add <code>&lt;ClientRouter /&gt;</code> from <code>astro:transitions</code> to your shared layout. Components are registered once, and newly inserted elements connect automatically. Attach listeners only once to elements kept with <code>transition:persist</code> to avoid duplicate subscriptions.</p>
+    <h2 id="theme">04 / your theme</h2>
+    <p>Tokens inherit across Shadow DOM boundaries. A single set of variables can style an entire page or an individual example.</p>
+    <Code code={`:root {\n  --metro-color-scheme: dark;\n  --metro-accent: #0050ef;\n  --metro-on-accent: #fff;\n  --metro-font: "Segoe UI", system-ui, sans-serif;\n}`} lang="css" />
+    <p>Components expose <code>::part()</code> hooks for fine-grained styling. Find the full map in the <a href={withBase('/reference/foundations/')}>theme guide</a> and <a href={withBase('/reference/api/')}>API reference</a>.</p>
+    <h2 id="next">where next?</h2>
+    <p><a href={withBase('/components/')}>Choose a component →</a> or explore <a href={withBase('/examples/')}>complete example apps →</a>.</p>
+  </div>
+</Docs>

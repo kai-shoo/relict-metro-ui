@@ -8,6 +8,19 @@ The catalog has all 119 tags, with an individual import and an example for each 
 
 ## Build and test
 
+### Documentation website
+
+[Read the English documentation](https://kai-shoo.github.io/relict-metro-ui/). The Astro site uses `relict-metro-ui@0.2.0` from npm. It includes live components, search, and client-side navigation.
+
+```sh
+npm --prefix website ci
+npm run docs:dev
+```
+
+Open `http://localhost:4321/relict-metro-ui/`. Run `npm run docs:build` to create the static site in `website/dist/`. [Development and deployment](website/README.md)
+
+### Library
+
 The component audit maps each tag to its example and browser tests. [Component verification map](docs/component-audit.md)
 
 Use Node.js 22.12, 24, or a newer version that Vitest supports.

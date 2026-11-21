@@ -1,0 +1,103 @@
+---
+import { ClientRouter, fade } from 'astro:transitions';
+import { navigation, version } from '../lib/content';
+import { withBase } from '../lib/paths';
+import '../styles/docs.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  headings?: { slug: string; text: string; depth?: number }[];
+  wide?: boolean;
+}
+const {
+  title,
+  description = 'Relict Metro UI — Windows Phone-inspired Web Components built with Lit and TypeScript. Guides, live examples, and API documentation.',
+  headings = [],
+  wide = false,
+} = Astro.props;
+const pathname = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0050ef" />
+    <title>{title} · Relict Metro UI</title>
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        try { theme = localStorage.getItem('relict-docs-theme') || theme; } catch {}
+        document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
+      })();
+    </script>
+    <ClientRouter fallback="swap" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="topbar" transition:name="topbar">
+      <a href={withBase('/')} class="brand" aria-label="Relict Metro UI — home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>relict<span class="brand-secondary"> / metro ui</span></span>
+      </a>
+      <span class="version">v{version}</span>
+      <div class="topbar-actions">
+        <metro-button class="search-trigger" data-action="search" label="Search documentation">
+          <metro-icon name="search"></metro-icon><span>Search</span><kbd>Ctrl K</kbd>
+        </metro-button>
+        <metro-button data-action="theme" label="Toggle color theme"><span aria-hidden="true">◐</span></metro-button>
+        <a class="npm-link" href="https://www.npmjs.com/package/relict-metro-ui">npm ↗</a>
+      </div>
+    </header>
+    <div class="site-grid">
+      <aside class="sidebar" transition:name="sidebar" data-pagefind-ignore>
+        <details class="mobile-navigation">
+          <summary>Navigation <span aria-hidden="true">↓</span></summary>
+          <nav aria-label="Documentation">
+            {navigation.map((group) => (
+              <section class="nav-group">
+                <p>{group.title}</p>
+                {group.links.map((link) => (
+                  <a href={withBase(link.href)} aria-current={pathname === withBase(link.href) ? 'page' : undefined}>
+                    {link.label}{'count' in link && <span>{link.count}</span>}
+                  </a>
+                ))}
+              </section>
+            ))}
+          </nav>
+        </details>
+        <div class="sidebar-note"><span class="status-dot"></span> Built with Relict Metro UI<br /><small>Lit · TypeScript · Web Components</small></div>
+      </aside>
+      <div class:list={['content-grid', { wide }]}>
+        <main id="main" tabindex="-1" data-pagefind-body transition:name="content" transition:animate={fade({ duration: '0.16s' })}>
+          <slot />
+          <footer class="page-footer" data-pagefind-ignore>
+            <span>relict metro ui <span class="muted">/ {version}</span></span>
+            <span>Content before chrome.</span>
+          </footer>
+        </main>
+        {headings.length > 0 && (
+          <aside class="toc" data-pagefind-ignore>
+            <p>On this page</p>
+            <nav aria-label="Table of contents">
+              {headings.map((heading) => <a class:list={{ nested: heading.depth === 3 }} href={`#${heading.slug}`}>{heading.text}</a>)}
+            </nav>
+            <a class="back-top" href="#main">Back to top ↑</a>
+          </aside>
+        )}
+      </div>
+    </div>
+    <dialog id="search-dialog" aria-labelledby="search-title" data-pagefind-ignore>
+      <div class="search-heading"><h2 id="search-title">search the docs</h2><metro-button data-action="close-search" label="Close search">Esc</metro-button></div>
+      <metro-text-box id="docs-search" type="search" label="Search query" placeholder="A component, property, or topic…" autocomplete="off"></metro-text-box>
+      <p id="search-status" role="status">Try a component or topic: pivot, themes, events.</p>
+      <ul id="search-results"></ul>
+    </dialog>
+    <script>
+      import '../scripts/client';
+    </script>
+  </body>
+</html>

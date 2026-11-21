@@ -13,3 +13,6 @@ coverage/
 *.log
 *.tsbuildinfo
 .DS_Store
+.astro/
+website/public/examples/
+website/public/dist/

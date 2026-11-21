@@ -1,0 +1,24 @@
+---
+import Docs from '../layouts/Docs.astro';
+import { withBase } from '../lib/paths';
+const examples = [
+  { name: 'mail', path: 'mail', icon: 'mail', text: 'Pivot, commands, and navigation from a list to a message.', color: '#0050ef' },
+  { name: 'start screen', path: 'start', icon: 'home', text: 'Tiles, accents, and application routes.', color: '#a20025' },
+  { name: 'settings', path: 'controls', icon: 'settings', text: 'Forms, switches, and dialogs.', color: '#008272' },
+  { name: 'workspace', path: 'workspace', icon: 'edit', text: 'Tabs, notes, and moving between windows.', color: '#6a00ff' },
+  { name: 'media library', path: 'media', icon: 'play', text: 'A player, notifications, and a playback queue.', color: '#b61861' },
+  { name: 'collections', path: 'collections', icon: 'list', text: 'Selecting, sorting, and transferring items.', color: '#a65300' },
+];
+---
+<Docs title="Example apps" wide>
+  <div class="eyebrow">DOCUMENTATION / IN PRACTICE</div>
+  <h1>more than buttons.</h1>
+  <p class="lead">Complete experiences built with our UI kit. Open an app and try everything, from swiping between folders to moving a tab into another window.</p>
+  <div class="examples-grid">
+    {examples.map((example) => <a class="example-card" href={withBase(`/examples/${example.path}/`)} data-astro-reload>
+      <div class="example-cover" style={`--cover: ${example.color}`}><metro-icon name={example.icon}></metro-icon><span>{example.name}</span><b>↗</b></div>
+      <p>{example.text}</p>
+    </a>)}
+  </div>
+  <p class="muted">Examples ship with the npm package and open as standalone applications.</p>
+</Docs>
