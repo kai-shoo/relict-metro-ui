@@ -1,7 +1,10 @@
 export { MetroPivot, type MetroChangeEvent } from './pivot.js';
 export { MetroPivotItem } from './pivot-item.js';
 export { MetroLockablePivot } from './lockable-pivot.js';
-export { MetroCommandBar, type MetroCommand, type MetroCommandDetail, type MetroCommandEvent } from './command-bar.js';
+export {
+  MetroCommandBar, type MetroCommand, type MetroCommandBarMode, type MetroCommandBarProfile,
+  type MetroCommandDetail, type MetroCommandEvent,
+} from './command-bar.js';
 export { MetroTile, type MetroTileSize } from './tile.js';
 export { MetroButton, type MetroButtonType } from './button.js';
 export { MetroToggleButton } from './toggle-button.js';

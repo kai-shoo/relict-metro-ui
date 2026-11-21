@@ -186,6 +186,8 @@ The `closeMenu()` method returns `true` if the menu has been opened. [The panel 
 
 The `metro-command-bar` hosts the `commands` array and direct daughters `metro-app-bar-button`, `metro-app-bar-toggle-button` and `metro-app-bar-separator`. Specify `command-id`, `label`, `icon-name`, `placement`, `priority` and, if necessary, `disabled`. Program teams go first, key matches are resolved in favor of the array. Overflow takes into account the available width and priority. The `fixed-overflow` retains a fixed four seats, while the `context` shift closes the menu. In the `metro-command` event for the switch there is `detail.checked`. The declarative button has this reflected state, the command from the array applies the request to its array.
 
+Set `profile="wp8"` to use fixed primary icon buttons and a secondary text menu instead of adaptive overflow. See the [WP8 Application Bar profile](components.md#use-the-wp8-profile) for modes, orientation, and page layout.
+
 ```html
 <metro-command-bar label="Record commands" more-label="More">
   <metro-app-bar-button command-id="save" label="Save" icon-name="save" priority="10"></metro-app-bar-button>

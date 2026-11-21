@@ -181,12 +181,33 @@ In portrait orientation, the panel is located at the bottom. In the landscape, i
 | --- | --- |
 | Mode Default or Minimized | Determines the size when entering the page and after folding. Minimized is suitable for Panorama. |
 | IsMenuEnabled | Controls the appearance of secondary points in the open panel. |
-| Opacity 0 or 0.5 | The panel is drawn on top of the content. The size of the page area is saved. |
-| Opacity 1 | The opaque panel occupies its strip. The size of the page area is recalculated. |
+| Opacity less than 1 | The bar covers the content. The page keeps its full content area. |
+| Opacity 1 | The opaque bar reserves its closed strip. The page content area is smaller. |
 
 In a library contract, placement affects the scrolling area, and design sets transparency. The historical adapter links these parameters in a table. Retreating at the edge allows you to get to the last row and regain focus when the panel overlaps the page. [App bar and accommodation properties](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff431813(v=vs.105))
 
 In the `AppBarAppMenu_PSD.psd` source sheet for Phone 8, icon labels use Segoe WP Semibold · 13.333, and secondary commands use Segoe WP Semilight · 32. Both groups have tracked -10. Values taken from the text layers of the open bar in the template. [Original Screen Templates for Phone 8](windows-phone-archive.md#windows-phone-8-package-contents)
+
+#### Use the WP8 profile
+
+Set `profile="wp8"` on `metro-command-bar`. Put the bar in the `commands` slot of `metro-page` to apply the page layout rules. Set the page height to the available screen area to keep the bar at the edge while the page body scrolls.
+
+```html
+<metro-page label="Document" style="height: 100dvh">
+  <p>Document content</p>
+  <metro-command-bar slot="commands" profile="wp8" mode="minimized" opacity="0.5">
+    <metro-app-bar-button command-id="save" label="Save" icon-name="save"></metro-app-bar-button>
+    <metro-app-bar-button command-id="export" label="Export" placement="secondary"></metro-app-bar-button>
+  </metro-command-bar>
+</metro-page>
+```
+
+- Use `mode="default"` for a 72 CSS pixel strip in portrait. Use `mode="minimized"` for a 30 CSS pixel strip that shows only the ellipsis when closed. Set `orientation="vertical"` when the app switches to landscape. The rail moves to the inline-end edge and is 72 CSS pixels wide in either mode. Set `orientation="horizontal"` when the app returns to portrait.
+- Supply primary commands through `commands` or direct child `metro-app-bar-button` and `metro-app-bar-toggle-button` elements. The bar uses the first four primary commands with an `iconName` or `icon`, in the order supplied (array, then child elements). It ignores `priority`, `fixed-overflow`, separators, and other primary commands. It does not move primary commands into the menu.
+- Set `placement="secondary"` on commands that must appear as text in the menu. The ellipsis shows the primary labels and the secondary commands. Set `hide-secondary` to show the labels without the secondary commands.
+- Set `opacity` from 0 to 1. The default is 1. At 1, the page reserves the closed strip. Any part of the open bar that extends beyond the strip covers the content without resizing it. At values below 1, the entire bar overlays the page. Opacity changes only the closed background, not the icons or text. The open bar uses an opaque background without changing the reserved space.
+
+Omit `profile` to use the standard CommandBar with adaptive overflow.
 
 ### AppBar in Phone 8.1 WinJS
 
