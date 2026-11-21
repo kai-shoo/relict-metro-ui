@@ -41,6 +41,12 @@ Set `METRO_CHROMIUM_PATH` to use a local Chromium executable for the browser and
 
 `npm pack` creates `relict-metro-ui-0.2.0.tgz`. The archive contains the browser module, ESM modules with TypeScript declarations, the API reference, the design documentation, and the example source files. The library uses a system font stack.
 
+### Release candidate
+
+Push a version tag that matches `package.json`, for example `v0.2.0`. The `v` prefix is optional. A prerelease tag such as `v0.3.0-rc.1` requires the same prerelease version in `package.json`.
+
+Open the **Release** run for the tag in GitHub Actions. After the browser and package installation checks pass, download **release-candidate** from the run's **Artifacts** section. It contains the one `.tgz` that the workflow installed and tested. The workflow does not require npm credentials and does not publish to npm.
+
 ## Install and use
 
 ### Plain HTML
