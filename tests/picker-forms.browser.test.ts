@@ -64,26 +64,35 @@ describe('Metro list picker', () => {
     expect(events).toHaveLength(2);
   });
 
-  test('opens six or more choices in a full-height dialog and handles removed keys', async () => {
+  test('opens a long list on a separate page, scrolls to the selection and handles removed keys', async () => {
     const choices = Array.from({ length: 12 }, (_, index) =>
       `<metro-option value="folder-${index}">Folder ${index}</metro-option>`,
     ).join('');
     const container = mount(`
-      <form>
+      <form style="overflow: hidden; transform: translateZ(0)">
         <metro-list-picker label="Archive" name="archive" value="folder-11" required>${choices}</metro-list-picker>
+        <button type="button">Other field</button>
+        <button type="button" inert>Inactive field</button>
       </form>
     `);
     const picker = container.querySelector('metro-list-picker')!;
     const form = container.querySelector('form')!;
     const trigger = page.getByRole('button', { name: /Archive/ });
-    const modal = page.getByRole('dialog', { name: 'Archive' });
+    const pickerPage = page.getByRole('region', { name: 'Archive' });
     const chosen = page.getByRole('option', { name: 'Folder 11' });
+    const other = form.querySelector('button:not([inert])')!;
     await userEvent.click(trigger);
-    await expect.element(modal).toBeVisible();
-    const bounds = modal.element().getBoundingClientRect();
-    expect(bounds.height).toBeGreaterThan(window.innerHeight * .85);
+    await expect.element(pickerPage).toBeVisible();
+    await expect.element(page.getByRole('dialog')).not.toBeInTheDocument();
+    expect(other.inert).toBe(true);
+    const bounds = pickerPage.element().getBoundingClientRect();
+    expect(bounds.height).toBe(window.innerHeight);
     await expect.poll(() => picker.shadowRoot?.activeElement).toBe(chosen.element());
-    expect(picker.shadowRoot!.querySelector('.list')!.scrollTop).toBeGreaterThan(0);
+    other.focus();
+    expect(picker.shadowRoot?.activeElement).toBe(chosen.element());
+    const list = picker.shadowRoot!.querySelector('.list')!;
+    expect(list.scrollTop).toBeGreaterThan(0);
+    expect(chosen.element().getBoundingClientRect().bottom).toBeLessThanOrEqual(list.getBoundingClientRect().bottom + 1);
 
     picker.querySelector('[value="folder-11"]')!.remove();
     await expect.element(page.getByRole('status')).toHaveTextContent('A selected option is no longer available.');
@@ -92,10 +101,76 @@ describe('Metro list picker', () => {
     await userEvent.keyboard('{End}{Enter}');
     expect(picker.value).toBe('folder-10');
     expect(form.checkValidity()).toBe(true);
+    await expect.element(pickerPage).not.toBeInTheDocument();
+    expect(other.inert).toBe(false);
+    expect(form.querySelector<HTMLButtonElement>('button[inert]')?.textContent).toBe('Inactive field');
     expect(picker.shadowRoot?.activeElement).toBe(trigger.element());
   });
 
-  test('a programmatic selection replaces an open draft and Apply stays silent', async () => {
+  test('full-screen opens a separate page even for one choice and cleans up on move and reset', async () => {
+    const container = mount(`<form>
+      <metro-list-picker label="Folder" name="folder" value="archive" full-screen>
+        <metro-option value="archive">Archive</metro-option>
+      </metro-list-picker>
+      <input aria-label="Other field">
+    </form>`);
+    const picker = container.querySelector('metro-list-picker')!;
+    const form = container.querySelector('form')!;
+    const other = container.querySelector('input')!;
+    const pickerPage = page.getByRole('region', { name: 'Folder' });
+    let changes = 0;
+    picker.addEventListener('change', () => changes++);
+
+    picker.showPicker();
+    await expect.element(pickerPage).toBeVisible();
+    picker.remove();
+    other.focus();
+    form.prepend(picker);
+    await expect.element(pickerPage).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(other);
+    expect(picker.open).toBe(false);
+
+    picker.showPicker();
+    await expect.element(pickerPage).toBeVisible();
+    form.reset();
+    await expect.element(pickerPage).not.toBeInTheDocument();
+    expect(new FormData(form).get('folder')).toBe('archive');
+    expect(changes).toBe(0);
+  });
+
+  test.each(['Cancel', 'Back', 'Escape', 'Done'])('%s returns to the form from a multiple-selection page', async action => {
+    const container = mount(`<form>
+      <metro-list-picker label="Categories" name="category" multiple>
+        <metro-option value="archive" selected>Archive</metro-option>
+        <metro-option value="news" selected>News</metro-option>
+        <metro-option value="work">Work</metro-option>
+      </metro-list-picker>
+    </form>`);
+    const picker = container.querySelector('metro-list-picker')!;
+    const form = container.querySelector('form')!;
+    const trigger = page.getByRole('button', { name: /Categories/ });
+    const pickerPage = page.getByRole('region', { name: 'Categories' });
+    const archive = page.getByRole('option', { name: 'Archive', selected: true });
+    const events: string[] = [];
+    for (const type of ['input', 'change']) form.addEventListener(type, () => events.push(type));
+
+    await trigger.click();
+    await expect.element(pickerPage).toBeVisible();
+    await expect.element(page.getByRole('dialog')).not.toBeInTheDocument();
+    await expect.poll(() => picker.shadowRoot?.activeElement).toBe(archive.element());
+    await page.getByRole('option', { name: 'Work' }).click();
+    expect(new FormData(form).getAll('category')).toEqual(['archive', 'news']);
+    expect(events).toEqual([]);
+
+    if (action === 'Escape') await userEvent.keyboard('{Escape}');
+    else await page.getByRole('button', { name: action, exact: true }).click();
+    await expect.element(pickerPage).not.toBeInTheDocument();
+    expect(new FormData(form).getAll('category')).toEqual(action === 'Done' ? ['archive', 'news', 'work'] : ['archive', 'news']);
+    expect(events).toEqual(action === 'Done' ? ['input', 'change'] : []);
+    expect(picker.shadowRoot?.activeElement).toBe(trigger.element());
+  });
+
+  test('a programmatic selection replaces an open draft and Done stays silent', async () => {
     const container = mount(`<form>
       <metro-list-picker label="Categories" name="category" value="archive" multiple>
         <metro-option value="archive">Archive</metro-option>
@@ -114,7 +189,7 @@ describe('Metro list picker', () => {
     picker.selectedValues = ['work'];
     await expect.element(page.getByRole('option', { name: 'Work' })).toHaveAttribute('aria-selected', 'true');
     await expect.element(page.getByRole('option', { name: 'News' })).toHaveAttribute('aria-selected', 'false');
-    await page.getByRole('button', { name: 'Apply' }).click();
+    await page.getByRole('button', { name: 'Done' }).click();
     expect(new FormData(form).getAll('category')).toEqual(['work']);
     expect(events).toEqual([]);
     expect(picker.shadowRoot?.activeElement).toBe(trigger.element());
@@ -133,18 +208,18 @@ describe('Metro list picker', () => {
       Array.from({ length: 3 }, (_, index) => `<metro-option value="extra-${index}">Extra ${index}</metro-option>`).join('');
     const archive = page.getByRole('option', { name: 'Archive' });
     await expect.element(archive).toBeVisible();
-    const dialog = page.getByRole('dialog', { name: 'Folders' });
-    await expect.element(dialog).not.toBeInTheDocument();
+    const pickerPage = page.getByRole('region', { name: 'Folders' });
+    await expect.element(pickerPage).not.toBeInTheDocument();
     await expect.poll(() => picker.shadowRoot?.activeElement).toBe(archive.element());
     await userEvent.keyboard('{Enter}');
     expect(picker.value).toBe('archive');
     expect(picker.open).toBe(false);
     await page.getByRole('button', { name: /Folders/ }).click();
-    await expect.element(dialog).toBeVisible();
+    await expect.element(pickerPage).toBeVisible();
     await expect.poll(() => picker.shadowRoot?.activeElement).toBe(archive.element());
   });
 
-  test.each([760, 120])('stages options and submits repeated names after Apply at %s px', async height => {
+  test.each([760, 120])('stages options and submits repeated names after Done at %s px', async height => {
     const result = await commands.listPickerApply(height === 120);
     expect(result).toEqual({
       viewportHeight: height,

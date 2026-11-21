@@ -67,16 +67,16 @@ export const pickerFormCommands = {
       await demo.goto(url);
 
       const trigger = demo.getByRole('button', { name: /Categories/ });
-      const dialog = demo.getByRole('dialog', { name: 'Categories' });
+      const pickerPage = demo.getByRole('region', { name: 'Categories' });
       const list = demo.getByRole('listbox', { name: 'Categories' });
-      const apply = demo.getByRole('button', { name: 'Apply', exact: true });
+      const apply = demo.getByRole('button', { name: 'Done', exact: true });
       const form = demo.locator('form');
       const formValues = () => form.evaluate(element => new FormData(element).getAll('category'));
       const picker = demo.locator('metro-list-picker');
       const pickerValues = () => picker.evaluate(element => element.selectedValues);
 
       await trigger.click();
-      await dialog.waitFor();
+      await pickerPage.waitFor();
       await demo.waitForFunction(() =>
         document.querySelector('metro-list-picker').shadowRoot.activeElement?.dataset.choice === 'archive');
       if (shortViewport) await demo.setViewportSize({ width: 390, height: 120 });
@@ -94,7 +94,7 @@ export const pickerFormCommands = {
       await demo.getByRole('option', { name: 'Notes' }).click();
       await demo.getByRole('option', { name: 'Notes', selected: true }).waitFor();
       await apply.click();
-      await dialog.waitFor({ state: 'hidden' });
+      await pickerPage.waitFor({ state: 'hidden' });
       const committed = await pickerValues();
       const submitted = await formValues();
       const restoredFocus = await trigger.evaluate(element => element.getRootNode().activeElement === element);
