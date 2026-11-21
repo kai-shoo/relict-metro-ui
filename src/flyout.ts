@@ -244,17 +244,19 @@ export class MetroFlyout extends LitElement {
     const surface = this.surface;
     if (!view || !surface) return;
 
-    this.#position();
+    this.reposition();
     this.#observe = new AbortController();
     const options = { signal: this.#observe.signal };
-    view.addEventListener('resize', this.#position, options);
-    observeAnchorScroll(this.#anchor ?? this, this.#position, options.signal);
-    view.visualViewport?.addEventListener('resize', this.#position, options);
-    view.visualViewport?.addEventListener('scroll', this.#position, options);
+    view.addEventListener('resize', this.reposition, options);
+    observeAnchorScroll(this.#anchor ?? this, this.reposition, options.signal);
+    view.visualViewport?.addEventListener('resize', this.reposition, options);
+    view.visualViewport?.addEventListener('scroll', this.reposition, options);
 
-    this.#resize = new ResizeObserver(this.#position);
+    this.#resize = new ResizeObserver(this.reposition);
     this.#resize.observe(surface);
     if (this.#anchor?.isConnected) this.#resize.observe(this.#anchor);
+    const boundary = this.positionBoundary(this.#anchor);
+    if (boundary) this.#resize.observe(boundary);
   }
 
   #stopPositionUpdates(): void {
@@ -264,33 +266,44 @@ export class MetroFlyout extends LitElement {
     this.#resize = null;
   }
 
-  #position = () => {
+  protected reposition = () => {
     const view = this.ownerDocument.defaultView;
     const surface = this.surface;
     if (!view || !surface) return;
 
+    const viewport = view.visualViewport;
+    const bounds = new DOMRectReadOnly(
+      viewport?.offsetLeft ?? 0,
+      viewport?.offsetTop ?? 0,
+      viewport?.width ?? this.ownerDocument.documentElement.clientWidth,
+      viewport?.height ?? this.ownerDocument.documentElement.clientHeight,
+    );
+    this.positionSurface(surface, bounds, this.#anchor?.isConnected ? this.#anchor : null, this.#point);
+  };
+
+  protected positionBoundary(_anchor: HTMLElement | null): Element | null { return null; }
+
+  protected positionSurface(
+    surface: HTMLElement, viewport: DOMRectReadOnly, invoker: HTMLElement | null, point: MetroFlyoutPoint | null,
+  ): void {
     const edge = 8;
     const gap = 4;
-    const viewport = view.visualViewport;
-    const startX = viewport?.offsetLeft ?? 0;
-    const startY = viewport?.offsetTop ?? 0;
-    const width = viewport?.width ?? this.ownerDocument.documentElement.clientWidth;
-    const height = viewport?.height ?? this.ownerDocument.documentElement.clientHeight;
+    const { x: startX, y: startY, width, height } = viewport;
     surface.style.setProperty('--_metro-flyout-width', `${Math.max(0, width - 2 * edge)}px`);
     surface.style.setProperty('--_metro-flyout-height', `${Math.max(0, height - 2 * edge)}px`);
 
-    const anchor = this.#anchor?.isConnected ? this.#anchor.getBoundingClientRect() : undefined;
+    const anchor = invoker?.getBoundingClientRect();
     const { width: panelWidth, height: panelHeight } = surface.getBoundingClientRect();
-    const rtl = view.getComputedStyle(this).direction === 'rtl';
-    const left = this.#point?.x
+    const rtl = this.ownerDocument.defaultView?.getComputedStyle(this).direction === 'rtl';
+    const left = point?.x
       ?? (anchor ? (rtl ? anchor.right - panelWidth : anchor.left) : startX + (width - panelWidth) / 2);
-    const below = this.#point?.y ?? (anchor ? anchor.bottom + gap : startY + (height - panelHeight) / 2);
-    const above = (this.#point?.y ?? anchor?.top ?? below) - panelHeight - gap;
+    const below = point?.y ?? (anchor ? anchor.bottom + gap : startY + (height - panelHeight) / 2);
+    const above = (point?.y ?? anchor?.top ?? below) - panelHeight - gap;
     const top = below + panelHeight > startY + height - edge && above >= startY + edge ? above : below;
 
     surface.style.left = `${Math.max(startX + edge, Math.min(left, startX + width - panelWidth - edge))}px`;
     surface.style.top = `${Math.max(startY + edge, Math.min(top, startY + height - panelHeight - edge))}px`;
-  };
+  }
 
   #toggle = () => {
     if (this.#displayed && !this.#layer?.matches(':popover-open')) this.#finish('dismiss', false);
@@ -334,6 +347,16 @@ export class MetroFlyout extends LitElement {
 
   protected renderContent() { return html`<slot></slot>`; }
 
+  protected renderSurface() {
+    return html`
+      <div id="surface" class="surface" part="surface" tabindex="-1"
+        role=${this.surfaceRole} aria-label=${this.accessibleLabel}
+        @click=${this.#onClick} @keydown=${this.handleKeydown} @focusout=${this.#onFocusOut}>
+        ${this.renderContent()}
+      </div>
+    `;
+  }
+
   protected override render() {
     return html`
       ${this.triggerLabel ? html`
@@ -343,11 +366,7 @@ export class MetroFlyout extends LitElement {
       <div id="layer" class="layer" popover=${this.lightDismiss ? 'auto' : 'manual'} @toggle=${this.#toggle}>
         ${this.lightDismiss ? html`<div class="dismiss" aria-hidden="true" @pointerdown=${(event: PointerEvent) => event.preventDefault()}
           @click=${this.#onDismiss}></div>` : null}
-        <div id="surface" class="surface" part="surface" tabindex="-1"
-          role=${this.surfaceRole} aria-label=${this.accessibleLabel}
-          @click=${this.#onClick} @keydown=${this.handleKeydown} @focusout=${this.#onFocusOut}>
-          ${this.renderContent()}
-        </div>
+        ${this.renderSurface()}
       </div>
     `;
   }

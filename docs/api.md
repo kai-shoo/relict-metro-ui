@@ -179,6 +179,10 @@ The `trigger-label` includes a built-in button. In the program, transfer the ini
 
 For the modal layer background, use `--metro-dialog-backdrop`. The standard backgrounds of MenuFlyout and ContextMenu are opaque, black in a light theme and white in a dark one. The menu surface supports `--metro-menu-bg` and `--metro-menu-fg`, the context menu frame is `--metro-context-menu-border`, the hint is `--metro-tooltip-bg` and `--metro-tooltip-fg`.
 
+In portrait, `metro-context-menu` spans the nearest `metro-page`. If there is no page, it spans the visible viewport. In landscape, it opens at the opposite edge from the pointer or invoker. Set `system-tray-visible` for a left-edge System Tray. Set `application-bar-visible` for a right-edge Application Bar. The DOM properties are `systemTrayVisible` and `applicationBarVisible`. These settings apply only in landscape.
+
+The first opening axis finishes at 300 ms. The second finishes at 420 ms. When the user prefers reduced motion, the menu opens without animation. Press Escape to close the menu and return focus to the invoker.
+
 ## Command bar and overlays
 
 The `mode` attribute specifies a closed panel. `default` shows the usual row, `compact` reduces its height, `minimal` leaves the opening button. The `--metro-command-bar-compact-height` and `--metro-command-bar-minimal-height` tokens set the height. In the phone landscape profile, install `orientation="vertical"` and place the panel at the end of the page. The vertical panel uses the usual height of the buttons and takes into account the available length. `hide-secondary` hides secondary commands. `--metro-command-bar-bg` sets the background, and the position on top of the content or in its own band sets the CSS of the page. [Postmarking](../examples/mail/index.html)
