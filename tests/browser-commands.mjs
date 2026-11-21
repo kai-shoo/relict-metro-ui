@@ -215,13 +215,14 @@ export const browserCommands = {
       const feed = shell.locator('[data-feed="albums"]');
       const returned = feed.getByRole('link', { name: photoTitle });
       await returned.waitFor();
-      await demo.waitForFunction(id => document.activeElement?.dataset.photo === id, photoId);
-      const anchorRestored = await returned.evaluate(element => {
-        const feed = element.closest('[data-feed]');
-        const card = element.getBoundingClientRect();
+      await demo.waitForFunction(({ id, shellId }) => {
+        const card = document.activeElement;
+        const feed = card?.closest(`#${shellId} [data-feed="albums"]`);
+        if (card?.dataset.photo !== id || !feed) return false;
+        const rect = card.getBoundingClientRect();
         const viewport = feed.getBoundingClientRect();
-        return element === document.activeElement && card.top < viewport.bottom && card.bottom > viewport.top;
-      });
+        return rect.top < viewport.bottom && rect.bottom > viewport.top;
+      }, { id: photoId, shellId: switchLayout ? 'photo-menu' : 'photo-pivot' });
       const scrollRestored = savedTop > 0 && (enlargeLabels
         ? await returned.evaluate((element, { savedAnchor, savedTop }) => {
           const feed = element.closest('[data-feed]');
@@ -246,7 +247,7 @@ export const browserCommands = {
         menuSynchronized = albumWasCurrent && await pivot.evaluate(element => element.value) === 'collection'
           && await demo.evaluate(() => history.length) === initial + 1;
       }
-      return { photoPreserved, oneVisit, anchorRestored, scrollRestored, sectionRestored, menuSynchronized, captionsFit };
+      return { photoPreserved, oneVisit, scrollRestored, sectionRestored, menuSynchronized, captionsFit };
     });
   },
 

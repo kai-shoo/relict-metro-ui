@@ -4,7 +4,6 @@ import { expect, test } from 'vitest';
 const restoredGallery = {
   photoPreserved: true,
   oneVisit: true,
-  anchorRestored: true,
   scrollRestored: true,
   sectionRestored: true,
   menuSynchronized: true,
