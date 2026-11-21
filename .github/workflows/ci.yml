@@ -26,6 +26,8 @@ jobs:
             script: test
           - name: Package tests
             script: test:package
+          - name: Documentation
+            script: test:docs
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -37,6 +39,10 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - run: npm --prefix website ci
+        if: matrix.script == 'test:docs'
+      - run: npm run docs:check
+        if: matrix.script == 'test:docs'
       - run: npx playwright install --with-deps --no-shell chromium
       - name: Use full Chromium in headless mode
         run: |
@@ -61,3 +67,12 @@ jobs:
           test "$(fc-match -f '%{family}' monospace | cut -d, -f1)" = 'JetBrainsMono Nerd Font'
           echo "FONTCONFIG_FILE=$FONTCONFIG_FILE" >> "$GITHUB_ENV"
       - run: npm run ${{ matrix.script }}
+      - name: Upload visual test diffs
+        if: failure() && matrix.script == 'test'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: visual-test-diffs
+          path: .vitest/attachments
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
