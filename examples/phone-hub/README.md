@@ -1,13 +1,13 @@
-# Каталог маршрутов
+# Route catalog
 
-После сборки откройте `/examples/phone-hub/` через локальный сервер из README репозитория. На узком экране перелистывайте Hub по горизонтали. Стрелки на заголовке секции делают то же с клавиатуры. Параметр `?sections=2` оставляет две секции с остановкой на границах. В варианте с тремя секциями можно вернуться с последней на первую.
+After the build, start the local server as shown in the [repository README](../../README.md). Open `/examples/phone-hub/`. On a narrow screen, swipe horizontally to change the Hub section. With focus on a section header, use the arrow keys to do the same. Add `?sections=2` to show two sections and stop at the ends. With three sections, the Hub wraps from the last section to the first.
 
-Глобальная команда открывается через многоточие. Когда «Недавние» становятся первой видимой секцией, панель показывает «Очистить недавние». Back сначала закрывает временный слой. Возврат из записи восстанавливает секцию, положение списка и фокус строки.
+Select the ellipsis to show the global command. When the recent routes section is the first visible section, the command bar shows the command that clears recent routes. Back closes the overlay first. When you return from a record, the app restores the section, the list position, and focus on the row.
 
-Скопируйте `index.html`, `phone-hub.css` и `phone-hub.js`. Обновите путь к браузерному ES-модулю и замените данные маршрутов. `sectionsInView` описывает геометрию, `value` хранит подтверждённый ключ. Пример выбирает команды по первой видимой секции и повторно проверяет её ключ перед очисткой. Данные примера хранятся в текущей странице.
+Copy `index.html`, `phone-hub.css`, and `phone-hub.js`. Update the path to the browser ES module. Replace the route data. `sectionsInView` describes the section geometry. `value` contains the confirmed key. The example selects commands for the first visible section. It checks the section key again before it clears the list. The example keeps its data in the current page.
 
-## Настольный архив
+## Desktop archive
 
-`/examples/phone-hub/desktop.html` показывает приоритетную карточку, подборки, недавние маршруты и справку. Справка запрашивает локальный `desktop-help.json`, когда секция появляется на экране. В случае ошибки кнопка повторяет HTTP-запрос. Чтобы проверить ошибку вручную, отключите сеть в DevTools после открытия каталога, затем выберите «Справка» в обзоре. Включите сеть и повторите загрузку.
+`/examples/phone-hub/desktop.html` shows a featured card, collections, recent routes, and a help section. When the help section becomes visible, the app requests the local `desktop-help.json` file. If the request fails, the retry button sends it again. To test this, open the catalog. Set the network to Offline in DevTools. Select the last section in the overview to show the help section. Set the network back to Online, then retry the request.
 
-В обзоре секций выбирается ключ Hub без записи в историю. Заголовок «Подборки» открывает отдельную страницу. Смена ширины в деталях и Back возвращают фокус на исходную ссылку в текущей ориентации Hub. Для копирования возьмите `desktop.html`, `desktop-hub.css`, `desktop-hub.js` и `desktop-help.json`.
+The section overview selects a Hub key without adding a history entry. The collections section heading opens a separate page. If you resize the details page and go Back, the Hub restores focus to the original link in the current orientation. To reuse the example, copy `desktop.html`, `desktop-hub.css`, `desktop-hub.js`, and `desktop-help.json`.

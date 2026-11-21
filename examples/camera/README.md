@@ -1,7 +1,7 @@
-# Камера и редактор снимка
+# Camera and photo editor
 
-Откройте пример по HTTPS или на localhost. Выберите назначение, запустите камеру или выберите файл. «Use photo» подтверждает вложение. Для последовательной съёмки включите «Save camera shots immediately». Файлы из системного пикера всегда проходят предпросмотр.
+Open the example over HTTPS or on localhost. Select a destination. Start the camera or select a file. Select **Use photo** to confirm the attachment. To take photos in sequence, enable **Save camera shots immediately**. The example always previews files from the system picker.
 
-Приложение сохраняет байты снимка и идентификатор вложения в одной транзакции IndexedDB. Ссылка «Edit photo» открывает снимок по устойчивому идентификатору. Её можно скопировать или открыть после перезагрузки в том же профиле и origin. «Rotate clockwise» поворачивает пиксели. «Save a copy» записывает отдельный PNG, показывает ссылку на него и сохраняет исходное вложение.
+The app stores the photo bytes and the attachment ID in one IndexedDB transaction. **Edit photo** opens the photo by its stable ID. You can copy the link or open it again after a reload in the same browser profile and origin. **Rotate clockwise** rotates the pixels. **Save a copy** writes a separate PNG and shows a link to it. The original attachment does not change.
 
-Системный просмотрщик может открыть адрес `?photo=<id>&context=inspection` и обработать отменяемое DOM-событие `metro-return-photo` на `window`. Вызовите `event.preventDefault()` и верните фокус снимку с `event.detail.id` через API хоста. Обычная веб-страница возвращается к вложению через браузерную историю. При удалении данных сайта или входе из другого профиля редактор показывает сообщение и кнопку возврата. Для межустройственных ссылок приложению понадобится собственное хранилище фотографий.
+A system viewer can open `?photo=<id>&context=inspection` and handle the cancelable DOM event `metro-return-photo` on `window`. Call `event.preventDefault()`. Use the host API to restore focus to the photo with ID `event.detail.id`. A standard web page uses browser history to return to the attachment. If the site data is missing or the user opens the link in a different browser profile, the editor shows a message and a return button. The app needs its own photo storage to support links across devices.

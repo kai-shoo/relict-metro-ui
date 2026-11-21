@@ -1,16 +1,16 @@
 # Relict Metro UI
 
-Web Components на Lit и TypeScript в визуальном профиле **Windows Phone 8 Silverlight**. Версия 0.2.0 включает навигацию, коллекции, плитки, формы, команды, адаптивные панели, медиа и эффекты Toolkit. Компоненты из поздних поколений используют геометрию и тему Phone 8. Разметка, свойства и события работают через DOM.
+Relict Metro UI is a library of web components built with Lit and TypeScript. Its visual profile follows **Windows Phone 8 Silverlight**. Version 0.2.0 includes navigation, collections, tiles, forms, commands, adaptive panes, media, and Toolkit effects. Components from later versions of Windows also use Phone 8 geometry and theme resources. Use standard DOM markup, properties, and events.
 
-[Почта](examples/mail/index.html) · [Стартовый экран](examples/start/index.html) · [Настройки почты](examples/controls/index.html) · [Рабочая область](examples/workspace/index.html) · [Архив записей](examples/media/index.html) · [Справочник компонентов](docs/api.md) · [Дизайн-документ](#дизайн-документ)
+[Mail](examples/mail/index.html) · [Start screen](examples/start/index.html) · [Mail settings](examples/controls/index.html) · [Workspace](examples/workspace/index.html) · [Recording archive](examples/media/index.html) · [Component API reference](docs/api.md) · [Design documentation](#design-documentation)
 
-В каталоге доступны все 119 тегов с поэлементными импортами и примерами. Кнопка «Тег компонента» открывает алфавитный LongListSelector с короткими именами, например `text-block`. Кнопка «Перейти к букве» прокручивает список к нужной группе. После сборки запустите `npm run serve` и откройте `http://127.0.0.1:4173/examples/catalog/`. [Каталог компонентов](examples/catalog/index.html) · [Покрытие и возможности хоста](docs/implementation.md)
+The catalog has all 119 tags, with an individual import and an example for each tag. The component tag button opens an alphabetical LongListSelector with short names such as `text-block`. The jump button scrolls to the selected letter. After the build, run `npm run serve`. Open `http://127.0.0.1:4173/examples/catalog/`. [Component catalogue](examples/catalog/index.html) · [Coverage and Host Capabilities](docs/implementation.md)
 
-## Собрать и проверить
+## Build and test
 
-Карта проверки связывает каждый тег с его примером и браузерными тестами. [Карта проверки компонентов](docs/component-audit.md)
+The component audit maps each tag to its example and browser tests. [Component verification map](docs/component-audit.md)
 
-Для сборки и тестов нужен Node.js 22.12, 24 или новее из версий, поддерживаемых Vitest.
+Use Node.js 22.12, 24, or a newer version that Vitest supports.
 
 ```sh
 npm ci
@@ -22,30 +22,30 @@ npm run test:package
 npm pack
 ```
 
-Команда `npm test` собирает библиотеку и запускает Vitest Browser Mode в Chromium. После сборки можно отдельно запустить `npm run test:browser`. Для пересъёмки эталонов после изменения оформления используйте `npm run test:browser -- --update`. В Linux сравнение использует эталоны Chromium для Linux.
+`npm test` builds the library and runs Vitest Browser Mode in Chromium. To run just the browser tests after a build, run `npm run test:browser`. To update the reference screenshots after a visual change, run `npm run test:browser -- --update`. On Linux, the tests use the Chromium reference screenshots for Linux.
 
-Переменная `METRO_CHROMIUM_PATH` позволяет использовать локальный Chromium для браузерных и пакетных проверок. `npm run test:package` собирает временный npm-архив, устанавливает его в отдельный проект и запускает потребители HTML, React 19 + TypeScript и Vue 3. Проверка также собирает каждый из 119 поэлементных импортов и загружает его в отдельный реестр Custom Elements. Для установки тестовых зависимостей нужен доступ к npm registry.
+Set `METRO_CHROMIUM_PATH` to use a local Chromium executable for the browser and package tests. `npm run test:package` builds a temporary npm archive and installs it in a separate project. It tests consumers in HTML, React 19 with TypeScript, and Vue 3. It also builds all 119 individual imports and loads each one in a separate Custom Elements registry. Access to the npm registry is necessary to install the test dependencies.
 
-`npm pack` создаёт `relict-metro-ui-0.2.0.tgz`. В архиве лежат браузерный модуль, ESM-модули с TypeScript-декларациями, справочник API, дизайн-документ и исходники примеров. Оформление использует системный стек шрифтов.
+`npm pack` creates `relict-metro-ui-0.2.0.tgz`. The archive contains the browser module, ESM modules with TypeScript declarations, the API reference, the design documentation, and the example source files. The library uses a system font stack.
 
-## Подключить
+## Install and use
 
-### Обычная HTML-страница
+### Plain HTML
 
-Возьмите `dist/metro-ui.js` из сборки или распакованного npm-архива. Разместите его рядом с HTML и откройте страницу через HTTP. Модуль включает Lit и регистрирует все теги библиотеки.
+Get `dist/metro-ui.js` from the build output or the unpacked npm archive. Put the module next to your HTML file. Serve the page over HTTP. The module includes Lit and registers all library tags.
 
 ```html
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <meta charset="utf-8">
 <script type="module" src="./metro-ui.js"></script>
 
-<metro-pivot id="folders" label="Папки" value="inbox">
-  <metro-pivot-item value="inbox" label="Входящие">
-    <p>Письма во входящих</p>
+<metro-pivot id="folders" label="Folders" value="inbox">
+  <metro-pivot-item value="inbox" label="Inbox">
+    <p>Inbox messages</p>
   </metro-pivot-item>
-  <metro-pivot-item value="archive" label="Архив">
-    <p>Архивные письма</p>
+  <metro-pivot-item value="archive" label="Archive">
+    <p>Archived messages</p>
   </metro-pivot-item>
 </metro-pivot>
 
@@ -59,15 +59,15 @@ npm pack
 </html>
 ```
 
-### Приложение с бандлером
+### Application with a bundler
 
 ```sh
 npm install relict-metro-ui
 ```
 
-До публикации пакет можно установить из архива, созданного командой `npm pack`: `npm install ./relict-metro-ui-0.2.0.tgz`.
+Before publication, install the archive that `npm pack` creates: `npm install ./relict-metro-ui-0.2.0.tgz`.
 
-Добавьте такую же разметку Pivot в приложение. Импорт регистрирует Pivot и его панели. CommandBar и Tile подключаются отдельными импортами при использовании.
+Add the same Pivot markup to your application. The import registers Pivot and its panels. Use separate imports for CommandBar and Tile if you use those components.
 
 ```ts
 import 'relict-metro-ui/pivot';
@@ -78,48 +78,48 @@ pivot.addEventListener('metro-change', ({ detail }) => console.log(detail.value)
 pivot.value = 'archive';
 ```
 
-Для каждого тега доступен отдельный импорт. Например, `metro-checkbox` регистрируется через `relict-metro-ui/checkbox`. Корневой импорт регистрирует все элементы. `relict-metro-ui/browser` указывает на автономный браузерный модуль. Типы элементов и событий доступны через обычные DOM-вызовы TypeScript. В компонентных фреймворках можно использовать ссылку на DOM-узел для присваивания свойств и подписки через `addEventListener`.
+Each tag has its own import. For example, import `relict-metro-ui/checkbox` to register `metro-checkbox`. The root import registers all elements. `relict-metro-ui/browser` points to the standalone browser module. TypeScript exposes element and event types through the standard DOM API. In a component framework, use a reference to the DOM element to set properties and attach listeners with `addEventListener`.
 
-## Публичный API
+## Public API
 
-| Элемент | Атрибуты и свойства | Разметка и события |
+| Element | Attributes and properties | Markup and events |
 | --- | --- | --- |
-| `metro-pivot` | `value` и `label` — строки. `label` задаёт имя списка вкладок, по умолчанию Sections | Прямые дети `metro-pivot-item`. `metro-change` с `detail.value` |
-| `metro-pivot-item` | `value` — стабильная непустая строка, `label` — видимое название, `disabled` — булев атрибут | Слот по умолчанию для содержимого панели. Без `label` отображается `value` |
-| `metro-command-bar` | `commands` — DOM-свойство с массивом команд. `label` и `more-label` (`moreLabel` в JS) служат доступными именами. `open` — булев атрибут и свойство | `metro-command` с `detail.id`. Многоточие открывает подписи и список дополнительных команд |
-| `metro-tile` | `href`, `target`, `rel`, `size` (`small`, `medium`, `wide`), `label` | Слот по умолчанию для содержимого. При `href` плитка использует обычную ссылку, включая Ctrl/Cmd+Click и `target="_blank"`. `label` служит видимой подписью и доступным именем |
+| `metro-pivot` | `value` and `label` are strings. `label` sets the accessible name of the tab list. The default is Sections. | Use `metro-pivot-item` as direct children. `metro-change` with `detail.value` |
+| `metro-pivot-item` | `value` - stable empty string, `label` - visible name, `disabled` - Boolean attribute | Default slot for panel content. `label` is displayed without `value` |
+| `metro-command-bar` | `commands` is a DOM property with an array of commands. `label` and `more-label` (`moreLabel` in JS) serve as accessible names. `open` is a Boolean attribute and property. | `metro-command` with `detail.id`. Ellipsis opens labels and list of additional commands |
+| `metro-tile` | `href`, `target`, `rel`, `size` (`small`, `medium`, `wide`), `label` | The default slot for the content. With `href`, the tile uses a conventional link, including Ctrl/Cmd+Click and `target="_blank"`. `label` is a visible label and an accessible name. |
 
-`metro-change` и `metro-command` всплывают и пересекают границу Shadow DOM. Атрибуты, слоты и события контролов формы, всплывающих слоёв и индикаторов описаны в [справочнике компонентов](docs/api.md).
+`metro-change` and `metro-command` bubble and cross the Shadow DOM boundary. See the [component-book](docs/api.md) for the attributes, slots, and events of form controls, overlays, and indicators.
 
-### Выбор панели и фокус
+### Panel selection and focus
 
-- Клик, активация другой вкладки клавиатурой или завершённый горизонтальный свайп меняют `value` и отправляют одно событие `metro-change`. Повторная активация текущей вкладки сохраняет выбор.
-- Присваивание `pivot.value` и изменение атрибута обновляют выбор без события. При неизвестном или отключённом `value`, а также после удаления выбранной панели, Pivot выбирает первую доступную панель в DOM. При пустом наборе доступных панелей `value` становится пустой строкой. Для одинаковых значений используется первая панель.
-- Стрелки переводят фокус между вкладками по циклу, Home и End перемещают к краям, Enter и Space активируют вкладку. Фокус и выбор относятся к своему экземпляру. `Tab` переходит к активной панели.
-- Если заголовки шире экрана, видимый фрагмент соседнего названия тоже можно нажать. Ряд прокручивается к выбранной вкладке и показывает край предыдущей по циклу.
-- На сенсорном экране горизонтальный свайп переключает соседнюю панель, а вертикальный жест прокручивает содержимое. При отмене сохраняется текущая панель. Атрибут `data-metro-no-swipe` на вложенной области освобождает её от обработчика свайпа Pivot.
-- Приложение хранит маршруты, позицию списка и ключ элемента для возврата. В примере почты эти данные остаются у приложения, включая выбор папки и историю браузера.
+- Click a different tab, activate it with the keyboard, or complete a horizontal swipe to change `value`. Pivot emits one `metro-change` event. If you activate the current tab again, the selection does not change.
+- Set `pivot.value` or change its attribute to update the selection without an event. Pivot selects the first available panel in DOM order if `value` is unknown, the panel is disabled, or the selected panel is removed. If no panel is available, `value` becomes an empty string. For duplicate values, Pivot uses the first panel.
+- The arrow keys move focus between tabs and wrap at the ends. Home and End move focus to the first and last tabs. Enter and Space activate the focused tab. Each Pivot has its own focus and selection. `Tab` moves to the active panel.
+- If the tab headings are wider than the viewport, you can select the visible part of the adjacent heading. The tab row scrolls to the selected tab and shows part of the preceding tab, with wraparound.
+- On a touch screen, swipe horizontally to move to an adjacent panel. Swipe vertically to scroll its content. A canceled swipe keeps the current panel. Add `data-metro-no-swipe` to a nested area to exclude it from the Pivot swipe handler.
+- Keep the routes, list position, and item key in the application so that it can restore them when the user returns. The mail example manages this data along with the selected folder and browser history.
 
-### Команды и плитки
+### Commands and tiles
 
-Присвойте `commands` новый массив при изменении набора. Для каждого действия задайте уникальный `id` и читаемый `label`. `iconName` выбирает монохромную иконку из библиотеки, `icon` принимает текстовый знак. Команды также поддерживают `disabled`, `placement` и `priority`. Панель помещает до четырёх действий в главную строку и учитывает ширину контейнера. Остальные доступны через многоточие. [Иконки](docs/api.md#иконки) · [Декларативные команды](docs/api.md#панель-команд-и-временные-слои)
+Assign a new array to `commands` when the set of commands changes. Give each action a unique `id` and a readable `label`. Use `iconName` for a monochrome library icon, or `icon` for a text symbol. Commands also support `disabled`, `placement`, and `priority`. The bar shows up to four actions in the primary row, depending on the container width. Select the ellipsis to show the other actions. [Icons](docs/api.md#icons) · [Declarative teams](docs/api.md#command-bar-and-overlays)
 
 ```js
 const bar = document.querySelector('metro-command-bar');
 bar.commands = [
-  { id: 'new', label: 'Написать', iconName: 'add' },
-  { id: 'mark-read', label: 'Отметить прочитанным', placement: 'secondary' },
+  { id: 'new', label: 'Compose', iconName: 'add' },
+  { id: 'mark-read', label: 'Mark as read', placement: 'secondary' },
 ];
 bar.addEventListener('metro-command', ({ detail }) => console.log(detail.id));
 ```
 
-В раскрытой панели стрелки вверх и вниз, Home и End перемещают фокус по доступным действиям. Escape закрывает панель и возвращает фокус на многоточие. Выбор дополнительной команды сначала возвращает фокус на многоточие, затем передаёт действие приложению. При уходе фокуса панель закрывается.
+When the command bar is open, use Up, Down, Home, or End to move focus between available actions. Escape closes the bar and returns focus to the ellipsis. If you select an overflow command, the bar returns focus to the ellipsis before it sends the action to the application. The bar closes when focus moves outside it.
 
-В плитку-ссылку можно поместить текст, изображение или собственный декоративный знак. Вложенным элементам с собственными действиями подходит плитка без `href` или отдельная область страницы.
+A linked tile can contain text, an image, or a custom decorative symbol. If nested elements have their own actions, use a tile without `href` or put the elements in a separate part of the page.
 
-### Тема и оформляемые части
+### Theme and CSS parts
 
-По умолчанию используется системная светлая или тёмная тема с акцентом Cobalt. Чтобы задать тему отдельному элементу, укажите `data-metro-theme="light"` или `"dark"`. Группе компонентов можно передать наследуемое свойство `--metro-color-scheme`. Пример явной тёмной темы с другим акцентом
+By default, components use the system light or dark theme with the Cobalt accent. To set the theme on one element, use `data-metro-theme="light"` or `"dark"`. To set the theme for a group of components, set the inherited `--metro-color-scheme` property. This example sets the dark theme and a different accent:
 
 ```css
 .mail {
@@ -132,118 +132,118 @@ bar.addEventListener('metro-command', ({ detail }) => console.log(detail.id));
 }
 ```
 
-| Область | CSS custom properties |
+| The Domain | CSS custom properties |
 | --- | --- |
-| Цвет | `--metro-bg`, `--metro-fg`, `--metro-muted`, `--metro-disabled`, `--metro-chrome`, `--metro-border`, `--metro-accent`, `--metro-accent-text`, `--metro-on-accent`, `--metro-focus` |
-| Шрифт, отступ и движение | `--metro-font`, `--metro-space`, `--metro-motion` |
-| Плитка | `--metro-tile-bg`, `--metro-tile-fg`, `--metro-tile-width`, `--metro-tile-aspect` |
+| Colour | `--metro-bg`, `--metro-fg`, `--metro-muted`, `--metro-disabled`, `--metro-chrome`, `--metro-border`, `--metro-accent`, `--metro-accent-text`, `--metro-on-accent`, `--metro-focus` |
+| Font, indentation and movement | `--metro-font`, `--metro-space`, `--metro-motion` |
+| Tile. | `--metro-tile-bg`, `--metro-tile-fg`, `--metro-tile-width`, `--metro-tile-aspect` |
 
-| Элемент | Открытые имена `::part()` |
+| Element | Open names for `::part()` |
 | --- | --- |
 | Pivot | `tablist`, `tab`, `viewport`, `panel` |
 | CommandBar | `bar`, `primary`, `command`, `icon`, `overflow-toggle`, `overflow` |
 | Tile | `surface`, `content`, `label` |
 
-Профиль берёт пропорции заголовков, акцент, прямые края плиток и круговые команды из Windows Phone 8 Silverlight. Размер заголовка Pivot адаптируется к узкому контейнеру. Для вкладок в светлой теме выбрано более читаемое вторичное оформление. При `prefers-reduced-motion` панели меняются без перехода, а нажатия сохраняют визуальный отклик. [Шрифты и темы](docs/foundations.md) · [Геометрия Pivot](docs/components.md#заголовок-геометрия-и-навигация) · [Application Bar](docs/components.md#application-bar-в-phone-8-silverlight)
+The visual profile uses the heading proportions, accent colors, square tile edges, and circular command buttons of Windows Phone 8 Silverlight. Pivot reduces the heading size in a narrow container. The light theme uses a more readable secondary tab style. With `prefers-reduced-motion`, Pivot changes panels without a transition. Buttons still give visual feedback. [Fonts and themes](docs/foundations.md) · [Pivot geometry](docs/components.md#title-geometry-and-navigation) · [Application Bar](docs/components.md#application-bar-in-phone-8-silverlight)
 
-## Копируемые примеры
+## Examples you can copy
 
-После `npm run build` запустите `npm run serve` и откройте `http://127.0.0.1:4173/`. Стартовый экран связывает плитки с маршрутами почты. В почте можно менять папку, выполнять её команды, открывать письмо и возвращаться к списку с прежней позицией и фокусом. В низком альбомном окне телефона команды располагаются сбоку.
+Run `npm run build`, then `npm run serve`. Open `http://127.0.0.1:4173/`. The Start screen links tiles to mail routes. In the mail example, you can change folders, run folder commands, open a message, and return to the previous list position and focus. In a short landscape window, the commands appear at the side.
 
-По адресу `http://127.0.0.1:4173/examples/controls/` можно изменить настройки почты, сохранить форму, открыть справку и вернуть исходные значения через меню и диалог.
+Open `http://127.0.0.1:4173/examples/controls/` to change mail settings, save the form, and open Help. Use the menu and dialog to restore the original values.
 
-В рабочей области можно отредактировать блокнот, сбросить вкладку за пределами ряда и продолжить в окне того же сайта. Сброс обратно в исходный ряд сохраняет черновик, восстанавливает фокус и вставляет вкладку у показанной метки. Рядом есть кнопки открытия и возврата. [Рабочая область](examples/workspace/index.html)
+In the workspace, edit a notebook and drop its tab outside the tab row. Continue the session in a separate window from the same site. Drop the tab back in the original row to keep the draft, restore focus, and insert the tab at the marker. Buttons next to the tab row also open and return the tab. [Workspace](examples/workspace/index.html)
 
-Архив записей по адресу `http://127.0.0.1:4173/examples/media/` использует один проигрыватель для очереди и уведомлений. Переключение панели сохраняет позицию, сообщение остаётся в журнале после закрытия toast, а схему можно увеличить. Звук и схема создаются локально.
+The recording archive at `http://127.0.0.1:4173/examples/media/` uses one player for the queue and notifications. When you change panels, the app keeps the position. When a toast closes, the message stays in the log. You can zoom in on the diagram. The example generates its audio and diagram locally.
 
-В редакторе заметок Ctrl+S и пункт в меню используют одну команду. Back закрывает выбор категории, затем выходит из режима выделения и учитывает несохранённый текст. [Редактор](examples/editor/index.html)
+In the note editor, Ctrl+S and the menu item run the same command. Back closes the category picker first, then exits selection mode. The app also checks for unsaved text. [Editor](examples/editor/index.html)
 
-Пример камеры показывает видоискатель, предварительный просмотр и подтверждение. Снимок сохраняется в IndexedDB. Его можно заново открыть по ссылке, повернуть и сохранить отдельным PNG. Доступны прямая съёмка и выбор файла с устройства. [Камера](examples/camera/index.html)
+The camera example shows a viewfinder, a preview, and a confirmation step. Capture a photo directly or select a file from your device. The app saves the photo in IndexedDB. You can open it again from a link, rotate it, and save a separate PNG. [Camera](examples/camera/index.html)
 
-В примерах коллекций можно выбрать записи в нескольких группах и перенести их одной операцией Move или Copy. Место вставки выбирается мышью, клавиатурой или вторым порогом Cross-slide. [Перенос записей](examples/collections/index.html) · [Подборка](examples/collections/selection.html)
+The collection examples let you select records in different groups and use one Move or Copy operation for all selected records. Use the mouse, the keyboard, or the second Cross-slide threshold to select the insertion point. [Transfer of records](examples/collections/index.html) · [Compilation](examples/collections/selection.html)
 
-Форма черновиков восстанавливает поля и фокус, сохраняет версии в очереди и повторяет HTTP-отправку с тем же ключом. После первого посещения открывается без сети. Демо-обработчик хранит квитанции до перезапуска процесса. [Черновики](examples/drafts/index.html) · [Контракт отправки](examples/drafts/README.md)
+The drafts form restores its fields and focus. It queues draft versions and uses the same key when it retries an HTTP submission. After the first visit, the form opens offline. The demo server keeps receipts until its process restarts. [Drafts](examples/drafts/index.html) · [Contract of dispatch](examples/drafts/README.md)
 
-Галерея использует общую коллекцию для телефонного Pivot и широкого меню. Переход связывает карточку и увеличенный снимок по ключу. Открытый снимок и масштаб переживают смену ширины, Back возвращает к карточке. [Фото](examples/photos/index.html)
+The gallery uses the same collection for the phone Pivot and the wide navigation menu. A shared key links the card to the enlarged photo during the transition. The photo stays open at the same zoom level when the width changes. Back returns to the card. [Photo Photo](examples/photos/index.html)
 
-Из обзора Hub можно открыть карту, приблизить участок, выбрать место и вернуться через карту к обзору. Кнопка геолокации запрашивает разрешение отдельно. [Карта](examples/map/index.html)
+From the Hub overview, open the map, zoom in, and select a location. Use Back to return through the map to the overview. The geolocation button requests permission separately. [Map.](examples/map/index.html)
 
-Экран запуска принимает прямую ссылку или сохранённый маршрут. Пока загружается запись, Back возвращает к списку, а заставка остаётся вне истории. [Запуск](examples/launch/index.html)
+The launch screen accepts a direct link or a saved route. While a record loads, Back returns to the list. The splash screen does not appear in the history. [Launch.](examples/launch/index.html)
 
-Редактор контакта учитывает размеры видимой области, сохраняет текст при Back и удерживает команду сохранения доступной при появлении экранной клавиатуры. [Клавиатура](examples/keyboard/index.html)
+The contact editor uses the visible viewport size and keeps the text when you go Back. The save command remains available when the on-screen keyboard opens. [keyboard](examples/keyboard/index.html)
 
-Журнал отправляет системное уведомление через service worker после разрешения пользователя. Одна ссылка открывает событие в существующей вкладке или при холодном запуске. На поддерживаемом устройстве журнал обновляет счётчик приложения. [Уведомления](examples/notifications/index.html)
+After the user grants permission, the log sends a system notification through a service worker. The same link opens the event in an existing tab or on a cold start. On supported devices, the log updates the app badge. [Notifications](examples/notifications/index.html)
 
-Верхняя навигация отражает текущий маршрут, сохраняет ссылки при переходе в компактный режим и возвращает фокус после Back. [Проекты](examples/navigation/index.html)
+The top navigation shows the current route. It keeps links available in compact mode and restores focus after Back. [Projects](examples/navigation/index.html)
 
-Радиоархив сохраняет назначение после ошибки демонстрационного входа. Поиск и недавние используют один проигрыватель, а Back восстанавливает фильтр и позицию списка. [Радиоархив](examples/music/index.html)
+The radio archive keeps the destination if the demo sign-in fails. Search and recent records use the same player. Back restores the filter and the list position. [Radio archive](examples/music/index.html)
 
-Два документа используют команды буфера обмена с проверкой версии и выделения. Полевые листы сохраняют подписи и штрихи с привязкой к странице. [Буфер обмена](examples/clipboard/index.html) · [Аннотации](examples/annotations/index.html)
+The clipboard commands in the two-document example check the document version and selection. The field sheets store notes and ink strokes with their page keys. [Exchange buffer](examples/clipboard/index.html) · [Annotations](examples/annotations/index.html)
 
-Импорт принимает файлы из локального picker, а установленное PWA может принимать данные через manifest и service worker. Можно проверить содержимое и выбрать раздел до сохранения. [Импорт](examples/imports/index.html)
+The import example accepts files from a local picker. After installation, the PWA can also receive data through its manifest and service worker. Review the content and select a destination before you save. [Import](examples/imports/index.html)
 
-В форме визита Back закрывает пикер и продолжает переход после записи. В голосовом справочнике речь, ввод текста и видимое действие открывают одну запись. [Форма](examples/form/) · [Речь](examples/speech/)
+In the visit form, Back closes the picker. The form continues navigation after it saves. In the voice directory, speech, text input, and the visible command open the same record. [Form](examples/form/) · [Speech](examples/speech/)
 
-Phone Hub получает команды первой видимой секции. При обновлении списка приложение сохраняет опорную запись и возвращает фокус к фильтру при пустом результате. [Панели Phone Hub](examples/phone-hub/) · [Настольный Hub](examples/phone-hub/desktop.html) · [Обновление списка](examples/refresh/) · [Сохранение группы офлайн](examples/offline/)
+Phone Hub uses the commands of the first visible section. When the app refreshes the list, it keeps the anchor record. If the result is empty, it returns focus to the filter. [Phone Hub panels](examples/phone-hub/) · [Desktop Hub](examples/phone-hub/desktop.html) · [Update of the list](examples/refresh/) · [Keeping the group offline](examples/offline/)
 
-В настройках оформления тема применяется сразу. Ползунок и числовое поле меняют яркость одного предпросмотра, которую можно записать или вернуть к сохранённой. [Оформление](examples/appearance/)
+The appearance settings apply the theme immediately. The slider and the number field change the brightness of the same preview. You can save the brightness or restore the previous value. [Processing](examples/appearance/)
 
-Скопируйте нужный каталог с его HTML, CSS и JavaScript и замените путь к `metro-ui.js` на адрес модуля в вашем проекте. Данные, команды и маршруты находятся в коде примеров. При копировании нескольких экранов сохраните их относительные пути или замените ссылки. В каталоге «Код примера» содержит копируемый фрагмент для страницы с `metro-ui.js`. Для отдельных приложений откройте ссылку «Открыть пример целиком» и скопируйте файлы приложения вместе с нужными ресурсами.
+Copy the example directory with its HTML, CSS, and JavaScript. Replace the path to `metro-ui.js` with the module path in your project. The example source contains the data, commands, and routes. If you copy more than one screen, keep the relative paths or update the links. The catalog shows an HTML snippet for use with `metro-ui.js`. To reuse a complete application, open its full example and copy its files and assets.
 
-## Совместимость
+## Compatibility
 
-Vitest Browser Mode поддерживает Chromium, Firefox и WebKit из Playwright. Сенсорные жесты и составной ввод IME проверяются через Chromium CDP. Тесты с CDP и эталонными изображениями Chromium выполняются в Chromium. Для прогона на другом движке задайте `METRO_BROWSER=firefox` или `METRO_BROWSER=webkit`.
+Vitest Browser Mode supports Chromium, Firefox, and WebKit through Playwright. Tests use Chromium CDP for touch gestures and IME composition. Run tests that require CDP or Chromium reference screenshots in Chromium. To use a different engine, set `METRO_BROWSER=firefox` or `METRO_BROWSER=webkit`.
 
 ```sh
 npx playwright install firefox
 METRO_BROWSER=firefox npm run test:browser
 ```
 
-Для интерфейса нужен современный браузер с Custom Elements, Shadow DOM и ручным назначением слотов, Pointer Events, `light-dark()` и единицами контейнера CSS. В формах используется `ElementInternals`, в диалогах и всплывающих меню — нативные `dialog` и Popover API. Пакет рассчитан на запуск в браузере.
+Use a modern browser with Custom Elements, Shadow DOM with manual slot assignment, Pointer Events, `light-dark()`, and CSS container units. Forms use `ElementInternals`. Dialogs and menus use the native `dialog` and Popover APIs. The package runs in the browser.
 
-Нативная камера использует `getUserMedia` в защищённом контексте и зависит от разрешения. Браузерные уведомления используют разрешение и активный service worker. Системное расписание напоминаний, закрепление плиток и экран блокировки требуют соответствующих возможностей хоста. Сенсорный ввод проверен эмуляцией Chromium, захват кадра проверен тестовым видеопотоком. Браузерные прогоны выполнены на Linux в Chromium 155, Firefox 159 и Playwright WebKit 27.2. Проверка доступности формы использовала Orca и AT-SPI. Мобильные Safari и Chrome на физических устройствах, системное меню передачи файлов, Windows Shell и аппаратное перо требуют отдельной интеграционной проверки.
+Camera capture uses `getUserMedia`. It needs a secure context and user permission. Browser notifications need permission and an active service worker. System reminders, tile pinning, and the lock screen need host support. Tests use simulated touch in Chromium and a test video stream for camera capture. Browser tests ran on Linux with Chromium 155, Firefox 159, and Playwright WebKit 27.2. Form accessibility checks used Orca and AT-SPI. Mobile Safari and Chrome on physical devices, the system file sharing menu, Windows Shell, and a physical pen still need integration tests.
 
-## Дизайн-документ
+## Design documentation
 
-Исторические ссылки ниже относятся к каталогу `docs/` репозитория.
+The historical references below link to the repository's `docs/` directory.
 
-Дизайн-док библиотеки интерфейсов. В основе — Windows Phone 7–8.1: типографика, большие горизонтальные поверхности, прямое управление касанием, системный Back и плитки с живым состоянием. Windows 8/8.1, ранний UWP и современный WinUI дают дополнительные модели навигации, адаптации и взаимодействия.
+The design documentation starts with Windows Phone 7–8.1: typography, large horizontal surfaces, direct touch input, system Back, and live tiles. Windows 8/8.1, early UWP, and modern WinUI add patterns for navigation, adaptive layout, and interaction.
 
-| Раздел | Что в нём |
+| Section | What's in it? |
 | --- | --- |
-| [Принципы и визуальная грамматика](docs/foundations.md) | Иерархия текста, сетка, светлая и тёмная темы, акцент, движение, ввод, доступность и локализация |
-| [Компоненты и их контракты](docs/components.md) | Поверхности приложения и оболочки, состояния, зависимости, сопоставление с WinUI и [карта совместной работы](docs/components.md#карта-совместной-работы-компонентов) |
-| [Сценарии и механики](docs/flows.md) | 41 пошаговый сценарий с проверками, владельцами состояния, порядком Back и правилами восстановления |
-| [Архив Windows Phone Dev Center](docs/windows-phone-archive.md) | 47 прочитанных страниц для Phone 8 и 7.1 Silverlight, 41 пункт оглавления Phone 8.1, индекс UX Windows Runtime и оригинальные шаблоны |
-| [Индекс UX Windows Runtime за апрель 2014](docs/winrt-ux-index.md) | 126 ссылок из каталога MSDN, исходные адреса и соответствующие разделы PDF |
-| [Каталог первоисточников](docs/sources.md) | 64 позиции каталога WinUI, 14 разделов Windows Design, руководства Microsoft по поколениям и статус архивных материалов |
+| [Principles and Visual Grammar](docs/foundations.md) | Text hierarchy, grid, light and dark themes, accent, movement, input, availability and localization |
+| [Components and their contracts](docs/components.md) | Application and shell surfaces, states, dependencies, matching with WinUI and [collaboration map](docs/components.md#component-interaction-map) |
+| [Scripts and mechanics](docs/flows.md) | 41 step-by-step scenarios with checks, status owners, Back order and recovery rules |
+| [Windows Phone Dev Center Archive](docs/windows-phone-archive.md) | 47 reviewed pages for Phone 8 and 7.1 Silverlight, 41 entries from the Phone 8.1 table of contents, the Windows Runtime UX index, and original templates |
+| [UX Windows Runtime Index in April 2014](docs/winrt-ux-index.md) | 126 links from the MSDN directory, source addresses and related PDF sections |
+| [Catalogue of primary sources](docs/sources.md) | 64 WinUI Catalogue Positions, 14 Windows Design Sections, Microsoft Generation Guides, and Archival Status |
 
-## Визуальные спецификации
+## Visual specifications
 
-| Что реализуется | Где смотреть размеры, состояния и ресурсы |
+| What's happening | Where to look at sizes, conditions and resources |
 | --- | --- |
-| Цвет и типографика | [Стили Segoe WP](docs/foundations.md#размеры-и-стили-текста-silverlight-sdk) · [Light и Dark из SDK 8.0](docs/foundations.md#цветовые-роли-light-и-dark-из-sdk-80) · [Словари SDK 7.0 и 7.1](docs/foundations.md#цветовые-роли-sdk-70-и-71) · [Палитра акцентов](docs/foundations.md#палитра-акцентов-phone-75-и-8) |
-| Стандартные контролы Silverlight | [Размеры, кисти и состояния 19 стилей SDK 8.0, включая базовые и производные](docs/silverlight-controls.md). Есть сравнение с SDK 7.0 и 7.1 |
-| Контролы Phone 8.1 Store apps | [Геометрия XAML и WinJS](docs/store-81-visual-specs.md) · [Цвета четырёх тем и размеры текста XAML](docs/foundations.md#темы-и-типографика-xaml-в-phone-81-store-apps) |
-| Навигация и списки | [Числа SDK для Panorama, Pivot, LongListSelector и JumpList](docs/components.md#заголовок-геометрия-и-навигация) |
-| Расширения Toolkit | [Пикеры, переключатели, ContextMenu, HubTile и другие](docs/toolkit-visual-specs.md) |
-| Иконки, App Bar и ресурсы Start | [Имена и геометрия иконок Microsoft](docs/metro-icons.md) · [Размеры экспортируемой графики](docs/foundations.md#размеры-экспортируемой-графики-phone-8) |
+| Color and typography | [Segoe WP Styles](docs/foundations.md#silverlight-sdk-text-sizes-and-styles) · [Light and Dark from SDK 8.0](docs/foundations.md#light-and-dark-color-roles-in-sdk-80) · [SDK dictionaries 7.0 and 7.1](docs/foundations.md#color-roles-in-sdk-70-and-71) · [Palette of accents](docs/foundations.md#phone-75-and-8-accent-palette) |
+| Standard Silverlight Controls | The [Sizes, brushes and states of 19 SDK 8.0 styles, including base and derivatives](docs/silverlight-controls.md) is compared to the SDK 7.0 and 7.1. |
+| Controls Phone 8.1 Store apps | [XAML and WinJS geometry](docs/store-81-visual-specs.md) · [Four Theme Colors and XAML Text Sizes](docs/foundations.md#xaml-themes-and-typography-in-phone-81-store-apps) |
+| Navigation and lists | [SDK numbers for Panorama, Pivot, LongListSelector and JumpList](docs/components.md#title-geometry-and-navigation) |
+| Toolkit extensions | [Pickers, switches, ContextMenu, HubTile and others](docs/toolkit-visual-specs.md) |
+| Icons, App Bar and Start Resources | [Names and geometry of Microsoft icons](docs/metro-icons.md) · [Sizes of exported graphics](docs/foundations.md#phone-8-export-asset-sizes) |
 
-## Поколения платформы
+## Platform generations
 
-| Поколение | Роль в дизайн-доке |
+| Generation. | Role in the design doc |
 | --- | --- |
-| Windows Phone 7 / 7.1 | Исходный Metro, PhoneApplicationFrame/Page, Panorama, Pivot, Application Bar, Start и плитки, аппаратные кнопки |
-| Windows Phone 8 | Продолжение Silverlight UX, LongListSelector, новые размеры плиток и больше возможностей экрана блокировки |
-| Windows Phone 8.1 | Ветка Silverlight и отдельная ветка Windows Runtime для Phone Store apps. Документация второй описывает Phone Hub и Pivot, общую с Windows 8.1 модель части контролов и новые системные поверхности |
-| Windows 8 / 8.1 Store apps | Родственная настольная и планшетная ветка. Hub → раздел → детали, Charms, контракты и Semantic Zoom относятся к соответствующей среде |
-| Windows 10 / UWP, включая Mobile | Переходный слой. Phone Pivot и AutoSuggestBox появились в UWP для разных семейств устройств. Для Mobile есть отдельное руководство Continuum |
-| WinUI 2 / WinUI 3 и Fluent | Современные механики коллекций, команд, навигации, фокуса и адаптации. WinUI 2 относится к UWP. WinUI 3 поставляется с Windows App SDK для настольных Windows-приложений |
+| Windows Phone 7 / 7.1 | Original Metro, PhoneApplicationFrame/Page, Panorama, Pivot, Application Bar, Start and tiles, hardware buttons |
+| Windows Phone 8 | Continuation of Silverlight UX, LongListSelector, new tiles sizes and more lock screen features |
+| Windows Phone 8.1 | The Silverlight branch and a separate Windows Runtime branch for Phone Store apps. Documentation II describes the Phone Hub and Pivot, shared with Windows 8.1 model part of the controls and new system surfaces |
+| Windows 8 / 8.1 Store apps | Related Desktop and Tablet Branch. Hub → Section → Details, Charms, Contracts and Semantic Zoom refer to the respective environment |
+| Windows 10/UWP, including Mobile | A transition layer. UWP added Phone Pivot and AutoSuggestBox for different device families. Windows 10 Mobile has a separate Continuum guide. |
+| WinUI 2 / WinUI 3 and Fluent | Modern collection, command, navigation, focus and adaptation mechanics. WinUI 2 refers to UWP. WinUI 3 comes with the Windows App SDK for desktop Windows applications |
 
-[Windows Phone и Windows 8: сравнение](docs/sources.md#windows-phone-8-и-windows-8) · [Windows Phone 8.1](docs/sources.md#windows-81-и-windows-phone-81) · [UWP и Windows 10 Mobile](docs/sources.md#windows-10-uwp-и-mobile) · [WinUI и Fluent](docs/sources.md#winui-и-fluent)
+[Windows Phone and Windows 8: Comparison](docs/sources.md#windows-phone-8-and-windows-8) · [Windows Phone 8.1](docs/sources.md#windows-81-and-windows-phone-81) · [UWP and Windows 10 Mobile](docs/sources.md#windows-10-uwp-and-mobile) · [WinUI and Fluent](docs/sources.md#winui-and-fluent)
 
-## Как использовать при реализации
+## Use the design documentation
 
-Сначала выберите модель экрана. **Hub/Panorama** показывает части большого обзора, **Pivot** меняет представление в одной задаче, **список → детали** открывает страницу объекта. В Phone 8 также описаны обзор с главным меню, набор самостоятельных панелей и перелистывание однотипных страниц. Затем определите, где живут команды, что означает Back и какие данные нужно вернуть при возврате. После этого примените токены визуального профиля и проверьте тот же сценарий касанием, клавиатурой, мышью и средствами доступности. [Модели структуры Windows Phone](docs/flows.md#модели-структуры-windows-phone) · [Связи в исходниках образцов Phone 8.1](docs/windows-phone-archive.md#разбор-исходников-образцов)
+First, select the screen model. **Hub/Panorama** shows parts of a wide overview. **Pivot** changes the view within the same task. **List/details** opens a page for the selected item. Phone 8 also describes a top-level menu, a set of independent panels, and paging between similar pages. Decide where commands belong, what Back does, and which state to restore. Apply the visual profile tokens. Test the same flow with touch, keyboard, mouse, and assistive technology. [Windows Phone Structure Models](docs/flows.md#windows-phone-app-structure-models) · [Links in the source samples of Phone 8.1](docs/windows-phone-archive.md#sample-source-analysis)
 
-Исторические правила в тексте привязаны к поколению и источнику. Разделы **«Контракт библиотеки»** и сценарии формулируют проектные решения, включая правила для платформ без аппаратного Back, режим уменьшенного движения и восстановление по стабильным идентификаторам. Для прототипов используются собственные интерфейсы и примеры данных.
+Historical guidance specifies its platform generation and source. The **Library contract** sections and flows describe project decisions. They cover platforms without a hardware Back button, reduced motion, and state restoration with stable identifiers.

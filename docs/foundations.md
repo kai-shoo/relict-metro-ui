@@ -1,47 +1,47 @@
-# Принципы и визуальная грамматика
+# Design foundations and visual rules
 
-[Оглавление](../README.md) · [Компоненты](components.md) · [Сценарии](flows.md) · [Первоисточники](sources.md)
+[Table of contents](../README.md) · [Components](components.md) · [Scripts](flows.md) · [Primary sources](sources.md)
 
-## Принципы по поколениям
+## Principles by generation
 
-В предрелизном гайде Windows Phone 7 отправной точкой служит графика городской навигации. Размер и положение слов задают порядок чтения, пространство разделяет группы, а обрезанный край горизонтальной композиции приглашает к следующему движению. Пять принципов руководства охватывают ясный и быстрый интерфейс, приоритет содержимого, согласованность с устройством, осмысленное движение и персональное живое состояние. На уровне приложения это узнаётся по крупным заголовкам, минимуму постоянной обвязки, общесистемному Back и изменяемым плиткам. [Windows Phone 7 UI Design and Interaction Guide, стр. 8–17](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=5)
+In the pre-release guide Windows Phone 7 is the starting point is the graphics of urban navigation. The size and position of the words set the order of reading, the space separates the groups, and the cropped edge of the horizontal composition invites to the next movement. The five principles of the guide cover a clear and fast interface, priority of content, consistency with the device, meaningful movement and personal living state. At the application level, this is recognized by large headers, a minimum of permanent binding, system-wide Back, and variable tiles. [Windows Phone 7 UI Design and Interaction Guide 8–17](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=5)
 
-Перед описанием внешнего вида гайд Windows Phone 7 задаёт три направления для задач приложения. **Personal** связано с личным распорядком и выбором. **Relevant** означает актуальный контекст людей и места. **Connected** относится к доступу к своим данным и связям. На уровне сценария это видно, когда плитка открывает сохранённое назначение, а обзор показывает важное для текущего контекста. [Философия Windows Phone 7, стр. 8–9](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=5)
+Before describing the appearance of the guide Windows Phone 7 sets three directions for the tasks of the application. **Personal** is about personal choices and choices. **Relevant** stands for the actual context of people and places. **Connected** refers to accessing your data and connections. At the script level, you can see this when the tile opens the saved purpose, and the review shows what is important for the current context. [Windows Phone 7 Philosophy, pp. 8–9](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=5)
 
-Во вступлении для Windows Phone 8.1 Microsoft вновь связывает визуальный язык с простотой швейцарской типографики и навигационной графикой транспорта. Движение помогает понять, в какой части приложения оказался пользователь и как он туда попал. В Hub это выражается в согласованном смещении фона, общего заголовка и секций. [Вступление к библиотеке дизайна Phone 8.1](https://web.archive.org/web/20140410153319id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn642029.aspx) · [Оригинальный гайд Phone Hub](https://web.archive.org/web/20140408233046id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596112.aspx)
+In the introduction to Windows Phone 8.1, Microsoft reconnects the visual language with the simplicity of Swiss typography and navigational transport graphics. Moving helps to understand what part of the application the user was in and how he got there. In Hub, this is expressed in the consistent shifting of the background, the general header and sections. [Introduction to the Phone 8.1 Design Library](https://web.archive.org/web/20140410153319id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn642029.aspx) · [Original Phone Hub Guide](https://web.archive.org/web/20140408233046id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596112.aspx)
 
-Dev Center Phone 8 описывает пять этапов. Концепция задаёт основную задачу, структура распределяет содержимое по экранам, взаимодействие определяет переходы и реакции, визуальный этап уточняет сетку, типографику и оформление, а прототип позволяет проверить всё вместе. В опубликованном примере Audible обзорный Hub даёт входы в библиотеку, магазин и статистику, а конкретная задача продолжается глубже. Для библиотеки это даёт способ проверять компонент в составе задачи с реальным переходом и состоянием возврата. [Process в Dev Center](https://web.archive.org/web/20130127123808id_/http://dev.windowsphone.com:80/en-us/design/process) · [App design process for Windows Phone](https://web.archive.org/web/20121105014709id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh202873(v=vs.105).aspx)
+The Dev Center Phone 8 features five stages. The concept sets the main task, the structure distributes the content across the screens, the interaction determines transitions and reactions, the visual stage refines the grid, typography and design, and the prototype allows you to check everything together. In the Audible example published, the Hub gives the entrances to the library, the store, and the statistics, and the specific task goes deeper. For the library, this provides a way to test the component in the task with a real transition and a return state. [Process at Dev Center](https://web.archive.org/web/20130127123808id_/http://dev.windowsphone.com:80/en-us/design/process) · [App design process for Windows Phone](https://web.archive.org/web/20121105014709id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh202873(v=vs.105).aspx)
 
-В шаблоне Microsoft для краткого дизайн-брифа команда формулирует аудиторию, цель и основную ценность продукта, затем объясняет, какие решения её поддерживают и какой тон нужен. Для библиотечного примера эти поля уточняют, почему выбран конкретный сценарий и по какому результату судить, что он работает. [Design Brief Template](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/Design_Brief_Template.docx)
+In a Microsoft template for a brief design brief, the team articulates the audience, purpose, and core value of the product, then explains which solutions support it and what tone is needed. For a library example, these fields clarify why a particular scenario is chosen and how it works. [Design Brief Template](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/Design_Brief_Template.docx)
 
-Руководство Phone 8.1 сначала предлагает описать задачи и их приоритеты, затем сделать эскизы основных и временных состояний. Карта приложения показывает иерархию экранов. Карта отдельной задачи показывает последовательность действий, например от поиска до карточки результата. Для проверки прототипа Microsoft предлагает наблюдать, как человек понимает задачу и проходит её самостоятельно. [App conceptualization](https://web.archive.org/web/20140618190015id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596096.aspx) · [Design the best app you can](https://web.archive.org/web/20140618112350id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596108.aspx)
+The Phone 8.1 guide first describes the tasks and their priorities, then sketches the basic and temporal states. The app map shows the hierarchy of screens. The map of an individual task shows the sequence of actions, for example, from the search to the result card. To test the prototype, Microsoft offers to observe how a person understands the task and passes it on their own. [App conceptualization](https://web.archive.org/web/20140618190015id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596096.aspx) · [Design the best app you can](https://web.archive.org/web/20140618112350id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596108.aspx)
 
-В настольном руководстве **Defining vision** главную пользу приложения формулируют одним предложением. Этой формулировкой проверяют, какие задачи войдут в прототип и где помогают возможности платформы. Например, сценарий совместной поездки связывает добавление мест, обсуждение маршрута и отправку приглашения. Для каждой задачи описывают последовательность действий до выбора контролов. [Defining vision](https://web.archive.org/web/20140410154330id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/hh465427.aspx)
+In the **Defining vision** desktop manual, the main benefit of the application is formulated in one sentence. This wording checks what tasks will be included in the prototype and where the capabilities of the platform help. For example, a shared travel scenario involves adding seats, discussing the route, and sending an invitation. For each task, describe the sequence of actions before selecting controls. [Defining vision](https://web.archive.org/web/20140410154330id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/hh465427.aspx)
 
-Dev Center Phone 8 и гайд Windows Store 8.1 формулируют пять общих принципов. Внимание к деталям распространяется на сетку, типографику и доступность. Быстрый, плавный ответ поддерживает непрерывное касание. Цифровая среда позволяет живым данным и типографике менять представление. Сосредоточенность оставляет на экране элементы, нужные для задачи. Интеграция использует общие контракты платформы и позволяет приложениям работать вместе. [Principles в Dev Center](https://web.archive.org/web/20130111181057id_/http://dev.windowsphone.com:80/en-us/design/Principles) · [Windows 8.1 UX guidelines, стр. 7–10](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=7)
+Dev Center Phone 8 and Windows Store 8.1 share five common principles. Attention to detail extends to grid, typography and accessibility. A quick, smooth response supports continuous touch. The digital environment allows live data and typography to change the view. Concentration leaves the elements needed for the task on the screen. Integration uses common platform contracts and allows applications to work together. [Principles at Dev Center](https://web.archive.org/web/20130111181057id_/http://dev.windowsphone.com:80/en-us/design/Principles) · [Windows 8.1 UX guidelines, pp. 7–10](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=7)
 
-Современная Windows Design раскладывает практику по цвету, типографике, навигации, командам, компоновке, геометрии, слоям и движению. Windows 11 описывает собственные материалы и подход к многослойности. Для библиотеки полезно заимствовать систематическую работу с темами, фокусом и адаптивностью и оставить визуальную палитру мобильного Metro самостоятельным профилем. [Windows Design guidelines](https://learn.microsoft.com/en-us/windows/apps/design/guidelines-overview) · [Commanding basics](https://learn.microsoft.com/en-us/windows/apps/design/basics/commanding-basics)
+Modern Windows Design lays out the practice by color, typography, navigation, commands, layout, geometry, layers, and movement. Windows 11 describes its own materials and approach to layering. It is useful for the library to borrow systematic work with themes, focus and adaptability and leave the visual palette of the mobile Metro as a separate profile. [Windows Design guidelines](https://learn.microsoft.com/en-us/windows/apps/design/guidelines-overview) · [Commanding basics](https://learn.microsoft.com/en-us/windows/apps/design/basics/commanding-basics)
 
-| Наблюдаемый принцип | Что проверить на экране |
+| Observable principle | What to check on the screen |
 | --- | --- |
-| Содержимое в центре | По первому экрану ясно, что открыто и какое действие сейчас уместно. Текст и данные занимают центровую область, вторичные команды доступны через меню. |
-| Пространство как ориентир | Заголовки и соседние секции дают представление о структуре. Отступы внутри группы меньше, чем между группами. |
-| Прямое управление | При касании появляется обратная связь, при захваченном перетаскивании видимая поверхность следует за пальцем. |
-| Движение связывает состояния | У перехода есть источник и назначение. Начало, завершение и прерывание оставляют различимое состояние. |
-| Персонализация | Тема, акцент, закреплённые назначения и значимые обновления сохраняются независимо от конкретного экрана. |
-| Согласованный возврат | Перед открытием деталей можно предсказать, куда приведёт Back. Состояние перехода подтверждается после завершения явной операции. |
+| Contents in the centre | On the first screen, it's clear what's open and what action is appropriate right now. Text and data occupy the center area, secondary commands are available through the menu. |
+| Space as a guide | Headings and adjacent sections give an idea of the structure, and the margins within the group are smaller than between groups. |
+| Direct control | When touched, feedback appears, when captured dragging, the visible surface follows the finger. |
+| Movement connects states | The transition has a source and a destination. The beginning, the completion and the interruption leave a distinct state. |
+| Personalization | Theme, accent, fixed assignments, and meaningful updates are saved regardless of the specific screen. |
+| Agreed return | Before opening the parts, you can predict where Back will lead. The transition state is confirmed after the explicit operation is completed. |
 
-В раннем проектировании Windows 10 Microsoft объясняла выбор навигации доступностью конкретного действия. В проекте Photos частое переключение между коллекцией и альбомами на телефоне оставили доступным через свайп. В Outlook команда учитывала глубину структуры аккаунтов и папок и обратную связь о командах в нижней панели. Для будущей библиотеки это различие между моделью назначения и управлением, которое подходит конкретной форме экрана и способу ввода. [Windows 10 Design](https://blogs.windows.com/windowsexperience/2015/04/29/windows-10-design-getting-the-balance-right/)
+In the early design of Windows 10, Microsoft attributed navigation choices to the availability of a specific action. In the Photos project, frequent switching between the collection and the albums on the phone was left available via swipe. In Outlook, the team took into account the depth of the account and folder structure and feedback about the commands in the bottom panel. For a future library, it's the difference between a destination model and a control that suits a particular screen shape and input method. [Windows 10 Design](https://blogs.windows.com/windowsexperience/2015/04/29/windows-10-design-getting-the-balance-right/)
 
-## Типографика и текст
+## Typography and text
 
-Segoe WP — системная гарнитура Windows Phone 7. Ранняя документация различает идентификатор приложения, заголовок страницы, заголовки секций, основной текст и вторичные сведения. В большой композиции заголовок контейнера, заголовок секции и содержимое образуют разные визуальные уровни. Титул страницы в модели Phone 7 относится к контексту и при наличии остаётся на месте. В современных Windows системная гарнитура — Segoe UI Variable. [Разделы Fonts, Page title и Panorama](sources.md#карта-pdf-2010) · [Typography in Windows](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/typography)
+Segoe WP is the Windows Phone 7 system typeface. The early guidance separates the app identifier, page title, section headings, body text, and secondary information. In a wide layout, the container title, section headings, and content form distinct visual levels. A Phone 7 page title shows context and stays in place when present. Modern Windows uses Segoe UI Variable. [Fonts, Page Title and Panorama](sources.md#2010-pdf-page-map) · [Typography in Windows](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/typography)
 
-**Контракт библиотеки.** Семантические роли текста — `Display`, `PageTitle`, `SectionTitle`, `ItemTitle`, `Body`, `Caption`, `CommandLabel`. Профиль темы задаёт гарнитуру, размер, межстрочный интервал и начертание для каждой роли. Системный стек и его запасные гарнитуры должны иметь кириллицу, цифры и нужные письменности. У иконок команд хранится самостоятельная строка назначения. Подписи описывают действие через короткие глаголы и учитывают склонение, множественное число и форматирование дат по локали.
+**Library contract.** The semantic roles of text are `Display`, `PageTitle`, `SectionTitle`, `ItemTitle`, `Body`, `Caption`, and `CommandLabel`. The theme profile specifies the headset, size, line spacing, and outline for each role. The system stack and its spare headsets should have Cyrillic, numbers and the necessary writing. Team icons have an independent destination line. Labels describe action through short verbs and take into account declination, plurality, and locale formatting of dates.
 
-### Размеры и стили текста Silverlight SDK
+### Silverlight SDK text sizes and styles
 
-| Ресурс SDK | Значение в единицах XAML |
+| SDK resource | Value in XAML units |
 | --- | --- |
 | `PhoneFontSizeSmall` | 18,667 |
 | `PhoneFontSizeNormal` | 20 |
@@ -52,11 +52,11 @@ Segoe WP — системная гарнитура Windows Phone 7. Ранняя
 | `PhoneFontSizeExtraExtraLarge` | 72 |
 | `PhoneFontSizeHuge` | 186,667 |
 
-Базовый текст использует Segoe WP размера 20 и `PhoneForegroundBrush`. `PhoneTextTitle1Style`, `PhoneTextTitle2Style` и `PhoneTextTitle3Style` используют Segoe WP Semilight размеров 72, 32 и 22,667 соответственно. `PhoneTextGroupHeaderStyle` также использует Semilight размера 32. Библиотека может взять эти пропорции за основу и подобрать значения под плотность и масштаб текста целевой среды. В гайде Phone 7 отдельно оговаривалось распространение Segoe WP, поэтому профиль может использовать установленную гарнитуру или совместимую замену. [Справочник ресурсов SDK](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105)) · [Гайд Phone 7, стр. 40](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=21)
+The base text uses Segoe WP size 20 and `PhoneForegroundBrush`. The `PhoneTextTitle1Style`, `PhoneTextTitle2Style` and `PhoneTextTitle3Style` use the Segoe WP Semilight sizes 72, 32 and 22.667, respectively. The `PhoneTextGroupHeaderStyle` also uses a size 32 Semilight. The library can take these proportions as a basis and choose values for the density and scale of the text of the target environment. The Phone 7 guide specifically stipulated Segoe WP distribution, so the profile can use a headset installed or a compatible replacement. [SDK Resource Directory](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105)) · [Hyde Phone 7, page 40](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=21)
 
-Для обычного текста `PhoneTextBlockBase` задаёт горизонтальный отступ 12. Короткие стили в таблице наследуют этот отступ. Словарь задаёт размеры и шрифт этих стилей. Межстрочный интервал разрешает текстовый движок. [Словари SDK 8.0](sources.md#извлечённые-ресурсы-windows-phone-sdk-80)
+For plain text, `PhoneTextBlockBase` sets a horizontal indentation 12. Short styles in the table inherit this indentation. The dictionary defines the size and font of these styles. Line spacing allows text engine. [SDK 8.0 Dictionary](sources.md#extracted-windows-phone-sdk-80-resources)
 
-| Роль или стиль XAML | Начертание · размер | Кисть |
+| Role or style of XAML | Description · size | Brush |
 | --- | --- | --- |
 | `PhoneTextNormalStyle` | Regular · 20 | `PhoneForegroundBrush` |
 | `PhoneTextSubtleStyle` | Regular · 20 | `PhoneSubtleBrush` |
@@ -70,90 +70,90 @@ Segoe WP — системная гарнитура Windows Phone 7. Ранняя
 | `PhoneTextAccentStyle` | Semibold · 20 | `PhoneAccentBrush` |
 | `PhoneTextHugeStyle` | Light · 186,667 | `PhoneForegroundBrush` |
 
-В шести файлах Segoe WP из оригинального пакета Phone 7 каждому начертанию присвоен вес OpenType. У Light вес 200, у Semilight — 300, у Regular — 400, у Semibold — 600, у Bold — 700 и у Black — 800. Все шесть покрывают русский алфавит, включая «Ё» и «ё». У каждого 2048 единиц на em. В метриках `hhea` ascent равен 2210, descent равен −514, line gap равен 0. Высоту строки конкретного контрола задаёт его шаблон и алгоритм компоновки. [Состав, источник и лицензия Font.zip](windows-phone-archive.md#состав-набора-windows-phone-7)
+Each of the six Segoe WP faces in the original Phone 7 package has an OpenType weight. The weights are 200 (Light), 300 (Semilight), 400 (Regular), 600 (Semibold), 700 (Bold), and 800 (Black). All six cover the Russian alphabet, including U+0401 and U+0451. Each uses 2048 units per em. In the `hhea` metrics, ascent is 2210, descent is −514, and line gap is 0. The control template and layout algorithm determine the line height. [Composition, source and license of Font.zip](windows-phone-archive.md#windows-phone-7-package-contents)
 
-Крупный заголовок может уходить за физический край только в контейнере, где это часть визуальной непрерывности. Полное название секции остаётся доступно семантически. У заголовков страниц и команд при большом масштабе текста предусматриваются перенос, расширение области или доступ к полному тексту. Регистр выбирается по роли и языку. Запас ширины под перевод проверяется на реальных строках.
+A large header can only go beyond the physical edge in a container, where it is part of a visual continuity. The full name of the section remains available semantically. Page titles and commands with a large text scale provide for the transfer, extension of the area or access to the full text. The register is selected by role and language. The margin of width for translation is checked on real lines.
 
-### Тон интерфейса
+### Interface tone
 
-В библиотеке Microsoft статья **Voice for Windows Phone** описывает тон письменного текста. Она предлагает говорить естественно, учитывать, в какой задаче находится человек, и использовать формулировки, которые сохраняют смысл при переводе. В библиотеке короткое название команды указывает действие, сообщение об ошибке сообщает результат и доступный следующий шаг, а полное доступное имя сохраняется при визуальном сокращении. [Voice for Windows Phone 8](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj662928(v=vs.105)) · [Voice в документации Phone 8.1](https://web.archive.org/web/20140618162025id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596125.aspx)
+In the Microsoft library, the **Voice for Windows Phone** article describes the tone of the written text. She suggests speaking naturally, taking into account what task a person is in, and using language that retains meaning when translating. In the library, a short command name indicates the action, an error message reports the result and the next step available, and the full accessible name is saved when visually abbreviated. [Voice for Windows Phone 8](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj662928(v=vs.105)) · [Voice in Phone 8.1 Documentation](https://web.archive.org/web/20140618162025id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596125.aspx)
 
-## Компоновка, темы и акцент
+## Layout, themes, and accent colors
 
-В Phone Store apps системная тема задавала светлый или тёмный фон и пользовательский акцент. Стандартные контролы наследовали цвета автоматически. Оператор или производитель мог добавить свой акцент, поэтому логика приложения должна работать с любым значением от системы. Исторический профиль библиотеки хранит цветовые роли отдельно от размеров и типографики и проверяет выделение на обоих фонах. [Theme design decisions for Windows Phone](https://web.archive.org/web/20140408233050id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596122.aspx)
+In the Phone Store apps, the system theme set a light or dark background and user accent. Standard controls inherit colors automatically. The operator or manufacturer could add their accent, so the application logic must work with any value from the system. The library's historic profile stores color roles separate from sizes and typography and checks for highlighting on both backgrounds. [Theme design decisions for Windows Phone](https://web.archive.org/web/20140408233050id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596122.aspx)
 
-Phone 7 поддерживал светлый и тёмный фон и пользовательский акцент. Гайд описывает изменение цветовой темы средствами платформы и раздельные portrait/landscape сценарии. Его примеры в физических пикселях относятся к устройствам того поколения. В WinUI адаптация идёт от эффективных размеров окна. Паттерн list/details использует ширину доступной области, а смена ориентации оставляет открытый объект тем же. [Единицы, ориентация и темы в гайде Phone 7](sources.md#карта-pdf-2010) · [Точки адаптации Windows](https://learn.microsoft.com/windows/apps/design/layout/screen-sizes-and-breakpoints-for-responsive-design) · [List/details](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/list-details)
+The Phone 7 also has a light and dark background and a custom accent. The guide describes the platform’s color theme change and separate portrait/landscape scenarios. His examples in physical pixels belong to devices of that generation. In WinUI, the adaptation comes from the effective window size. The list/details pattern uses the width of the available area, and the change of orientation leaves the open object the same. [Units, orientation and themes in the Phone 7 Guide](sources.md#2010-pdf-page-map) · [Windows Adaptive Points](https://learn.microsoft.com/windows/apps/design/layout/screen-sizes-and-breakpoints-for-responsive-design) · [List/details](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/list-details)
 
-В гайде Store apps 8.1 минимальная ширина телефонного профиля составляет 384 эффективных px в портрете и 640 в ландшафте. Для настольного профиля указаны 500 px по умолчанию и 320 px при явной поддержке. На минимальной ширине всё ещё проверяются команды, временные слои, навигация и основное содержимое. Эти значения задают контрольные размеры для исторического профиля. [Guidelines for supporting multiple screen sizes](https://web.archive.org/web/20140714071743/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh465349.aspx)
+In Store apps guide 8.1, the minimum width of a phone profile is 384 effective px in the portrait and 640 in the landscape. For the desktop profile, 500 px is indicated by default and 320 px with explicit support. At the minimum width, commands, overlays, navigation, and main content are still being checked. These values set reference dimensions for the historical profile. [Guidelines for supporting multiple screen sizes](https://web.archive.org/web/20140714071743/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh465349.aspx)
 
-В Phone 8 производитель или оператор мог добавить собственный цвет акцента. Поэтому в проектном контракте цвет темы представлен значением, а смысл состояния задаёт отдельная роль. Размеры и типографика имеют собственные токены, хотя при изменении темы в Silverlight менялись цвета. [Theme design decisions for Windows Phone](https://web.archive.org/web/20121103210213/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh202878(v=vs.105).aspx)
+With the Phone 8, the manufacturer or carrier could add their own accent color. Therefore, in the project contract, the color of the topic is represented by the value, and the meaning of the state sets a separate role. The sizes and typography have their own tokens, though the colors changed when the theme changed in Silverlight. [Theme design decisions for Windows Phone](https://web.archive.org/web/20121103210213/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh202878(v=vs.105).aspx)
 
-**Контракт библиотеки.** Таблица задаёт минимальные наборы токенов.
+**Library contract.** The table specifies minimum sets of tokens.
 
-| Набор | Роли |
+| Set. | rolely |
 | --- | --- |
-| Поверхности | `canvas`, `surface`, `overlay`, `scrim`, `divider` |
-| Текст и акцент | `textPrimary`, `textSecondary`, `textDisabled`, `accent`, `onAccent`, `focus` |
-| Состояния | `selection`, `hover`, `pressed`, `error`, `warning`, `success`, `info` |
-| Компоновка | Отступ края, интервалы внутри строки и между секциями, минимальная область активации, высота панели и безопасные отступы |
-| Движение | Длительности короткого отклика, входа слоя и перехода страницы, кривые и параметры инерции. Отдельное представление для уменьшенного движения |
+| Surfaces. | `canvas`, `surface`, `overlay`, `scrim`, `divider` |
+| Text and emphasis | `textPrimary`, `textSecondary`, `textDisabled`, `accent`, `onAccent`, `focus` |
+| Conditions | `selection`, `hover`, `pressed`, `error`, `warning`, `success`, `info` |
+| Composite | Edge receding, intervals within the row and between sections, minimum activation area, panel height and safe indentations |
+| Movement | Short response time, layer entry and page transition, curves and inertia parameters. Separate representation for reduced movement |
 
-Роль `onAccent` разрешается для конкретного фона. Выбранный элемент отличается формой, маркером или подписью даже при монохромном отображении. Состояние фокуса остаётся различимо поверх выбранного и нажатого элемента. Для длинных списков сетка задаётся строкой, для деталей — полями содержимого. У закреплённой панели есть место в геометрии страницы или явно объявленный режим наложения. У слоя с наложением есть правила видимости последнего элемента списка и фокусируемых полей при открытой клавиатуре. [XAML theme resources](https://learn.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-theme-resources) · [Color in Windows](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color) · [Layout overview](https://learn.microsoft.com/en-us/windows/apps/design/layout/)
+The role of `onAccent` is allowed for a specific background. The selected element differs in shape, marker or label even when monochrome display. The focus state remains distinguishable over the selected and pressed element. For long lists, the grid is set by a string, for details by content fields. A fixed panel has space in the geometry of the page or an explicitly declared overlay mode. The overlay layer has rules for the visibility of the last item in the list and focus fields when the keyboard is open. [XAML theme resources](https://learn.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-theme-resources) · [Color in Windows](https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/color) · [Layout overview](https://learn.microsoft.com/en-us/windows/apps/design/layout/)
 
-В WinUI `{ThemeResource}` разрешает ключ при загрузке XAML и повторно при смене темы. Его используют и в активном визуальном состоянии, чтобы обновить, например, кисть фокуса при включении контрастной темы. Словари `Light`, `Dark` и `HighContrast` дают значения по одним ролям. Для контрастной темы кисти берут пользовательские системные цвета, в том числе фон кнопок и цвет текста. [Расширение ThemeResource](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/themeresource-markup-extension) · [Contrast themes](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/high-contrast-themes)
+In WinUI, `{ThemeResource}` allows the key when you download XAML and again when you change the theme. It is also used in an active visual state to update, for example, the focus brush when a contrasting theme is included. The dictionaries `Light`, `Dark` and `HighContrast` give values for the same roles. For a contrasting theme, brushes take custom system colors, including button background and text color. [ThemeResource Extension](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/themeresource-markup-extension) · [Contrast themes](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/high-contrast-themes)
 
-В WinUI `AdaptiveTrigger` применяет визуальное состояние при достижении минимальной ширины или высоты окна в эффективных пикселях. Когда указаны оба минимума, должны выполняться оба условия. В библиотеке пороги зависят от того, сколько места нужно содержимому. Вложенный компонент вычисляет своё размещение по доступной ему области. При смене компоновки сохраняются выбранные ключи и история, а фокус переводится к ближайшему видимому аналогу, если его прежний элемент скрыт. [Responsive layouts](https://learn.microsoft.com/en-us/windows/apps/develop/ui/layouts-with-xaml) · [AdaptiveTrigger](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.adaptivetrigger)
+In WinUI, the `AdaptiveTrigger` applies the visual state to the minimum width or height of the window in effective pixels. When both minimums are specified, both conditions must be met. In a library, thresholds depend on how much space the content needs. The nested component calculates its placement on the area available to it. When changing the layout, the selected keys and history are saved, and the focus is translated to the nearest visible counterpart if its former element is hidden. [Responsive layouts](https://learn.microsoft.com/en-us/windows/apps/develop/ui/layouts-with-xaml) · [AdaptiveTrigger](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.adaptivetrigger)
 
-### Геометрия и ресурсы темы Phone 8 Silverlight
+### Phone 8 Silverlight geometry and theme resources
 
-SDK задаёт `PhoneMargin` со значением 12, `PhoneHorizontalMargin` со значением `12, 0` и `PhoneVerticalMargin` со значением `0, 12`. Толщина рамки и штриха равна 3. `PhoneTouchTargetOverhang` равен 12, а `PhoneTouchTargetLargeOverhang` задан парой `12, 20`. Эти величины относятся к шаблону и дополняют правила физического размера цели касания. `PhoneForegroundBrush` и `PhoneBackgroundBrush` служат основными кистями переднего плана и фона, `PhoneDisabledBrush` и `PhoneSubtleBrush` — кистями вторичных состояний, а `PhoneChromeBrush` согласует цвет с Application Bar. Для TextBox отдельно заданы кисти курсора, выделения и состояния редактирования. Пример Silverlight читает тему из `PhoneDarkThemeVisibility`, а акцент из `PhoneAccentColor`. [Theme resources for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105)) · [How to apply theme resources for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769545(v=vs.105))
+The SDK defines `PhoneMargin` with a value of 12, `PhoneHorizontalMargin` with a value of `12, 0`, and `PhoneVerticalMargin` with a value of `0, 12`. The thickness of the frame and stroke is 3. `PhoneTouchTargetOverhang` is 12, and `PhoneTouchTargetLargeOverhang` is set by `12, 20`. These values refer to the pattern and complement the physical size rules of the touch target. `PhoneForegroundBrush` and `PhoneBackgroundBrush` serve as the primary foreground and background brushes, `PhoneDisabledBrush` and `PhoneSubtleBrush` as secondary state brushes, and `PhoneChromeBrush` coordinates color with the Application Bar. For TextBox, cursor brushes, selection and editing state are separately set. The Silverlight example reads a theme from `PhoneDarkThemeVisibility` and an accent from `PhoneAccentColor`. [Theme resources for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105)) · [How to apply theme resources for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769545(v=vs.105))
 
-| Экран в Phone 8 Update 3 | Физические пиксели | Область после масштабирования | `ScaleFactor` |
+| Screen in Phone 8 Update 3 | Physical pixels | Area after scaling | `ScaleFactor` |
 | --- | --- | --- | --- |
 | WVGA | 480 × 800 | 480 × 800 | 100 |
 | WXGA | 768 × 1280 | 480 × 800 | 160 |
 | 720p | 720 × 1280 | 480 × 853 | 150 |
 | 1080p | 1080 × 1920 | 480 × 853 | 150 |
 
-На 1080p значение `ScaleFactor` доступно приложению как 150, а система использует коэффициент 2,25. В примере Microsoft у `Grid` есть строки высоты `Auto` и `*`. Приложение использует дополнительные 53 единицы по высоте на дисплеях 16:9, сохраняя общую ширину. Макеты проверяются на обоих соотношениях сторон, а графика — на каждом размере, для которого предусмотрен отдельный файл. [Multi-resolution apps for Windows Phone 8](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj206974(v=vs.105))
+At 1080p, the `ScaleFactor` value is available to the application as 150, and the system uses a factor of 2.25. In Microsoft’s example, the `Grid` has the height strings `Auto` and `*`. The app uses an additional 53 units in height on 16:9 displays, keeping the overall width. Layouts are checked on both aspect ratios, and graphics on each size for which a separate file is provided. [Multi-resolution apps for Windows Phone 8](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj206974(v=vs.105))
 
-### Цветовые роли Light и Dark из SDK 8.0
+### Light and Dark color roles in SDK 8.0
 
-Значения взяты из оригинальных дизайнерских словарей `Dark\ThemeResources.xaml` и `Light\ThemeResources.xaml` пакета SDK 8.0. Формат цветов — `#AARRGGBB`. Например, `#DE000000` в светлой теме задаёт чёрный цвет с альфой `DE`. Итоговый вид полупрозрачной кисти зависит от подложки. [Проверка пакета и путь к файлам](sources.md#извлечённые-ресурсы-windows-phone-sdk-80)
+The values are taken from the original design dictionaries `Dark\ThemeResources.xaml` and `Light\ThemeResources.xaml` of the SDK 8.0 package. The color format is `#AARRGGBB`. For example, `#DE000000` in a light theme sets a black color with the alpha `DE`. The final look of the translucent brush depends on the substrate. [Checking the package and the path to files](sources.md#extracted-windows-phone-sdk-80-resources)
 
-| Ключ цвета | Dark | Light | Применение |
+| Colour key | Dark | Light | Application |
 | --- | --- | --- | --- |
-| `PhoneBackgroundColor` | `#FF000000` | `#FFFFFFFF` | Фон |
-| `PhoneForegroundColor` | `#FFFFFFFF` | `#DE000000` | Основной текст и рамки |
-| `PhoneContrastBackgroundColor` | `#FFFFFFFF` | `#DE000000` | Контрастная подложка |
-| `PhoneContrastForegroundColor` | `#FF000000` | `#FFFFFFFF` | Текст контрастной подложки |
-| `PhoneDisabledColor` | `#66FFFFFF` | `#4D000000` | Отключённый текст и границы |
-| `PhoneSubtleColor` | `#99FFFFFF` | `#66000000` | Второстепенный текст и линии |
-| `PhoneTextHighContrastColor` | `#FFFFFFFF` | `#DE000000` | Текст высокой контрастности |
-| `PhoneTextMidContrastColor` | `#99FFFFFF` | `#73000000` | Средний уровень контрастности |
-| `PhoneTextLowContrastColor` | `#73FFFFFF` | `#40000000` | Низкий уровень контрастности |
-| `PhoneChromeColor` | `#FF1F1F1F` | `#FFDDDDDD` | Системные панели |
-| `PhoneSemitransparentColor` | `#AA000000` | `#AAFFFFFF` | Полупрозрачная подложка |
-| `PhoneProgressBarBackgroundColor` | `#19FFFFFF` | `#19000000` | Фон индикатора |
-| `PhoneButtonBasePressedForegroundColor` | `#FFFFFFFF` | `#FFFFFFFF` | Текст нажатой кнопки |
-| `PhoneTextBoxColor` | `#BFFFFFFF` | `#26000000` | Фон поля в обычном состоянии |
-| `PhoneTextBoxForegroundColor` | `#FF000000` | `#DE000000` | Текст поля |
-| `PhoneTextCaretColor` | `#FF000000` | `#DE000000` | Курсор ввода |
-| `PhoneTextBoxEditBackgroundColor` | `#FFFFFFFF` | `#00000000` | Фон в режиме редактирования |
-| `PhoneTextBoxReadOnlyColor` | `#77000000` | `#2E000000` | Режим только для чтения |
-| `PhoneTextBoxSelectionForegroundColor` | `#FFFFFFFF` | `#FFFFFFFF` | Выделенный текст |
-| `PhoneInactiveColor` | `#33FFFFFF` | `#33000000` | Устаревшая кисть неактивности |
-| `PhoneInverseInactiveColor` | `#FFCCCCCC` | `#FFE5E5E5` | Устаревшая инверсная кисть неактивности |
-| `PhoneInverseBackgroundColor` | `#FFFFFFFF` | `#FFDDDDDD` | Устаревший инверсный фон |
-| `PhoneBorderColor` | `#BFFFFFFF` | `#99000000` | Устаревший цвет рамки |
+| `PhoneBackgroundColor` | `#FF000000` | `#FFFFFFFF` | von |
+| `PhoneForegroundColor` | `#FFFFFFFF` | `#DE000000` | Main text and framework |
+| `PhoneContrastBackgroundColor` | `#FFFFFFFF` | `#DE000000` | Contrast substrate |
+| `PhoneContrastForegroundColor` | `#FF000000` | `#FFFFFFFF` | Text of contrast substrate |
+| `PhoneDisabledColor` | `#66FFFFFF` | `#4D000000` | Disabled text and boundaries |
+| `PhoneSubtleColor` | `#99FFFFFF` | `#66000000` | Secondary text and lines |
+| `PhoneTextHighContrastColor` | `#FFFFFFFF` | `#DE000000` | High contrast text |
+| `PhoneTextMidContrastColor` | `#99FFFFFF` | `#73000000` | Average level of contrast |
+| `PhoneTextLowContrastColor` | `#73FFFFFF` | `#40000000` | Low level of contrast |
+| `PhoneChromeColor` | `#FF1F1F1F` | `#FFDDDDDD` | System panels |
+| `PhoneSemitransparentColor` | `#AA000000` | `#AAFFFFFF` | Semi-transparent substrate |
+| `PhoneProgressBarBackgroundColor` | `#19FFFFFF` | `#19000000` | Indicator background |
+| `PhoneButtonBasePressedForegroundColor` | `#FFFFFFFF` | `#FFFFFFFF` | Text of the button pressed |
+| `PhoneTextBoxColor` | `#BFFFFFFF` | `#26000000` | Field background in normal condition |
+| `PhoneTextBoxForegroundColor` | `#FF000000` | `#DE000000` | Text of the field |
+| `PhoneTextCaretColor` | `#FF000000` | `#DE000000` | Input cursor |
+| `PhoneTextBoxEditBackgroundColor` | `#FFFFFFFF` | `#00000000` | Background in editing mode |
+| `PhoneTextBoxReadOnlyColor` | `#77000000` | `#2E000000` | Read-only mode |
+| `PhoneTextBoxSelectionForegroundColor` | `#FFFFFFFF` | `#FFFFFFFF` | Highlighted text |
+| `PhoneInactiveColor` | `#33FFFFFF` | `#33000000` | Obsolete inactivity brush |
+| `PhoneInverseInactiveColor` | `#FFCCCCCC` | `#FFE5E5E5` | Obsolete inverse brush of inactivity |
+| `PhoneInverseBackgroundColor` | `#FFFFFFFF` | `#FFDDDDDD` | Obsolete inverse background |
+| `PhoneBorderColor` | `#BFFFFFFF` | `#99000000` | Obsolete color frame |
 
-В обеих темах рамка редактируемого поля `PhoneTextBoxEditBorderBrush` и нажатая заливка `PhoneRadioCheckBoxPressedBrush` ссылаются на текущий `PhoneAccentColor`. У CheckBox и RadioButton обычная заливка прозрачна. Рамка и отметка ссылаются на `PhoneForegroundColor`. Кисти отключённого состояния задаются шаблоном контрола. Для неактивного заголовка Pivot словарь задаёт непрозрачность 0,4 в Dark и 0,23144 в Light. [Официальные имена и назначение ресурсов](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105))
+In both themes, the `PhoneTextBoxEditBorderBrush` editable field frame and the `PhoneRadioCheckBoxPressedBrush` pressed fill refer to the current `PhoneAccentColor`. CheckBox and RadioButton have regular fillers that are transparent. The frame and mark refer to `PhoneForegroundColor`. The hands of the disconnected state are set by a control pattern. For an inactive Pivot header, the dictionary specifies opacity of 0.4 in Dark and 0.23144 in Light. [Official names and assignment of resources](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105))
 
-### Цветовые роли SDK 7.0 и 7.1
+### Color roles in SDK 7.0 and 7.1
 
-В обоих профилях темы Dark и Light имеют по десять вариантов акцента. Сравнение всех словарей показало, что внутри каждой темы от варианта к варианту меняется только `PhoneAccentColor`. Все общие буквальные цвета, перечисленные в таблице SDK 8.0, имеют те же значения. В 7.0 и 7.1 также определены отдельные цвета рамки редактирования, CheckBox и RadioButton. [Извлечённые словари](sources.md#извлечённые-ресурсы-windows-phone-sdk-80)
+In both profiles, Dark and Light themes have ten accent options. A comparison of all the dictionaries showed that only `PhoneAccentColor` changes within each theme from variant to variant. All common literal colors listed in the SDK 8.0 table have the same meanings. 7.0 and 7.1 also define the individual colors of the editing frame, CheckBox and RadioButton. [Extracted dictionaries](sources.md#extracted-windows-phone-sdk-80-resources)
 
-| Ключ цвета SDK 7.0 и 7.1 | Dark | Light |
+| SDK color key 7.0 and 7.1 | Dark | Light |
 | --- | --- | --- |
 | `PhoneTextBoxEditBorderColor` | `#FFFFFFFF` | `#DE000000` |
 | `PhoneRadioCheckBoxColor` | `#BFFFFFFF` | `#26000000` |
@@ -163,11 +163,11 @@ SDK задаёт `PhoneMargin` со значением 12, `PhoneHorizontalMargi
 | `PhoneRadioCheckBoxPressedColor` | `#FFFFFFFF` | `#00000000` |
 | `PhoneRadioCheckBoxPressedBorderColor` | `#FFFFFFFF` | `#DE000000` |
 
-### Палитра акцентов Phone 7.5 и 8
+### Phone 7.5 and 8 accent palette
 
-В таблице MSDN 20 акцентов для Phone 8. Десять из них также отмечены в колонке Phone 7.5. Значения ниже взяты из колонки HEX в формате ARGB из иллюстрации редакции 2014 года. В скобках указаны названия Phone 7.5, если они отличаются. Проектный токен `accent` принимает и цвет, который передаёт устройство. [Themes for Windows Phone, редакция 2014](https://web.archive.org/web/20140419214046id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/develop/ff402557(v=vs.105).aspx) · [Оригинальная таблица MSDN](https://web.archive.org/web/20130925151014id_/http://i.msdn.microsoft.com/dynimg/IC674329.png)
+The MSDN table has 20 accents for the Phone 8. Ten of them are also noted in the Phone 7.5 column. The values below are taken from the HEX column in ARGB format from the illustration of the 2014 edition. In brackets, the names of the Phone 7.5 are indicated if they are different. The design token `accent` accepts the color that the device transmits. [Themes for Windows Phone, 2014 Edition](https://web.archive.org/web/20140419214046id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/develop/ff402557(v=vs.105).aspx) · [Original MSDN Table](https://web.archive.org/web/20130925151014id_/http://i.msdn.microsoft.com/dynimg/IC674329.png)
 
-| Акцент Phone 8 | HEX Phone 8 | HEX Phone 7.5 по таблице MSDN |
+| Emphasis on Phone 8 | HEX Phone 8 | HEX Phone 7.5 on the MSDN table |
 | --- | --- | --- |
 | Lime | `#FFA4C400` | `#FFA2C139` |
 | Green | `#FF60A917` | `#FF339933` |
@@ -190,17 +190,17 @@ SDK задаёт `PhoneMargin` со значением 12, `PhoneHorizontalMargi
 | Mauve | `#FF76608A` | — |
 | Sienna | `#FFA0522D` | — |
 
-В иллюстрации редакции 2012 года у Yellow указан `#FFD8C100`, а у Sienna — `#FF7A3B3F`. В редакции 2014 года HEX Yellow изменился на `#FFE3C800`, а плашка сохранила RGB `216, 193, 0`. В обеих иллюстрациях у Pink напечатано RGB `244, 141, 208`, а HEX и плашка дают `244, 114, 208`. Для Purple в отдельном примере чтения темы Microsoft использует `#FFA200FF`. [Таблица из редакции 2012](https://web.archive.org/web/20140518062640/http://i.msdn.microsoft.com/dynimg/IC619215.png) · [Таблица из редакции 2014](https://web.archive.org/web/20130925151014id_/http://i.msdn.microsoft.com/dynimg/IC674329.png) · [Пример чтения акцента в Silverlight](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769545(v=vs.105))
+In the illustration of the edition of 2012 Yellow listed `#FFD8C100`, and Sienna — `#FF7A3B3F`. In 2014, the HEX Yellow was changed to `#FFE3C800`, and the plate retained the RGB `216, 193, 0`. In both illustrations, Pink has RGB `244, 141, 208` printed, while HEX and plaque give `244, 114, 208`. For Purple, in a separate theme reading example, Microsoft uses `#FFA200FF`. [Table from the 2012 edition](https://web.archive.org/web/20140518062640/http://i.msdn.microsoft.com/dynimg/IC619215.png) · [Table from the 2014 edition](https://web.archive.org/web/20130925151014id_/http://i.msdn.microsoft.com/dynimg/IC674329.png) · [An example of accent reading in Silverlight](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769545(v=vs.105))
 
-В 20 файлах `Design\AccentColors` SDK 8.0 19 названий и значений совпали с колонкой Phone 8. В пакете для дизайнера есть **Taupe `#FF87794E`**, а в таблице MSDN — **Sienna `#FFA0522D`**. Поэтому при сверке макета важно записывать версию палитры. [Словари цветов SDK 8.0](sources.md#извлечённые-ресурсы-windows-phone-sdk-80)
+In 20 `Design\AccentColors` SDK 8.0 files, 19 names and values matched the Phone 8 column. In the package for the designer there is **Taupe `#FF87794E`**, and in the MSDN table there is **Sienna `#FFA0522D`**. So when you check the layout, it's important to write down the palette version. [Dictionaries of colors SDK 8.0](sources.md#extracted-windows-phone-sdk-80-resources)
 
-Акценты из дизайнерских словарей 7.0 и 7.1 позволяют воспроизвести конкретный выпуск. Для Lime SDK 7.0 даёт `#FF8CBF26`, а SDK 7.1 — `#FFA2C139`. Для Magenta значения `#FFFF0097` и `#FFD80073` соответственно. Обе версии используют **Purple `#FFA200FF`**. Остальные семь акцентов совпали с колонкой MSDN для Phone 7.5. [Пакеты SDK](sources.md#извлечённые-ресурсы-windows-phone-sdk-80)
+Emphases from design dictionaries 7.0 and 7.1 allow you to reproduce a specific issue. For Lime, the SDK 7.0 gives `#FF8CBF26` and the SDK 7.1 gives `#FFA2C139`. Magenta values `#FFFF0097` and `#FFD80073`, respectively. Both versions use the **Purple `#FFA200FF`**. The other seven accents matched the MSDN column for the Phone 7.5. [SDK packages](sources.md#extracted-windows-phone-sdk-80-resources)
 
-### Темы и типографика XAML в Phone 8.1 Store apps
+### XAML themes and typography in Phone 8.1 Store apps
 
-Архивная копия телефонного `generic.xaml` содержит отдельные словари `Default` (тёмная тема), `Light`, `HighContrastBlack` и `HighContrastWhite`. Ниже полная таблица буквальных значений `Color` внутри этих словарей. Сведения о номере сборки в копии отсутствуют. Акцент во всех словарях поступает из системного ресурса `SystemColorControlAccentColor`. [Копия generic.xaml](https://gist.github.com/tmyt/dca3b0ccb3374c90a11a1b2e5b04ff2c/784d54c4b867dff1ac67cbd99a5f18b0aa997385#file-generic-xaml-L16-L74) · [Руководство Microsoft по темам](https://web.archive.org/web/20140408233050id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596122.aspx)
+The `generic.xaml` phone archive contains separate dictionaries `Default` (dark theme), `Light`, `HighContrastBlack` and `HighContrastWhite`. Below is a complete table of the literal values of `Color` within these dictionaries. Information about the assembly number in the copy is not available. The emphasis in all dictionaries comes from the system resource `SystemColorControlAccentColor`. [Copy of generic.haml](https://gist.github.com/tmyt/dca3b0ccb3374c90a11a1b2e5b04ff2c/784d54c4b867dff1ac67cbd99a5f18b0aa997385#file-generic-xaml-L16-L74) · [Microsoft's Guide to Themes](https://web.archive.org/web/20140408233050id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596122.aspx)
 
-| Ключ | Default | Light | HighContrastBlack | HighContrastWhite |
+| Key key | Default | Light | HighContrastBlack | HighContrastWhite |
 | --- | --- | --- | --- | --- |
 | `PhoneBaseBlackColor` | `#FF000000` | `#FF000000` | `#FF000000` | `#FF000000` |
 | `PhoneBaseWhiteColor` | `#FFFFFFFF` | `#FFFFFFFF` | `#FFFFFFFF` | `#FFFFFFFF` |
@@ -230,102 +230,102 @@ SDK задаёт `PhoneMargin` со значением 12, `PhoneHorizontalMargi
 | `TextBoxPlaceholderColor` | `#FF909090` | `#40000000` | `#73FFFFFF` | `#FF909090` |
 | `ContentDialogDimmingColor` | `#99000000` | `#99FFFFFF` | `#99000000` | `#99FFFFFF` |
 
-Кисть страницы `ApplicationPageBackgroundThemeBrush` использует `PhoneBackgroundColor`, а `ApplicationForegroundThemeBrush` — `PhoneBaseMediumHighColor`. Заголовок приложения использует `PhoneForegroundColor`, вторичный текст — `PhoneBaseMidColor`. Подложка `ContentDialog` использует `PhoneChromeColor`, затемнение — `ContentDialogDimmingColor`. [Алиасы кистей в копии словаря](https://gist.github.com/tmyt/dca3b0ccb3374c90a11a1b2e5b04ff2c/784d54c4b867dff1ac67cbd99a5f18b0aa997385#file-generic-xaml-L73-L105)
+`ApplicationPageBackgroundThemeBrush` uses `PhoneBackgroundColor` and `ApplicationForegroundThemeBrush` uses `PhoneBaseMediumHighColor`. The app title uses `PhoneForegroundColor`, the secondary text is `PhoneBaseMidColor`. `ContentDialog` substrate uses `PhoneChromeColor`, dimming - `ContentDialogDimmingColor`. [Alias brushes in a copy of the dictionary](https://gist.github.com/tmyt/dca3b0ccb3374c90a11a1b2e5b04ff2c/784d54c4b867dff1ac67cbd99a5f18b0aa997385#file-generic-xaml-L73-L105)
 
-Там же есть шесть размеров `TextStyle…FontSize` в единицах XAML. Последовательно они равны 10,66 для Small, 16 для Medium, 18,14 для Large, 25,5 для ExtraLarge, 29,86 для ExtraLargePlus и 34,14 для ExtraExtraLarge. `ContentControlThemeFontFamily` задаёт Segoe WP, `ContentControlFontSize` равен 20,26. Конкретные контролы могут использовать свои значения. [Типографический набор в копии XAML](https://gist.github.com/tmyt/dca3b0ccb3374c90a11a1b2e5b04ff2c/784d54c4b867dff1ac67cbd99a5f18b0aa997385#file-generic-xaml-L1437-L1450) · [Спецификации XAML и WinJS](store-81-visual-specs.md)
+There are six sizes of `TextStyle…FontSize` in XAML units. They are 10.66 for Small, 16 for Medium, 18.14 for Large, 25.5 for ExtraLarge, 29.86 for ExtraLargePlus and 34.14 for ExtraExtraLarge. `ContentControlThemeFontFamily` defines Segoe WP, `ContentControlFontSize` is 20.26. Specific controls can use their values. [Typographical set in XAML copy](https://gist.github.com/tmyt/dca3b0ccb3374c90a11a1b2e5b04ff2c/784d54c4b867dff1ac67cbd99a5f18b0aa997385#file-generic-xaml-L1437-L1450) · [XAML and WinJS specifications](store-81-visual-specs.md)
 
-### Размеры экспортируемой графики Phone 8
+### Phone 8 export asset sizes
 
-Наборы SDK, имена ресурсов и геометрия иконок App Bar доступны в общем каталоге. [Иконки Windows Phone Metro](metro-icons.md)
+SDK sets, resource names and geometry of App Bar icons are available in a shared directory. [Windows Phone Metro Icons](metro-icons.md)
 
-Asset Template Guide задаёт размеры изображений в физических пикселях для WVGA, 720p и WXGA. Размер экспортируемого файла, внутренняя область знака и область взаимодействия хранятся отдельно. В частности, 26 × 26 px относится к рисунку кнопки App Bar в шаблоне WVGA. Размер касания вычисляется по правилам ввода соответствующего профиля. [Asset Template Guide, стр. 1–8](https://github.com/ghuntley/ux-design-for-windows-phone/blob/9f951a29e44013b8cb8208d6e063b94656af7723/ms%20windows%20phone%20templates/AssetTemplateGuide.pdf)
+The Asset Template Guide specifies physical pixel sizes for WVGA, 720p and WXGA. The size of the exported file, the internal area of the mark and the interaction area are stored separately. In particular, 26 × 26 px refers to the App Bar button pattern in the WVGA template. The size of the touch is calculated according to the rules for entering the corresponding profile. [Asset Template Guide, pp. 1-8](https://github.com/ghuntley/ux-design-for-windows-phone/blob/9f951a29e44013b8cb8208d6e063b94656af7723/ms%20windows%20phone%20templates/AssetTemplateGuide.pdf)
 
-| Ресурс | Размеры в шаблонах Phone 8 |
+| Resource | Sizes in Phone 8 templates |
 | --- | --- |
-| Кнопка App Bar, WVGA | Круг 48 × 48 px. Знак внутри 26 × 26 px. |
-| Заставка | Общий файл 768 × 1280 px. Отдельные варианты 480 × 800 для WVGA, 720 × 1280 для 720p и 768 × 1280 для WXGA. |
-| Фон Panorama | 1536 × 1280 px. |
-| Иконка приложения | 99 × 99 px, внутреннее поле шаблона 14 px. |
-| Плитки Flip и Cycle | Малый файл 159 × 159 с полем разметки 43 px, средний 336 × 336 с полем 101 px, широкий 691 × 336 с полями 279 × 101 px. Фон заполняет всю поверхность. |
-| Плитки Iconic | Малый значок до 110 px по ширине и 110 px в высоту, средний до 202 px по ширине и 202 px в высоту. Поля шаблона 19 и 34 px соответственно. При экспорте гайд предлагает обрезать файл по верхней и нижней границе знака. |
-| Экран блокировки | Фон 768 × 1280 px, значок 38 × 38 px. |
-| Значок Lens | 173 × 173 для WVGA, 259 × 259 для 720p, 277 × 277 px для WXGA. |
-| Значки файловой ассоциации и Store | Три квадрата для файлов 33, 69 и 179 px. Изображения Store 300 × 300 и 1000 × 800 px. |
+| App Bar button, WVGA | Circle 48 × 48 px The sign inside is 26 × 26 px. |
+| Screensaver | Shared file 768 × 1280 px. Individual options 480 × 800 for WVGA, 720 × 1280 for 720p and 768 × 1280 for WXGA. |
+| Von Panorama | 1536 × 1280 px. |
+| Application icon | 99 × 99 px, the internal field of the template is 14 px. |
+| Flip and Cycle tiles | Small file 159 × 159 with markup field 43 px, average 336 × 336 with field 101 px, wide 691 × 336 with fields 279 × 101 px. background fills the entire surface. |
+| Iconic tiles | Small icon up to 110 px in width and 110 px in height, medium up to 202 px in width and 202 px in height. Template fields 19 and 34 px, respectively. When exporting, the guide suggests cropping the file along the upper and lower border of the sign. |
+| Lock screen | Background 768 × 1280 px, icon 38 × 38 px. |
+| Lens badge | 173×173 for WVGA, 259×259 for 720p, 277×277 px for WXGA. |
+| File Association and Store badges | Three squares for files 33, 69 and 179 px Store images 300 × 300 and 1000 × 800 px. |
 
-### Графика Phone 8.1 Store apps
+### Phone 8.1 Store app assets
 
-Руководство по графике предлагает использовать типографику и содержимое для выделения задач, а графику — для обозначения действия, состояния или бренда. Для плитки, которая получает системный фон, руководство предлагает прозрачный фон изображения и белый знак. Заставка появляется кратко, поэтому важный для действия текст должен быть доступен на следующем экране. [Essential graphics, visual indicators, and notifications](https://web.archive.org/web/20141012014027id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596109.aspx)
+The Graphical Guide suggests using typography and content to highlight tasks, and graphics to indicate an action, state, or brand. For tiles that receive a system background, the guide offers a transparent image background and a white sign. The screensaver appears briefly, so important text for the action should be available on the next screen. [Essential graphics, visual indicators, and notifications](https://web.archive.org/web/20141012014027id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596109.aspx)
 
-В исходном ZIP Phone 8.1 шаблоны содержат ресурсы для масштабов 100, 140 и 240 процентов. Базовые файлы плиток Start в справке Windows Runtime имеют 71 × 71, 150 × 150 и 310 × 150 px при масштабе 100. Иконка списка приложений имеет 44 × 44 px при том же масштабе. Ресурсы во всех доступных размерах привязаны к одному назначению. Система выбирает подходящий файл и шаблон уведомления по размеру плитки. [Шаблоны Phone Store apps](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/Visual_Assets_Templates_for_Windows_Phone_Store_apps.zip) · [Tile and toast visual assets](https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh781198(v=win.10))
+In the original ZIP Phone 8.1, templates contain resources on scales of 100, 140, and 240 percent. The basic Start tiles in Windows Runtime help have 71 × 71, 150 × 150 and 310 × 150 px at a scale of 100. The app list icon has 44 × 44 px at the same scale. Resources in all available sizes are tied to one purpose. The system selects the appropriate file and notification template by tile size. [Phone Store apps templates](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/Visual_Assets_Templates_for_Windows_Phone_Store_apps.zip) · [Tile and toast visual assets](https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh781198(v=win.10))
 
-Шестистраничный гайд внутри ZIP указывает для App Bar Store apps графические маски 32, 45 и 77 px с рисунком 18, 25 и 41 px соответственно. Для Hub в пакете предусмотрены варианты фона по теме и масштабу. Документ рекомендует низкоконтрастный фон, чтобы заголовки и содержимое сохраняли читаемость. [Visual Asset Design Templates for Windows Phone Store apps](windows-phone-archive.md#visual-assets-templates-для-windows-phone-store-apps)
+The six-page guide inside the ZIP indicates 32, 45 and 77 px graphics masks for the App Bar Store apps with 18, 25 and 41 px, respectively. For Hub, the package provides background options for theme and scale. The document recommends a low-contrast background to keep headlines and content readable. [Visual Asset Design Templates for Windows Phone Store apps](windows-phone-archive.md#visual-asset-templates-for-windows-phone-store-apps)
 
-Таблица сводит холсты из шести страниц гайда. В скобках указан квадратный размер знака, если он задан. Размеры указаны в физических пикселях. Файлы масштаба 240% требуются как минимум. Гайд рекомендует предоставить все масштабы, а для файловых ассоциаций перечисляет обязательные `targetsize` 63, 129 и 336 px. [Оригинальные шаблоны и гайд](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/Visual_Assets_Templates_for_Windows_Phone_Store_apps.zip)
+The table brings together canvases from six pages of the guide. The brackets indicate the square size of the sign, if given. Dimensions are indicated in physical pixels. At least 240% files are required. Hyde recommends providing all scales, and for file associations lists mandatory `targetsize` 63, 129 and 336 px. [Original templates and guide](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/Visual_Assets_Templates_for_Windows_Phone_Store_apps.zip)
 
-| Назначение | 100% | 140% | 240% |
+| Appointment | 100% | 140% | 240% |
 | --- | --- | --- | --- |
-| `Square71x71Logo` · малая плитка | 71 × 71 (32) | 99 × 99 (45) | 170 × 170 (77) |
-| `Square150x150Logo` · средняя плитка | 150 × 150 (60) | 210 × 210 (84) | 360 × 360 (144) |
-| `Wide310x150Logo` · широкая плитка | 310 × 150 (60) | 434 × 210 (84) | 744 × 360 (144) |
-| `Square44x44Logo` · список приложений | 44 × 44 (32) | 62 × 62 (44) | 106 × 106 (76) |
+| `Square71x71Logo` · Small tile | 71 × 71 (32) | 99 × 99 (45) | 170 × 170 (77) |
+| `Square150x150Logo` · Medium tile | 150 × 150 (60) | 210 × 210 (84) | 360 × 360 (144) |
+| `Wide310x150Logo` · wide tiles | 310 × 150 (60) | 434 × 210 (84) | 744 × 360 (144) |
+| `Square44x44Logo` - List of applications | 44 × 44 (32) | 62 × 62 (44) | 106 × 106 (76) |
 | `StoreLogo` | 50 × 50 (32) | 70 × 70 (46) | 120 × 120 (80) |
-| Фон Hub | 640 × 533 | 1097 × 914 | 1536 × 1280 |
+| von Hub | 640 × 533 | 1097 × 914 | 1536 × 1280 |
 | `SplashScreen@Image` | 480 × 800 | 672 × 1120 | 1152 × 1920 |
-| Маска `AppBarButton` | 32 × 32 (18) | 45 × 45 (25) | 77 × 77 (41) |
+| `AppBarButton` mask | 32 × 32 (18) | 45 × 45 (25) | 77 × 77 (41) |
 
-## Ввод и обратная связь
+## Input and feedback
 
-Гайд Phone 7 описывает tap, double tap, pan, flick, удержание и pinch/stretch. У tap обратная связь начинается при касании, действие выполняется при отпускании. Гайд задаёт обычную цель касания от 9 мм с промежутком от 2 мм, а 7 мм приводит как исключение. Экранная и аппаратная клавиатуры относятся к отдельным поверхностям ввода. В современном Windows касание, мышь, клавиатура и перо имеют разные способы адресации. [Гайд Phone 7, стр. 70–102](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=36) · [Touch interactions](https://learn.microsoft.com/en-us/windows/apps/design/input/touch-interactions) · [Keyboard interactions](https://learn.microsoft.com/en-us/windows/apps/develop/input/keyboard-interactions)
+The Phone 7 guide describes tap, double tap, pan, flick, hold, and pinch/stretch. In tap, feedback begins with touch, the action is performed when released. The guide sets the usual target of touching from 9 mm with a gap of 2 mm, and 7 mm gives as an exception. Screen and hardware keyboards refer to separate input surfaces. In modern Windows, touch, mouse, keyboard, and pen all have different ways of addressing. [Hyde Phone 7, pp. 70–102](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=36) · [Touch interactions](https://learn.microsoft.com/en-us/windows/apps/design/input/touch-interactions) · [Keyboard interactions](https://learn.microsoft.com/en-us/windows/apps/develop/input/keyboard-interactions)
 
-В Phone Store apps tap останавливает инерционное движение. Pan ведёт поверхность вслед за пальцем и при отпускании приводит её к допустимой позиции. Flick продолжает движение после отпускания, а pinch меняет масштаб относительно середины между пальцами. Эти правила связывают диспетчер жестов с состоянием прокрутки и масштаба. [Жесты Phone 8.1 в MSDN](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx)
+In Phone Store apps tap stops inertial movement. Pan leads the surface after the finger and, when released, leads it to an acceptable position. Flick continues to move after releasing, and pinch zooms in relative to the middle between the fingers. These rules link the gesture manager to the scrolling and scale state. [Phone 8.1 gestures in MSDN](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx)
 
-Руководство **Input and feedback patterns** для Windows Store предлагает проектировать цели с учётом касания и сохранять предсказуемое поведение при смене устройства ввода. Мышь и тачпад дают точное наведение, перо может указывать и рисовать, а клавиатура поддерживает обход элементов, активацию и команды. В библиотеке смена устройства ввода сохраняет текущую задачу, выбранный объект и введённые данные. [Input and feedback patterns](https://web.archive.org/web/20140501004253id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn456349.aspx)
+The **Input and feedback patterns** guide for the Windows Store suggests designing touch-based goals and maintaining predictable behavior when changing the input device. The mouse and touchpad provide precise guidance, the pen can point and draw, and the keyboard supports element bypass, activation, and commands. In the library, changing the input device saves the current task, the selected object, and the input data. [Input and feedback patterns](https://web.archive.org/web/20140501004253id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn456349.aspx)
 
-Руководство Phone 8.1 различает видимый знак, область касания и промежуток между целями. Для основных действий указана цель от 9 × 9 мм. При дефиците высоты широкая строка может иметь цель 7 мм по высоте при ширине от 15 мм. Для действий с заметной ценой случайного касания рекомендуются более крупные цели. Эти физические размеры относятся к историческому профилю. [Interactions and usability в MSDN](https://web.archive.org/web/20140408235718id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596113.aspx)
+The Phone 8.1 manual distinguishes between visible sign, touch area, and the gap between targets. For the main actions, the target is from 9 × 9 mm. In case of height deficiency, a wide line can have a goal of 7 mm in height with a width of 15 mm. Larger targets are recommended for actions with a noticeable cost of casual touch. These physical dimensions belong to a historical profile. [Interactions and usability in MSDN](https://web.archive.org/web/20140408235718id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596113.aspx)
 
-| Ввод | Поведение в библиотеке |
+| Entering | Behavior in the library |
 | --- | --- |
-| Касание | Нажатие показывает отклик, отпускание завершает действие. Захват оси или отмена прекращает ожидающий tap. Удержание может открыть контекстное меню. |
-| Мышь | Hover даёт подсказку, основной клик активирует, вторичный открывает контекст. Колесо продолжает ожидаемую прокрутку коллекции. |
-| Клавиатура | Tab перемещает фокус между областями, стрелки перемещаются внутри составного контрола согласно его роли, Enter/Space активируют по семантике контрола, Escape закрывает текущий слой, когда тот допускает отмену. |
-| Считыватель экрана | У элемента есть имя, роль, значение и состояние. Доступны действия открытия, выбора, изменения значения и вызова меню. При смене секции озвучивается результат. |
-| Перо | Библиотека поддерживает указание и активацию. Поверхность рукописного ввода или захвата штриха определяет отдельные правила жестов. |
+| Touching | Clicking shows the response, releasing ends the action. Clicking the axis or canceling stops the waiting tap. Holding can open the context menu. |
+| Mouse. | Hover gives a hint, the main click activates, the secondary opens the context, and the wheel continues the expected scroll of the collection. |
+| keyboard | Tab shifts focus between areas, arrows move within the composite control according to its role, Enter/Space activates the control semantics, Escape closes the current layer when it allows cancellation. |
+| Screen reader | An item has a name, a role, a value and a state, and you can open, select, change the value and call the menu, and when you change the section, you can say the result. |
+| feather | The library supports pointing and activation, and the surface of handwriting or stroke capture defines the individual gesture rules. |
 
-## Движение и непрерывность
+## Motion and continuity
 
-Исторический Phone Hub движет фон, заголовок и содержимое с разной скоростью. Pivot отвечает за переход между соседними представлениями. WinUI описывает отдельные переходы между страницами и связь элемента списка с его представлением на странице деталей. [Windows 8.1 UX guidelines, стр. 131–135 и 161–164](sources.md#windows-81-и-windows-phone-81) · [Page transitions](https://learn.microsoft.com/en-us/windows/apps/design/motion/page-transitions) · [Connected animation](https://learn.microsoft.com/en-us/windows/apps/develop/motion/connected-animation)
+The historic Phone Hub moves the background, header and content at different speeds. Pivot is responsible for the transition between neighboring views. WinUI describes the individual transitions between pages and the relationship of the list element to its representation on the detail page. [Windows 8.1 UX guidelines, pages 131–135 and 161–164](sources.md#windows-81-and-windows-phone-81) · [Page transitions](https://learn.microsoft.com/en-us/windows/apps/design/motion/page-transitions) · [Connected animation](https://learn.microsoft.com/en-us/windows/apps/develop/motion/connected-animation)
 
-**Контракт библиотеки.** Анимация касания следует за вводом. После отпускания контрол приводит поверхность к целевому состоянию. Переход по команде связывает выбранный объект, заголовок или направление навигации с новым экраном. Если общий элемент исчез или у него изменилась геометрия, используется короткий переход страницы. В режиме уменьшенного движения используются мгновенная смена или небольшое затухание. Маршрут, выделение и фокус подтверждаются по одной модели при любой настройке движения.
+**Library contract.** Touch animation follows input. After release, the control leads the surface to the target state. A command transition connects the selected object, header, or navigation direction to the new screen. If a common element has disappeared or has changed its geometry, a short page transition is used. In the mode of reduced movement, an instant change or a slight attenuation is used. Route, allocation and focus are confirmed by one model in any movement setting.
 
-| Событие | Поведение |
+| Event. | Behavior |
 | --- | --- |
-| Старт drag | Отменить ожидающую активацию вложенной кнопки после захвата перемещения. |
-| Отпускание | Зафиксировать соседнюю секцию или вернуть текущую позицию по правилам контроля оси и скорости. |
-| Новый ввод во время перехода | Прервать визуальную часть и начать с текущей видимой позиции. Результат последовательности событий фиксируется один раз. |
-| Изменение ширины или темы | Пересчитать геометрию и сохранить семантическое состояние. При непригодной геометрии завершить переход в целевом состоянии. |
-| Возврат от деталей | Вернуть объект-источник и его позицию перед восстановлением фокуса, если объект ещё есть. |
+| Start drag | Cancel the pending activation of the nested button after capturing the movement. |
+| Release | Lock the adjacent section or return the current position according to the axis and speed control rules. |
+| New input during transition | Interrupt the visual part and start from the current visible position, the result of the sequence of events is recorded once. |
+| Change in width or subject matter | Recalculate the geometry, maintain the semantic state, complete the transition in the target state if the geometry is unusable. |
+| Getting back from details | Return the source object and its position before restoring focus, if the object is still present. |
 
-### Движение в Phone 8 и 8.1
+### Motion in Phone 8 and 8.1
 
-Гайд Microsoft различает переходы между экранами и локальные реакции. Turnstile обозначает направление навигации, Tilt подтверждает касание интерактивной поверхности, а вход Panorama может показать направление прокрутки. Гайд описывает плавное замедление при входе, ускорение при выходе и S-образную кривую как вариант для большого перемещения. Эти описания задают характер движения. Числовые кривые и длительности остаются частью темы будущей библиотеки. [Animations, motion, and output for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh202871(v=vs.105))
+The Microsoft Guide distinguishes between screen transitions and local reactions. Turnstile indicates the direction of navigation, Tilt confirms the touch of the interactive surface, and Panorama input can show the direction of scrolling. Hyde describes a smooth deceleration at entry, acceleration at exit, and an S-curve as an option for large displacement. These descriptions define the nature of the movement. Numerical curves and durations remain part of the future library's theme. [Animations, motion, and output for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/hh202871(v=vs.105))
 
-Редакция MSDN для Phone Store apps связывает Tilt с `PointerDownThemeAnimation` и требует отклика во время жеста. Локальная анимация обозначает изменение контрола, направленный переход показывает перемещение по истории, а длительная задача получает видимый прогресс. Звук и вибрация дополняют отклик с учётом системных настроек пользователя. [Animations, motion, and output, редакция для Phone Store apps](https://web.archive.org/web/20141223184936id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596095.aspx)
+The MSDN version for Phone Store apps links Tilt to `PointerDownThemeAnimation` and requires a response during the gesture. Local animation indicates a change in control, directional transition shows movement through history, and a long-term task receives visible progress. Sound and vibration complement the response with the user's system settings. [Animations, Motion, and Output for Phone Store Apps](https://web.archive.org/web/20141223184936id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596095.aspx)
 
-### Семантика переходов WinUI
+### WinUI transition semantics
 
-| Смена контекста | Источник движения в WinUI | Применение в библиотеке |
+| Changing context | The source of movement in WinUI | Application in the library |
 | --- | --- | --- |
-| Смена главного раздела | EntranceNavigationTransitionInfo проводит вход содержимого сдвигом и затуханием. | Используется при входе в новый корень. Фокус следует политике новой страницы. |
-| Открытие дочернего экрана | DrillInNavigationTransitionInfo показывает углубление по иерархии. | Привязывается к маршруту деталей. Для возврата применяется соответствующий обратный переход. |
-| Соседняя страница | SlideNavigationTransitionInfo задаёт направление горизонтального входа. | Порядок секций и направление жеста определяют сдвиг, включая RTL. |
-| Переход одного объекта между представлениями | Connected Animation связывает два визуальных представления объекта. SuppressNavigationTransitionInfo позволяет пропустить штатный переход Frame. | Переход привязан к ключу объекта. Если строка виртуализирована или исчезла, применяется обычный переход страницы. |
+| Replacement of main section | EntranceNavigationTransitionInfo enters the content by shifting and attenuating. | Used when entering a new root, the focus follows the new page policy. |
+| Opening of the child screen | DrillInNavigationTransitionInfo shows a deepening of the hierarchy. | Linked to the route of the parts. The return is reversed. |
+| Neighbouring page | SlideNavigationTransitionInfo specifies the direction of the horizontal input. | The order of the sections and the direction of the gesture determine the shift, including RTL. |
+| Transition of one object between representations | Connected Animation connects two visual representations of the object. SuppressNavigationTransitionInfo allows you to skip the standard Frame junction. | The transition is linked to the object key. If the string is virtualized or disappeared, the normal page transition is applied. |
 
 [Page transitions](https://learn.microsoft.com/en-us/windows/apps/develop/motion/page-transitions) · [Connected animation](https://learn.microsoft.com/en-us/windows/apps/develop/motion/connected-animation)
 
-## Доступность и локализация
+## Accessibility and localization
 
-Размер видимой иконки и размер её цели касания — разные метрики. Контролы должны сохранять читаемость при увеличении текста и пропускать управление системной клавиатурой. При RTL меняются логическое начало, порядок элементов и направление переходов. Смысловые значки отражаются по назначению. Порядок чтения следует задаче и остаётся последовательным на узком и широком экране. Обновление статуса озвучивается по значимости, поэтому прогресс объявляют при смене фазы, а фоновое обновление плитки не превращают в речевой поток. [Доступность Windows](https://learn.microsoft.com/en-us/windows/apps/design/usability/) · [Guidelines for interactions, стр. 390–393](sources.md#карта-pdf-2014) · [Globalization и localization в гайде Phone 7](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=12)
+The visible icon and its touch target have different sizes. Keep controls legible when the user increases text size. Let the system keyboard handle input when necessary. In RTL layouts, adjust the logical start, item order, and transition direction. Mirror icons only when their meaning calls for it. Keep reading order consistent with the task on narrow and wide screens. Announce status changes according to their importance. Announce a progress phase change, but do not announce each background tile update. [Windows accessibility](https://learn.microsoft.com/en-us/windows/apps/design/usability/) · [Guidelines for interactions, pp. 390-393](sources.md#2014-pdf-page-map) · [Globalization and Localization in the Phone 7 Guide](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=12)
 
-При фоновом обновлении Windows 8.1 рекомендовала менять нужную область страницы и сообщать итог через live region. В библиотеке постоянные элементы сохраняют идентичность и порядок чтения. При обычном обновлении статус объявляется по возможности, а срочность зависит от результата задачи. Статический текст остаётся в порядке чтения, последовательность Tab ведёт через интерактивные элементы. [Руководство Microsoft по доступности, стр. 390–392](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=390) · [AutomationProperties.LiveSetting](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.automation.automationproperties.livesetting?view=windows-app-sdk-2.0)
+In the background update, Windows 8.1 recommended changing the desired area of the page and reporting the result through the live region. In the library, permanent elements preserve the identity and order of reading. In a routine update, status is declared whenever possible, and urgency depends on the outcome of the task. Static text remains in read order, Tab leads through interactive elements. [Microsoft’s Accessibility Guide, pp. 390–392](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=390) · [AutomationProperties.LiveSetting](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.automation.automationproperties.livesetting?view=windows-app-sdk-2.0)
 
-Проверка профиля включает длинный заголовок на русском, язык RTL, область с правосторонней прокруткой, узкий экран с экранной клавиатурой, увеличение текста, высокий контраст, отключённое движение и выполнение ключевого действия без жеста. Для загруженной коллекции добавляются исчезнувший элемент и восстановление позиции после изменения порядка.
+The profile check includes a long header in Russian, RTL language, right-hand scrolling area, narrow screen with on-screen keyboard, text enlargement, high contrast, disengaged movement and performing a key action without a gesture. For a downloaded collection, the missing item is added and the position is restored after a change in order.

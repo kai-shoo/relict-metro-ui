@@ -1,483 +1,483 @@
-# Сценарии и механики
+# User flows and behavior
 
-[Оглавление](../README.md) · [Принципы](foundations.md) · [Компоненты](components.md) · [Источники](sources.md)
+[Table of contents](../README.md) · [Principles](foundations.md) · [Components](components.md) · [Sources](sources.md)
 
-Сценарии задают контракты для реализации и ожидаемый результат каждого перехода. В примерах используются вымышленные приложения. Правила истории, жестов и восстановления ниже принадлежат библиотеке. Ссылки показывают платформенные аналоги.
+Each flow defines the implementation contract and the expected result of each transition. The examples use fictional applications. The history, gesture, and state restoration rules are library rules. The links show comparable platform behavior.
 
-## Кто хранит состояние
+## State owners
 
-| Владелец | Что хранит | Как взаимодействует с другими |
+| Owner | State it stores | How it uses the state |
 | --- | --- | --- |
-| Хост | Возможности оболочки, внешняя активация, настройки среды, доступная геометрия | Передаёт события в приложение и исполняет системные операции через адаптер. |
-| Frame | Текущий routeId, параметры, записи истории со своими ключами | Сохраняет состояние уходящей страницы, выполняет Back и активирует новую страницу. |
-| Page | Контейнер, инициатор перехода, локальные режимы, черновик и правила ухода | Регистрирует видимые команды и принимает решения о незавершённой работе. |
-| Hub / Pivot / TabView | Активная секция или вкладка и связанные локальные состояния | Передаёт на страницу подтверждённый выбор. У независимого документа может быть собственный навигационный контекст. |
-| Окно с документными вкладками | Порядок ключей и активную вкладку | Принимает перенос, активирует нужный сеанс и закрывает временное окно после успешного возврата его последней вкладки. |
-| Коллекция | Опорный itemId и отступ, выбранные ключи, режим выбора, раскрытые группы | Вычисляет видимые строки по данным. При возврате восстанавливает якорь после загрузки и компоновки. |
-| Подборка | Общий набор выбранных ключей и порядок выбора | Синхронизирует выбор между разделами и даёт панели команд один набор целей. |
-| Очередь | Позиции со своими ключами, порядок обработки и текущая позиция | Получает записи через явное добавление и передаёт проигрывателю активную позицию. |
-| Сеанс переноса | Ключи источника, ожидаемая операция и предварительная позиция вставки | Публикует предпросмотр для цели. Обновление коллекций происходит после подтверждённого результата. |
-| Слой | Триггер, область фокуса, правила закрытия, временный выбор | Берёт вход на время показа и возвращает фокус после закрытия. |
-| Модель данных | Объекты, результаты запросов, локальные черновики, состояние записи | При повторном входе отдаёт актуальные данные. Страница применяет сохранённое положение поверх них. |
-| Синхронизация | Постоянные идентификаторы отправки, подтверждённые версии и результат последней попытки | Обновляет состояние записи в локальном хранилище. Список и редактор показывают результат через общую модель. |
+| Host | Shell capabilities, external activation, environment settings, available space | Passes events to the application and performs system operations through an adapter. |
+| Frame | Current `routeId`, parameters, and keyed history entries | Saves the outgoing page state. Handles Back and activates the next page. |
+| Page | Container, navigation source, local modes, draft, and rules for leaving | Registers visible commands and handles unfinished work. |
+| Hub / Pivot / TabView | Active section or tab and its local state | Sends the confirmed selection to the page. An independent document can have its own navigation context. |
+| Document tab window | Key order and active tab | Accepts a transfer and activates the session. Closes the temporary window after its last tab returns. |
+| Collection | Anchor `itemId` and offset, selected keys, selection mode, and expanded groups | Calculates visible rows from the data. On return, it restores the anchor after loading and layout. |
+| Shared selection | Selected keys and selection order | Keeps selection in sync across sections. Gives the command bar one set of targets. |
+| Queue | Keyed entries, processing order, and current position | Receives records when the user adds them. Passes the active entry to the player. |
+| Transfer session | Source keys, pending operation, and proposed insertion point | Shows a preview at the target. The collections update after confirmation. |
+| Overlay | Trigger, focus scope, dismissal rules, and draft selection | Handles input while open. Restores focus on close. |
+| Data model | Objects, query results, local drafts, and save state | Supplies current data when the user returns. The page restores its saved position in that data. |
+| Synchronization | Stable submission IDs, confirmed versions, and the last attempt result | Updates the save state in local storage. The list and editor show the result from the same model. |
 
-У каждого посещения страницы свой снимок представления, в том числе при повторном посещении того же маршрута. При Back страница восстанавливает позицию и фильтр из посещения, а содержимое актуализирует из модели. Снимок содержит идентификаторы и состав фильтров, а также версию формата. Если часть снимка устарела, восстанавливаются валидные поля, затем выбирается ближайшее осмысленное положение. [Pages and frames в Phone Store apps](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx)
+Each page visit has its own view snapshot, even if the user visits the same route again. On Back, the page restores the position and filter from that visit. It reads the current content from the data model. The snapshot stores IDs, filter settings, and a format version. If part of the snapshot is out of date, the page restores the valid fields and selects the nearest useful position. [Pages and frames in Phone Store apps](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx)
 
 ```mermaid
 flowchart LR
-    Start["Плитка или уведомление"] -->|назначение| Frame["Frame и история"]
-    Frame --> Hub["Страница с Hub"]
-    Frame --> Details["Страница деталей"]
-    Hub -->|открытие объекта| Frame
+    Start["Tile or notification"] -->|destination| Frame["Frame and history"]
+    Frame --> Hub["Hub page"]
+    Frame --> Details["Details page"]
+    Hub -->|open item| Frame
     Details -->|Back| Frame
-    Hub -->|сохраняет ключи| Position["Секция, строка и фокус"]
-    Position -->|восстановление после Back| Hub
-    Details -->|открывает| Overlay["Меню, пикер или диалог"]
-    Overlay -->|Back закрывает слой| Details
+    Hub -->|save keys| Position["Section, row, and focus"]
+    Position -->|restore after Back| Hub
+    Details -->|open| Overlay["Menu, picker, or dialog"]
+    Overlay -->|Back closes the overlay| Details
 ```
 
-## Модели структуры Windows Phone
+## Windows Phone app structure models
 
-Microsoft описала семь моделей для Phone 8 и 7.1, включая Utility Device и интерфейс игры. Пять моделей в статье Phone 8.1 охватывают обзор с меню, обзор равноправных панелей, Pivot, список с деталями и перелистывание однотипных страниц. Microsoft допускает сочетания. Например, одна секция обзора выводит краткий список, а открытый объект даёт собственный Pivot с вкладками. [App structure and navigation models](https://web.archive.org/web/20121102145906id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh202903(v=vs.105).aspx) · [Navigation patterns для Phone 8.1](https://web.archive.org/web/20140523051618id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596118.aspx)
+Microsoft has described seven models for Phone 8 and 7.1, including the Utility Device and the game interface. The five models in the Phone 8.1 article cover menu review, peer-to-peer panel review, Pivot, a list of details, and flipping through the same type of pages. Microsoft allows for combinations. For example, one review section displays a short list, and an open object gives its own Pivot with tabs. [App structure and navigation models](https://web.archive.org/web/20121102145906id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh202903(v=vs.105).aspx) · [Navigation patterns for Phone 8.1](https://web.archive.org/web/20140523051618id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596118.aspx)
 
-| Модель Microsoft | Из чего складывается сценарий |
+| Microsoft model | What the script is all about. |
 | --- | --- |
-| Central hub with home-page menu | Домашняя панель даёт явные входы в разделы. Соседние панели дают быстрый доступ к части содержимого этих разделов. Frame открывает раздел или объект по выбранному назначению. |
-| Central hub with panel areas | Каждая панель сама представляет область верхнего уровня. Её предметы открывают детали. Пример Microsoft показывает, как у одной строки могут быть разными целями пост и профиль автора, а в профиле открывается свой Pivot. |
-| App tabs | Отдельные представления одного контекста, часто различные фильтры. Pivot владеет активным представлением, Frame ведёт историю страниц. Общий App Bar работает, если его команды применимы к каждой вкладке. |
-| List with details drilldown | Активация строки открывает выбранный объект. Список остаётся точкой возврата с запомненным положением. Список может быть стартовой страницей или содержимым секции Hub или Pivot. |
-| Uniform page shuffle | Страницы одинаково устроены и показывают разные объекты одного вида. В Phone 8.1 для перелистывания предложен Pivot. Настройки набора позволяют добавлять, удалять и переставлять объекты. |
-| Utility device | Основной экран организован вокруг конкретной задачи и её непосредственных контролов. |
-| Game design | В историческом оглавлении выделены сценарии на основе Silverlight и XNA. |
+| Central hub with home-page menu | The home panel gives explicit inputs to the sections. Neighboring panels give quick access to some of the contents of these sections. Frame opens a partition or object for a selected purpose. |
+| Central hub with panel areas | Each panel itself represents the upper level area. Her subjects reveal details. The example of Microsoft shows how one line can have different goals for the post and the profile of the author, and the profile opens its Pivot. |
+| App tabs | Separate representations of the same context, often different filters. Pivot has an active view, Frame keeps the history of pages. A generic App Bar works if its commands apply to each tab. |
+| List with details drilldown | Activation of the line opens the selected object. The list remains a point of return with a remembered position. The list can be the start page or the content of the Hub or Pivot section. |
+| Uniform page shuffle | The pages are arranged in the same way and show different objects of the same kind. In Phone 8.1, Pivot is offered for flipping. Set settings allow you to add, remove and rearrange objects. |
+| Utility device | The main screen is organized around a specific task and its direct control. |
+| Game design | The historical table of contents highlights scenarios based on Silverlight and XNA. |
 
-Для модели самостоятельных панелей Microsoft рекомендует до четырёх областей. При старте эта модель позволяет открыть первую панель или вернуться к последней выбранной. Гайд самого Phone Hub указывает до пяти секций. Для обзора с домашним меню отдельное направление ведёт на страницу задачи. Back из неё возвращает к обзору перед переходом в другую область. [Самостоятельные панели Phone 8.1](https://web.archive.org/web/20140606145944id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596101.aspx) · [Hub с домашним меню Phone 8.1](https://web.archive.org/web/20140606145135id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596100.aspx) · [Phone Hub, стр. 131–135](sources.md#карта-pdf-2014)
+For a standalone panel model, Microsoft recommends up to four areas. At the start, this model allows you to open the first panel or return to the last selected one. The Phone Hub’s guide lists up to five sections. For a review from the home menu, a separate direction leads to the task page. Back from it returns to the view before moving to another area. [Independent panels of Phone 8.1](https://web.archive.org/web/20140606145944id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596101.aspx) · [Hub with Phone 8.1 Home Menu](https://web.archive.org/web/20140606145135id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596100.aspx) · [Phone Hub, pp. 131-135](sources.md#2014-pdf-page-map)
 
-Гайд App tabs для Phone 8.1 показывает Pivot с фильтрами одного набора и с разными представлениями общего предмета. Заголовок даёт прямой выбор вкладки. При смене контекста App Bar выводит команды для текущего содержимого. [App tabs в MSDN](https://web.archive.org/web/20140430155135id_/http://msdn.microsoft.com/en-us/library/windows/apps/dn596099.aspx) · [List with details drilldown в MSDN](https://web.archive.org/web/20141006051436id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596115.aspx)
+The App tabs guide for Phone 8.1 shows Pivot with filters of the same set and with different representations of a common subject. The title gives you a direct selection of the tab. When the context changes, the App Bar outputs commands for the current content. [App tabs in MSDN](https://web.archive.org/web/20140430155135id_/http://msdn.microsoft.com/en-us/library/windows/apps/dn596099.aspx) · [List with details of drilldown in MSDN](https://web.archive.org/web/20141006051436id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596115.aspx)
 
-В настольной ветке Windows 8.1 иерархия Hub → раздел → детали подходит для больших коллекций. Плоская модель даёт переключаться между равноправными страницами, вкладками или режимами через содержимое либо верхнюю панель. В длинном обзоре Semantic Zoom даёт дополнительный способ перейти к секции. [Navigation patterns для Windows Store apps](https://web.archive.org/web/20140417010223id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/hh761500.aspx)
+In the Windows 8.1 desktop branch, the Hub hierarchy → section → details are suitable for large collections. The flat model allows you to switch between equal pages, tabs or modes through the content or top panel. In a long review, Semantic Zoom gives an additional way to go to the section. [Navigation patterns for Windows Store apps](https://web.archive.org/web/20140417010223id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/hh761500.aspx)
 
-## 1. От обзора к деталям и обратно
+## 1. Open details and return to the overview
 
-1. Приложение «Каталог» открывается на Hub. Пользователь перетаскивает его с «Новинки» на «Избранное». Страница получает подтверждённый sectionId по завершении приведения к позиции.
-2. Нажатие на карточку записывает sectionId, itemId, положение списка и источник фокуса. Frame открывает маршрут карточки. Для просмотра всех избранных выделяется отдельная ссылка секции.
-3. Back восстанавливает «Избранное» и актуальные данные. Если объект существует, этот объект снова оказывается в видимой области, фокус возвращается к карточке.
-4. Если карточку удалили, выбирается следующий доступный сосед или заголовок секции. Пустая коллекция показывает объяснение и следующее действие.
+1. Open the Catalog app on Hub. Swipe from **New** to **Favorites**. The page receives the confirmed `sectionId` when the move stops.
+2. Select a card. The app saves the `sectionId`, `itemId`, list position, and focus target. Frame opens the route for that card. A separate section link opens all favorites.
+3. Select Back. The app restores **Favorites** with current data. If the item still exists, it scrolls the card into view and restores focus.
+4. If the card no longer exists, focus the nearest available card or the section heading. If the collection is empty, show an explanation and the next available action.
 
-**Проверка.** Два горизонтальных перелистывания создают одну текущую позицию Hub. Один переход к карточке создаёт запись истории. Один Back возвращает к карточке-источнику. Настройка движения меняет только визуальный переход. [Phone Hub, стр. 131–135](sources.md#карта-pdf-2014) · [Connected animation](https://learn.microsoft.com/en-us/windows/apps/develop/motion/connected-animation)
+**Check.** Two horizontal swipes result in one current Hub position. Opening a card adds one history entry. One Back request returns to the source card. The motion setting changes only the visual transition. [Phone Hub, pp. 131–135](sources.md#2014-pdf-page-map) · [Connected animation](https://learn.microsoft.com/en-us/windows/apps/develop/motion/connected-animation)
 
-## 2. Pivot как переключение фильтра
+## 2. Use Pivot to switch filters
 
-1. На странице «Записи» есть секции «Все», «Новые» и «Отмеченные». Они вычисляются из совместной модели данных, каждая хранит свой якорь прокрутки.
-2. Заголовок, свайп и клавиатура ведут к одному событию смены фильтра. Frame остаётся на текущей странице. Посещение деталей записи проходит отдельным переходом.
-3. Данные обновляются. Если новых записей сейчас нет, секция показывает текст пустого состояния. Результат обновления сам по себе не двигает пользователя на соседнюю секцию.
-4. Возврат из деталей восстанавливает фильтр. Если запись перестала ему соответствовать, представление сохраняет раздел и возвращает фокус к соседу или заголовку.
+1. On the Records page, there are sections called All, New, and Marked, which are computed from a collaborative data model, each with its own scroll anchor.
+2. The header, swipe, and keyboard lead to one filter change event, and the Frame stays on the current page, and the recording details are accessed in a separate transition.
+3. The data is updated. If there are no new entries now, the section shows the text of the empty state. The result of the update does not, by itself, move the user to the adjacent section.
+4. Returning from the parts restores the filter, and if the recording no longer matches it, the view saves the partition and returns the focus to the neighbor or the header.
 
-В образце Microsoft WinJS переход списка в режим множественного выбора устанавливает `Pivot.locked`, а касание строки переключает её выбор. При завершении режима Pivot разблокируется и список снова передаёт активацию записи. Для библиотеки это вариант с выбором в одной секции. [Исходники Phone 8.1](windows-phone-archive.md#разбор-исходников-образцов) · [Подборка из нескольких разделов](#28-выбор-из-нескольких-разделов-и-добавление-в-очередь)
+In the Microsoft WinJS sample, switching the list to multiple choice mode sets `Pivot.locked`, and touching the string switches its selection. At the end of the Pivot mode, the list is unlocked and the record is activated again. For a library, it's a choice in one section. [Sources Phone 8.1](windows-phone-archive.md#sample-source-analysis) · [Compilation of several sections](#28-select-items-across-sections-and-add-them-to-a-queue)
 
-**Проверка.** Back в деталях ведёт к последнему фильтру. На странице Back сначала завершает активный выбор, затем возвращает к предыдущему маршруту. При выборе в одной секции заголовок, жест и клавиатура снова переключают фильтр после выхода из режима. Цикл в Metro-профиле работает в обоих направлениях и не дублирует пункты для средств доступности. [Phone Pivot, стр. 161–164](sources.md#карта-pdf-2014) · [WinUI Pivot](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/pivot)
+The **Check.** Back leads in detail to the last filter. On the Back page, it first completes the active selection, then returns to the previous route. When selecting a header in one section, the gesture and keyboard switch the filter again after leaving the mode. The cycle in the Metro profile runs in both directions and does not duplicate items for accessibility tools. [Phone Pivot, pp. 161–164](sources.md#2014-pdf-page-map) · [WinUI Pivot](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/pivot)
 
-## 3. Back закрывает текущий контекст
+## 3. Back closes the current context
 
-Один запрос Back обрабатывается один раз по текущему входному контексту. Ниже порядок диспетчеризации в библиотеке. Для браузера, настольного окна и устройства с системным Back последний шаг определяет адаптер хоста.
+A single Back request is processed once for the current input context. Below is the order of dispatch in the library. For a browser, desktop window, and device with system back, the last step is determined by the host adapter.
 
-При сертификации Windows Phone Microsoft проверяла закрытие диалога, контекстного меню и экранной клавиатуры, возврат со вложенной страницы и выход с главной. Подтверждение выхода допускалось на главной странице. У игр было отдельное правило для паузы во время игры. [Технические требования, раздел 5.2.4](https://web.archive.org/web/20140424024354id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/develop/hh184840(v=vs.105).aspx) · [Разбор проверок Microsoft](https://blogs.windows.com/windowsdeveloper/2014/01/10/top-windows-phone-app-certification-failures-and-how-to-avoid-them/)
+When certifying Windows Phone, Microsoft checked the closure of the dialog, context menu and on-screen keyboard, return from the nested page and exit from the main one. Confirmation of exit was allowed on the main page. The games had a separate rule for pausing while playing. [Specifications, section 5.2.4](https://web.archive.org/web/20140424024354id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/develop/hh184840(v=vs.105).aspx) · [Discussion of Microsoft inspections](https://blogs.windows.com/windowsdeveloper/2014/01/10/top-windows-phone-app-certification-failures-and-how-to-avoid-them/)
 
-В настольном Windows Store 8.1 отдельное руководство описывает экранную кнопку Back для иерархических переходов. При плоской структуре разделы открываются через содержимое или верхнюю панель. В телефоне правила аппаратного Back задаёт оболочка. [Guidelines for back buttons](https://web.archive.org/web/20140413025233/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn439322.aspx)
+In desktop Windows Store 8.1, a separate guide describes the on-screen Back button for hierarchical transitions. In a flat structure, the sections open through the contents or the top panel. In the phone, the hardware back rules are set by the shell. [Guidelines for back buttons](https://web.archive.org/web/20140413025233/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn439322.aspx)
 
-| Текущее состояние | Результат первого Back | Следующий Back |
+| Current state | First Back request | Next Back request |
 | --- | --- | --- |
-| Открыт временный слой над страницей | Закрывает верхний слой, если он допускает закрытие. Слой, требующий ответа, удерживает управление до результата. | Обрабатывает новое верхнее состояние. |
-| Системная клавиатура активна и платформа отдаёт ей Back | Хост закрывает клавиатуру, поля сохраняют введённое. | Обрабатывает Back приложения. |
-| Открыт временный поиск или режим множественного выбора | Временный режим завершается. При переходе к поиску через отдельный маршрут применяется история Frame. | Возвращается по истории. |
-| Редактор с несохранённым черновиком | Запускает подтверждение ухода, сохраняя исходный маршрут. | Закрывает подтверждение как отмену, если это предусмотрено диалогом. |
-| Находится в деталях, в истории есть предыдущая страница | Возвращает к предыдущей записи. | Обрабатывает состояние предыдущей страницы. |
-| История приложения пуста | Передаёт управление политике хоста. Например, оболочка устройства возвращает на предыдущую системную поверхность. | Определяется хостом. |
+| An overlay is open above the page | Close the top overlay if it allows dismissal. An overlay that requires a response keeps control until it has a result. | Handle the new topmost context. |
+| The system keyboard handles Back | The host closes the keyboard. Fields retain their input. | Apply the app's Back policy. |
+| Temporary search or multiple selection is active | Exit the mode. If search has its own route, use Frame history. | Go back in history. |
+| The editor has an unsaved draft | Ask the user to confirm leaving. Keep the original route. | Cancel the confirmation if the dialog allows it. |
+| A details page has a previous history entry | Return to the previous entry. | Handle the context of that page. |
+| Application history is empty | Let the host handle Back. For example, the device shell can return to the previous system surface. | Follow the host policy. |
 
-**Проверка.** На странице с черновиком и раскрытым picker первый Back закрывает picker. Второй запрашивает решение по черновику. Если при завершении перехода исходный контрол уже демонтирован, фокус переходит к устойчивому элементу текущей страницы. [Back button, гайд Phone 7, стр. 110](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=56) · [Navigation history and Back](https://learn.microsoft.com/en-us/windows/apps/design/basics/navigation-history-and-backwards-navigation)
+**Check.** On a page with a draft and an open picker, the first Back closes the picker. The second asks for a draft decision. If the initial control is already removed at the end of the transition, the focus goes to the stable element of the current page. [Back button, Phone 7 guide, page 110](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=56) · [Navigation history and Back](https://learn.microsoft.com/en-us/windows/apps/design/basics/navigation-history-and-backwards-navigation)
 
-## 4. Пункт верхнего уровня и позиция внутри документа
+## 4. Top-level items and document position
 
-1. В широком окне «Проекты» открываются через боковой NavigationView. В узком — через адаптивную панель. Смена ширины сохраняет выбранный пункт, страницу и параметры.
-2. Приложение задаёт для пунктов верхнего уровня политику истории. Для равноправных пунктов может применяться замена текущего раздела. При переходе в деталь применяется запись в истории.
-3. BreadcrumbBar «Проекты / Север / Задачи» разрешает переход к указанному предку. История обновляется согласно политике конкретного приложения. Выбранная навигация и заголовок вычисляются из активного маршрута.
-4. При независимых вкладках TabView переключение сохраняет состояние каждой. Закрытие документа проверяет его черновик, закрытие соседней вкладки сохраняет текущий контекст.
+1. In a wide window, Projects open through the NavigationView side window, in a narrow window, through the adaptive panel, and the width change saves the selected item, page, and settings.
+2. The app specifies the history policy for the top-level items. Replacement of the current section may apply for equal paragraphs. When moving into detail, a record in history is used.
+3. BreadcrumbBar Projects/North/Tasks allows the transition to the specified ancestor. The history is updated according to the policy of the specific application. The selected navigation and header are calculated from the active route.
+4. With independent TabView tabs, switching saves the state of each. Closing the document checks its draft, closing the adjacent tab saves the current context.
 
-**Проверка.** Deep link в задачу подсвечивает «Проекты». После Back активный пункт соответствует маршруту. Переход по хлебной крошке работает даже при короткой истории посещений. [Navigation basics](https://learn.microsoft.com/en-us/windows/apps/design/basics/navigation-basics) · [NavigationView, BreadcrumbBar и TabView](sources.md#прямые-ссылки-на-каталог-контролов-winui)
+The **Check.** Deep link highlights Projects. After Back, the active point corresponds to the route. Breadcrumb transition works even with a short history of visits. [Navigation basics](https://learn.microsoft.com/en-us/windows/apps/design/basics/navigation-basics) · [NavigationView, BreadcrumbBar and TabView](sources.md#winui-control-reference-links)
 
-## 5. Переполнение, контекстная команда и подтверждение
+## 5. Overflow, context commands, and confirmation
 
-1. «Добавить» постоянно видно на странице. «Экспорт» доступен в многоточии. Для строки «Запись 34» контекстное меню предлагает «Переименовать» и «Удалить».
-2. Многоточие открывает overflow. В Phone-профиле открытие также показывает подписи иконок. Back и повторное нажатие многоточия закрывают слой. Клавиатура возвращается на триггер.
-3. «Удалить» запоминает идентификатор записи, закрывает меню и открывает диалог. Отмена сохраняет фокус и запись. При подтверждении кнопка показывает выполнение и защищает от повторного запроса.
-4. При успехе фокус перемещается к соседней видимой строке. При ошибке сохраняется запись и показывается результат там, где пользователь может повторить действие.
+1. "Add" is constantly visible on the page. "Export" is available at the ellipsis. For the line "Record 34", the context menu suggests "Rename" and "Delete".
+2. The ellipsis opens overflow. In the Phone profile, the opening also shows icon labels. Back and re-press the ellipsis close the layer. The keyboard returns to the trigger.
+3. "Delete" remembers the record ID, closes the menu and opens the dialog. Cancellation saves focus and recording. When confirmed, the button shows execution and protects against repeated request.
+4. When successful, the focus is moved to the next visible line, and if the error is recorded, the result is displayed where the user can repeat the action.
 
-**Проверка.** Контекст из правого клика, удержания и клавиатуры разрешает одну и ту же целевую запись. Если запись исчезла пока меню открыто, подтверждение приводит к безопасному завершению с понятным статусом. [Phone Application Bar, стр. 30–37](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=16) · [CommandBar и Dialogs](sources.md#прямые-ссылки-на-каталог-контролов-winui)
+The **Check.** context of right-click, retention, and keyboard allows the same target entry. If the entry has disappeared while the menu is open, the confirmation leads to a secure termination with understandable status. [Phone Application Bar, pp. 30–37](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=16) · [Commandbar and Dialogs](sources.md#winui-control-reference-links)
 
-## 6. Длинный список, обзор групп и выбор
+## 6. Long lists, group navigation, and selection
 
-1. В списке «Авторы» заголовок группы открывает обзор букв. Desktop-профиль может добавить вход через Semantic Zoom.
-2. В обзоре выбор буквы возвращает подробный список к первому доступному элементу группы. Отмена возвращает предыдущий якорь. После локализации буквы берутся из реально сгруппированных данных и сортируются по правилам языка.
-3. В списке действие «Выбрать» вводит режим с галочками. Тап по строке переключает её selectedId. Панель показывает количество и команды для набора.
-4. Back из режима выбора возвращает обычную активацию. Изменение фильтра следует явно заданной политике. Если скрытые записи сохраняются в выборке, счётчик и контекст операции включают их видимым для пользователя образом.
+1. In the Authors list, the group title opens an overview of the letters. Desktop profile can add input through Semantic Zoom.
+2. In the review, selecting a letter returns the detailed list to the first available group element. Cancellation returns the previous anchor. After localization, the letters are taken from real grouped data and sorted according to the rules of the language.
+3. In the list, the "Select" action enters the tick mode. The tap switches the selectedId on the line. The panel shows the number and commands for the dial.
+4. Back from Select Mode returns normal activation. Changing the filter follows a clearly defined policy. If the hidden records are stored in the sample, the counter and the context of the operation include them in a manner visible to the user.
 
-**Проверка.** Виртуализация не меняет выбранные ключи при прокрутке. Удалённый идентификатор исчезает из выбора. Групповая команда разрешает весь актуальный набор выбранных ключей, включая строки за пределами области прокрутки. [LongListSelector SDK](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj208486(v=vs.105)) · [Semantic Zoom](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/semantic-zoom) · [ListView и GridView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/listview-and-gridview)
+**Check.** Virtualization does not change selected keys when scrolling. The remote identifier disappears from the selection. The group command allows the entire current set of selected keys, including strings outside the scroll area. [LongListSelector SDK](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj208486(v=vs.105)) · [Semantic Zoom](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/semantic-zoom) · [ListView and GridView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/listview-and-gridview)
 
-## 7. Список и детали на узком и широком экране
+## 7. List and details on narrow and wide screens
 
-1. На узком экране выбор проекта открывает детали на весь доступный экран. Список запоминает якорь и активированную строку.
-2. При увеличении ширины детали становятся соседней панелью. Исходный selectedId и состояние редактора сохраняются. Frame адаптирует представление текущего назначения без дополнительного пользовательского перехода.
-3. При выборе другого проекта из широкой панели детали меняются, а правило несохранённого черновика применяется до смены.
-4. При сужении открытые детали снова занимают экран. Back показывает список в прежнем контексте. В широком виде политика Back может снять выбор либо вернуть к предыдущему месту, в зависимости от сделанной записи истории.
+1. On a narrow screen, the choice of a project opens the details to the entire screen available, the list remembers the anchor and the activated line.
+2. As the width increases, the parts become the adjacent panel. The original selectedId and the state of the editor are saved. Frame adapts the presentation of the current destination without additional user transition.
+3. When choosing another project from a wide panel, the details change, and the rule of unsaved draft applies before the shift.
+4. When narrowed, the open details again occupy the screen. Back shows the list in its previous context. Broadly, the Back policy can either remove a choice or return to a previous location, depending on the history record made.
 
-**Проверка.** После нескольких изменений ширины объект, статус ошибки и введённый текст остаются теми же. Смена ширины сохраняет размер журнала переходов. [List/details](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/list-details) · [TwoPaneView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/two-pane-view)
+**Check.** After several width changes, the object, error status, and text input remain the same. The change in width retains the size of the transition log. [List/details](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/list-details) · [TwoPaneView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/two-pane-view)
 
-## 8. Поиск и подсказки
+## 8. Search and suggestions
 
-В руководстве Phone 8.1 аппаратная клавиша Search принадлежит системному поиску. Внутренний поиск приложение открывает через собственное поле или команду. [First look at Windows Phone](https://web.archive.org/web/20140531182055id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596110.aspx)
+In the Phone 8.1 manual, the Search hardware key belongs to the system search. The internal search application opens through its own field or command. [First look at Windows Phone](https://web.archive.org/web/20140531182055id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596110.aspx)
 
-1. Видимая команда открывает поле или маршрут поиска. Фокус переходит в поле. IME завершает композицию до отправки запроса.
-2. Подсказки используют текущий текст. Каждый ответ связывается с его запросом, запоздалый ответ не заменяет актуальные подсказки. Выбор предложения или Enter осуществляет заявленное действие: заполняет запрос либо открывает конкретный результат.
-3. Состояния списка результатов различают пустой ввод, загрузку, отсутствие совпадений, результат и сбой. Поиск по странице работает с текущим экраном и может показывать номер совпадения.
-4. Back закрывает открытые подсказки, затем возвращает по правилам временного слоя или маршрута. Возврат из результата сохраняет запрос и позицию.
+1. The visible command opens the field or search route, the focus goes to the field, and the IME completes the composition before the request is sent.
+2. The tips use the current text. Each response is associated with its query, a late response does not replace current prompts. The choice of an offer or Enter performs the stated action: fills in the request or opens a specific result.
+3. The states of the results list distinguish between empty input, loading, no matches, result and failure. A page search works with the current screen and can show a match number.
+4. Back closes the open prompts, then returns according to the rules of the overlay or route, the return from the result saves the request and position.
 
-**Проверка.** С последовательностью запросов «а», «ав», «авт» пользователю доступны результаты последнего запроса. При вводе клавиатурой стрелки выбирают предложение, доступное имя поля сохраняется. [Поиск в гайде 2014, стр. 184 и 302](sources.md#карта-pdf-2014) · [AutoSuggestBox](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/auto-suggest-box)
+**Check.** With a sequence of "a", "av", "aut", the results of the last request are available to the user. When you enter the keyboard, the arrows select the sentence, the available field name is saved. [Search in Guide 2014, pages 184 and 302](sources.md#2014-pdf-page-map) · [AutoSuggestBox](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/auto-suggest-box)
 
-## 9. Форма, пикер и незавершённый черновик
+## 9. Form, picker and unfinished draft
 
-1. Открытие редактора загружает исходные данные отдельно от черновика. Изменённое значение делает форму dirty. Ошибка поля связана с подписью, значением и местом исправления.
-2. Выбор даты открывает пикер с временным значением. Принять сохраняет его в черновик страницы, отмена восстанавливает прежнее. Внешняя клавиатура и касание могут выполнить тот же выбор.
-3. Сохранение валидирует черновик, блокирует повторный запуск, показывает прогресс соответствующего масштаба. При сбое введённые значения остаются доступны.
-4. Уход с изменениями открывает диалог с явными вариантами остаться, отбросить изменения или сохранить, если доступно. При успешном сохранении исходный запрошенный переход продолжается один раз.
+1. Opening the editor loads the source data separately from the draft. The changed meaning makes the form dirty. The field error is related to the label, the value and the place of correction.
+2. The date selection opens the picker with a time value. Accept saves it in the draft of the page, the cancellation restores the former. The external keyboard and touch can make the same choice.
+3. Save validates the draft, blocks re-launch, shows progress of appropriate scale, and if it fails, the input values remain available.
+4. Leaving with changes opens up a dialogue with clear options to stay, reject changes, or save if available. If successfully maintained, the original requested transition continues once.
 
-**Проверка.** Отмена пикера не делает форму dirty. Escape в пикере закрывает пикер, Back с изменённой формой открывает подтверждение. Результат одного сохранения не обрабатывается дважды. [Формы, диалоги и пикеры WinUI](sources.md#прямые-ссылки-на-каталог-контролов-winui) · [Guidelines for form layouts, стр. 314](sources.md#карта-pdf-2014)
+**Check.** Picker cancellation doesn't make the shape dirty. Escape closes the picker in the picker, Back with the changed form opens the confirmation. The result of one save is not processed twice. [Forms, dialogues and pickers WinUI](sources.md#winui-control-reference-links) · [Guidelines for form layouts, page 314](sources.md#2014-pdf-page-map)
 
-## 10. Свайп, прокрутка и конфликт осей
+## 10. Swipe, scroll, and axis conflicts
 
-1. Указатель нажимает строку в Pivot. Строка показывает press, а решение об активации ожидает отпускания.
-2. После преодоления порога движения владение принимает один участник. Вертикальное движение обрабатывает список. Горизонтальное принадлежит Pivot, если область явно не делегирована вложенному контролу. Системный жест края участвует с приоритетом хоста.
-3. Если карточкам нужны собственные горизонтальные свайпы, они получают отдельный экран или предусмотренную зону захвата. У каждого жеста есть доступная команда через меню или кнопку. Удержание отменяется при начале drag.
-4. При отпускании владелец завершает движение или возвращает прежнюю позицию. При `pointercancel`, потере захвата или смене ориентации очищается press, отпускается захват и сохраняется последнее подтверждённое состояние.
+1. The pointer presses the line in Pivot. The line shows the press, and the decision to activate is waiting to be released.
+2. After overcoming the threshold of movement, possession is taken by one participant. Vertical motion processes the list. Horizontal belongs to Pivot unless the area is explicitly delegated to the nested control. The edge system gesture is involved with the host priority.
+3. If the cards need their own horizontal swipes, they get a separate screen or a designated capture area. Each gesture has an accessible command via a menu or button. Retention is cancelled at the start of drag.
+4. When releasing, the owner completes the movement or returns the previous position. With `pointercancel`, loss of grip or change of orientation, the press is cleared, capture is released, and the last confirmed state is maintained.
 
-**Проверка.** Диагональное движение вокруг порога не перескакивает между владельцами. Завершённый свайп не вызывает клик по строке. Повторный tap после освобождения захвата работает. [Phone Pivot и Phone Hub](sources.md#карта-pdf-2014) · [Touch interactions](https://learn.microsoft.com/en-us/windows/apps/design/input/touch-interactions) · [SwipeControl](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/swipe)
+**Check.** Diagonal motion around the threshold does not jump between owners. A completed swipe does not cause a click on the line. Repeated tap after release of capture works. [Phone Pivot and Phone Hub](sources.md#2014-pdf-page-map) · [Touch interactions](https://learn.microsoft.com/en-us/windows/apps/design/input/touch-interactions) · [SwipeControl](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/swipe)
 
-## 11. Обновление, пустой экран и ошибка
+## 11. Refresh, empty state, and error
 
-1. На первом входе без данных отображается загрузка внутри области. С доступными данными при обновлении показ остаётся интерактивным. Индикатор исчезает после завершения, отмены или ошибки.
-2. Обновление может запустить жест, кнопка панели или восстановление подключения. Одновременно используется один актуальный запрос для данной области либо результат каждого запроса проверяется по поколению.
-3. При успехе сохраняется якорь, новые записи получают видимые позиции, а завершение коротко объявляется. У пустой коллекции есть собственное объяснение. Сбой со старыми данными показывает inline-статус и повтор. Сбой без данных даёт состояние ошибки на месте коллекции.
+1. At the first input without data, the loading inside the area is displayed. With available data, the display remains interactive when updated. The indicator disappears after termination, cancellation or error.
+2. The update can trigger a gesture, a panel button, or restore the connection. One actual query is used for a given area at the same time, or the result of each query is verified by generation.
+3. When successful, the anchor is retained, new entries are given visible positions, and completion is briefly announced. The empty collection has its own explanation. A glitch with old data shows inline status and repeat. Failure without data gives a state of error on the site of the collection.
 
-**Проверка.** Ошибка обновления оставляет старые записи интерактивными. Отмена не показывает ошибку как результат. Повтор позволяет получить данные и возвращает индикацию в норму. [Phone Hub и progress controls](sources.md#карта-pdf-2014) · [Pull-to-refresh](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/pull-to-refresh) · [InfoBar](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/infobar)
+**Check.** Update Error Leaves Old Records Interactive Cancellation does not show error as a result. Repetition allows you to get the data and returns the indication to normal. [Phone Hub and Progress Controls](sources.md#2014-pdf-page-map) · [Pull-to-refresh](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/pull-to-refresh) · [InfoBar](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/infobar)
 
-## 12. Закрепление, обновление плитки и активация
+## 12. Tile pinning, updates, and activation
 
-1. Из карточки «Маршрут до парка» пользователь вызывает «Закрепить». Хост подтверждает системное закрепление там, где оно поддерживается. После отмены UI остаётся в прежнем состоянии.
-2. Плитка связывает идентификатор с маршрутом и параметрами. Малый размер показывает основное обозначение, больший добавляет сведения. Фоновая публикация обновляет содержимое и срок актуальности.
-3. По нажатию на плитку хост передаёт параметры маршрутизатору. Он разрешает их на холодном старте и при активном приложении. Отсутствующий объект открывает состояние недоступности с выходом в соответствующий раздел.
-4. Необходимый вход в аккаунт приводит через промежуточный маршрут. После завершения входа возобновляется исходное назначение. Back из холодно открытой детали следует политике хоста или явно построенной родительской истории.
+1. From the "Route to the Park" card, the user calls "Secure". The host confirms the system anchorage where it is supported. After the cancellation, the UI remains in its previous state.
+2. Tile associates the identifier with the route and parameters. The small size shows the main designation, the larger adds information. The background publication updates the content and the relevance period.
+3. By clicking on the tile, the host transmits the parameters to the router. It resolves them at a cold start and with an active application. The missing object opens a state of inaccessibility with access to the corresponding section.
+4. The necessary login to the account leads through an intermediate route. After completion of the entrance, the original appointment is resumed. Back from a cold-open detail follows host policy or an explicitly constructed parent story.
 
-**Проверка.** Два разных объекта дают разные назначения. Снятие закрепления удаляет запись оболочки и сохраняет сам объект. Текст и счётчик не раскрывают скрытые данные после смены аккаунта. [Phone 8 Start](https://blogs.windows.com/windowsexperience/2012/11/02/the-story-behind-the-windows-phone-8-start-screen/) · [Secondary tiles design guidance](https://learn.microsoft.com/en-us/windows/uwp/launch-resume/secondary-tiles-guidance)
+**Check.** Two different objects give different purposes. Removing the fixing removes the shell record and saves the object itself. Text and counter do not disclose hidden data after a change of account. [Phone 8 Start](https://blogs.windows.com/windowsexperience/2012/11/02/the-story-behind-the-windows-phone-8-start-screen/) · [Secondary tiles design guidance](https://learn.microsoft.com/en-us/windows/uwp/launch-resume/secondary-tiles-guidance)
 
-В Phone 8 создание вторичной плитки переводило пользователя на Start. Back возвращал в приложение. Видимая команда могла переключаться с закрепления на снятие закрепления по состоянию выбранного объекта. В библиотеке переход в оболочку и подтверждение размещения обрабатывает адаптер конкретного хоста. [Tile design guidelines for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj662929(v=vs.105))
+In Phone 8, creating a secondary tile puts the user on Start. Back was returning to the app. The visible command could switch from fixing to removing fixing according to the state of the selected object. In the library, the transition to the shell and placement confirmation is handled by a specific host adapter. [Tile design guidelines for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj662929(v=vs.105))
 
-## 13. Toast, центр уведомлений и повторный вход
+## 13. Toast, notification center, and reactivation
 
-В Phone Store apps плитка, toast и raw-уведомление обслуживают разные ситуации. В этом сценарии уведомление о новом событии появляется на плитке, если достаточно сообщить о нём, или в toast, если для человека уместно действие сейчас. Данные raw-уведомления обрабатываются в приложении и могут изменить его состояние. [Essential graphics, visual indicators, and notifications](https://web.archive.org/web/20141012014027id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596109.aspx)
+In Phone Store apps, tile, toast and raw notification serve different situations. In this scenario, a notification of a new event appears on the tiles if it is enough to report it, or in the toast if the action is appropriate for the person now. The raw notification data is processed in the application and can change its state. [Essential graphics, visual indicators, and notifications](https://web.archive.org/web/20141012014027id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596109.aspx)
 
-1. Новое событие обновляет модель. Приложение передаёт хосту краткий текст и назначение для toast либо обновляет счётчик соответствующей области.
-2. Истечение toast оставляет приложение на текущем маршруте. Активация из toast или истории уведомлений передаёт один тип назначения, который может разрешиться при открытом или закрытом процессе.
-3. Объект уже прочитан или удалён. При повторной активации приложение показывает актуальное состояние и понятный путь в связанный раздел. Уведомление и счётчик обновляются по событиям модели.
+1. A new event updates the model, and the app sends the host short text and destination for the toast, or updates the counter of the corresponding area.
+2. The toast expiration leaves the app on the current route. Activation from a toast or notification history transmits one type of assignment that can be resolved in an open or closed process.
+3. The object has already been read or deleted. When re-activated, the application shows the current state and a clear path to the associated section. The notification and the counter are updated according to the model events.
 
-**Проверка.** Активация одного уведомления дважды не создаёт дублирующий экран, если назначение уже открыто. Счётчик отражает данные, а действия доступны и после исчезновения краткой поверхности. [Phone 8.1 Action Center](https://blogs.windows.com/windowsexperience/2014/04/02/cortana-yes-and-many-many-other-great-features-coming-in-windows-phone-8-1/) · [Плитки и уведомления, стр. 355–388](sources.md#карта-pdf-2014)
+**Check.** Activating a single notification twice does not create a duplicate screen if the destination is already open. The meter reflects the data, and actions are available even after the short surface disappears. [Phone 8.1 Action Center](https://blogs.windows.com/windowsexperience/2014/04/02/cortana-yes-and-many-many-other-great-features-coming-in-windows-phone-8-1/) · [Tiles and Notifications, pp. 355–388](sources.md#2014-pdf-page-map)
 
-## 14. Системный выбор, Share и граница приложения
+## 14. System pickers, Share, and the app boundary
 
-1. Команда «Вложить файл» открывает системный picker. Страница сохраняет черновик и связывает внешний запрос со своим контекстом.
-2. Отмена оставляет черновик. После результата проверяются способность открыть файл и существование исходной страницы. Если контекст восстановлен, файл добавляется один раз.
-3. Команда «Поделиться» передаёт системной поверхности данные, которые выбрал пользователь. При приёме данных приложение сначала показывает доступное действие и назначение импорта.
-4. При временной потере фокуса страница сохраняет положение. Если системная интеграция отсутствует, интерфейс использует доступный путь для той же операции, когда он есть.
+1. The "Enclose File" command opens the system picker. The page saves the draft and associates the external request with its context.
+2. The cancellation leaves a draft. After the result, the ability to open the file and the existence of the original page are checked. If the context is restored, the file is added once.
+3. The "Share" command transmits the data selected by the user to the system surface. When receiving data, the application first shows the available action and destination of the import.
+4. When the focus is temporarily lost, the page retains its position. If the system integration is missing, the interface uses the available path for the same operation when it is available.
 
-Образец Phone 8.1 отправляет запрос через `PickSingleFileAndContinue`. При следующей активации приложение подготавливает Frame и восстанавливает состояние, если процесс был завершён. Затем `ContinuationManager` передаёт событие текущей странице. Страница отображает имя выбранного файла или сообщение об отмене. В библиотеке запрос дополнительно хранит ключ черновика, чтобы восстановленная форма могла проверить принадлежность результата. [Исходники File picker sample](windows-phone-archive.md#разбор-исходников-образцов)
+Phone 8.1 sends a request via `PickSingleFileAndContinue`. The next time you activate it, the application prepares Frame and restores the state if the process has been completed. `ContinuationManager` then forwards the event to the current page. The page displays the name of the selected file or the cancellation message. In the library, the query further stores the draft key so that the restored form can verify the identity of the result. [File picker sample source](windows-phone-archive.md#sample-source-analysis)
 
-Для открытия файла во внешнем приложении руководство Windows Store описывает делегирование системе. Если нужен выбор обработчика, оболочка показывает Open With рядом с инициатором. Приложение передаёт файл или URI и точку вызова. [Guidelines for file types and URIs](https://web.archive.org/web/20140502075523/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh700321.aspx)
+To open a file in an external application, the Windows Store guide describes delegation to the system. If you want to select a handler, the shell shows Open With next to the initiator. The application transmits a file or URI and a call point. [Guidelines for file types and URIs](https://web.archive.org/web/20140502075523/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh700321.aspx)
 
-**Проверка.** Закрытие системного окна не дублирует инструмент, ошибку можно устранить без потери работы, результат позднего picker не обновляет другой объект. [Контракты, Share и File pickers, стр. 25–85](sources.md#карта-pdf-2014) · [Сравнение Windows 8 и Phone 8](sources.md#windows-phone-8-и-windows-8)
+**Check.** Closing the system window does not duplicate the tool, the error can be fixed without losing work, the result of the late picker does not update another object. [Contracts, Share and File Pickers, pp. 25–85](sources.md#2014-pdf-page-map) · [Comparison of Windows 8 and Phone 8](sources.md#windows-phone-8-and-windows-8)
 
-## 15. Приостановка, восстановление и смена среды
+## 15. Suspension, restoration, and environment changes
 
-1. После переключения из приложения хост даёт шанс сохранить состояние. Frame фиксирует минимальный снимок маршрута, текущей секции, якоря, фильтра и черновика, если тот предназначен для восстановления.
-2. При возвращении тёплый процесс сначала пользуется текущей моделью и сверяет данные. При холодном восстановлении он загружает снимок, проверяет маршрут и параметры, восстанавливает данные и компоновку, затем позицию и фокус.
-3. Явная внешняя активация разрешается независимо от сохранённого маршрута. Если пользователь был в редакторе, хост применяет объявленную политику черновика до смены назначения.
-4. При появлении внешнего экрана или изменении размеров строится соответствующий макет. Возможность независимых представлений и ввода определяется хостом, как для исторического Continuum.
+1. After switching from the application, the host gives you a chance to save the state. Frame captures a minimal snapshot of the route, current section, anchor, filter, and draft if it is intended to be recovered.
+2. When returning, the warm process first uses the current model and compares the data. In cold recovery, it uploads the picture, checks the route and parameters, recovers data and layout, then position and focus.
+3. Explicit external activation is permitted regardless of the stored route. If the user has been in the editor, the host applies the announced draft policy prior to the change of destination.
+4. When an external screen appears or the size changes, an appropriate layout is built. The possibility of independent representations and input is determined by the host as for the historical Continuum.
 
-**Проверка.** Снимок с пропавшей записью ведёт к ближайшему существующему контексту. Повторное восстановление не повторяет запись данных. После изменения размера или темы незавершённая задача остаётся доступна. [Tombstoning and the Zen of Async](https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/october/windows-phone-tombstoning-and-the-zen-of-async-for-windows-phone) · [Continuum for phones](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/continuum-phone)
+**Check.** The missing recording leads to the immediate context. Re-restore does not repeat the data record. After changing the size or theme, the unfinished task remains available. [Tombstoning and the Zen of Async](https://learn.microsoft.com/en-us/archive/msdn-magazine/2012/october/windows-phone-tombstoning-and-the-zen-of-async-for-windows-phone) · [Continuum for phones](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/continuum-phone)
 
-## 16. Настройки темы и поведения
+## 16. Theme and behavior settings
 
-1. Раздел «Оформление» открывается обычным маршрутом. Переключатель включает мгновенно действующее правило, а radio-группа задаёт режим «Системная», «Светлая» или «Тёмная».
-2. При выборе приложение обновляет общий набор токенов. Выбранные строки, текущая секция и открытый диалог сохраняют идентичность. Новый цвет фокуса остаётся видимым на текущей поверхности.
-3. В режиме «Системная» изменение темы или акцента приходит от хоста. Локально выбранная тема остаётся явным значением пользователя. При ошибке сохранения отображается фактическое состояние и доступ к повторной попытке.
-4. При включении системной контрастной темы активные состояния получают контрастные кисти. Открытый диалог, выделение списка и фокус сохраняются. После выхода из контрастной темы действует ранее выбранный режим.
+1. The "Design" section opens with the usual route, the switch turns on the instant rule, and the radio group sets the "System", "Light" or "Dark" mode.
+2. When selecting, the application updates the general set of tokens. The selected lines, the current section and the open dialogue retain the identity. The new focus color remains visible on the current surface.
+3. In System mode, the change in the theme or accent comes from the host. The locally selected theme remains the user’s explicit value. A save error displays the actual state and access to a repeat attempt.
+4. When the system contrast theme is included, the active states receive contrasting brushes. Open dialogue, list highlighting and focus are maintained. After leaving the contrasting theme, the previously chosen mode operates.
 
-**Проверка.** Смена системной темы во время редактирования меняет оформление поля, сохраняя курсор и черновик. При открытом диалоге контур фокуса видим в контрастной теме. Повторный вход в настройки показывает ранее записанный режим. [Theme resources for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105)) · [ThemeResource в WinUI](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/themeresource-markup-extension) · [ToggleSwitch](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/toggles)
+**Check.** Changing the system theme during editing changes the design of the field, saving the cursor and draft. In open dialogue, the contour of the focus is seen in a contrasting theme. Re-entering the settings shows a previously recorded mode. [Theme resources for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff769552(v=vs.105)) · [ThemeResource in WinUI](https://learn.microsoft.com/en-us/windows/apps/develop/platform/xaml/themeresource-markup-extension) · [ToggleSwitch](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/toggles)
 
-## 17. Просмотр медиа, полноэкранный режим и зум
+## 17. View media, enter full screen, and zoom
 
-1. Из сетки «Альбомы» открывается объект с первоначальным itemId. FlipView использует соседей в том же порядке, пока просмотр сохраняет этот контекст коллекции.
-2. При обычном масштабе жест перелистывает фото. В увеличенном изображении pan управляет его положением, pinch меняет масштаб. Для перехода к соседнему объекту доступны явные кнопки или клавиши. Если элемент исчез, просмотр показывает ближайший доступный объект или возвращает к коллекции.
-3. Полноэкранный режим меняет видимость панелей, сохраняя доступный способ вернуть управление. Хост продолжает показывать системные уведомления по своим правилам. Back сначала закрывает временный режим, затем возвращает к исходному списку. Индикатор буфера и позиция воспроизведения хранят разные состояния.
+1. From the Album grid, an object with the original itemId opens. FlipView uses neighbors in the same order as long as viewing preserves this collection context.
+2. At a normal scale, the gesture flips through the photo. In the enlarged image pan controls its position, pinch changes the scale. Explicit buttons or keys are available to navigate to a nearby object. If the item is gone, the view shows the nearest available object or returns to the collection.
+3. Full-screen mode changes the visibility of the panels, keeping the available way to take back control. The host continues to display system notifications according to its rules. Back first closes the temporary mode, then returns to the original list. The buffer indicator and the playback position store different states.
 
-**Проверка.** Pan увеличенного изображения оставляет тот же itemId. Поворот или resize сохраняет открытый объект. После возврата из полноэкранного просмотра фокус доступен на панели или в исходной коллекции. [Полноэкранный режим и ориентация Phone 8.1](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx) · [FlipView, ScrollView и Media playback](sources.md#прямые-ссылки-на-каталог-контролов-winui)
+The **Check.** Pan magnified image leaves the same itemId. A rotating or resize keeps the object open. After returning from full-screen viewing, the focus is available on the panel or in the original collection. [Full-screen mode and orientation of Phone 8.1](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx) · [FlipView, ScrollView and Media Playback](sources.md#winui-control-reference-links)
 
-## 18. Перелистывание однотипных страниц
+## 18. Switch between pages of the same type
 
-1. В приложении прогноза каждая страница использует одну компоновку для отдельного города. Города имеют стабильные ключи и пользовательский порядок. Переключение свайпом, кнопками или клавишами меняет текущий ключ внутри набора.
-2. App Bar открывает управление набором. «Добавить город» ведёт к поиску, после выбора город входит в набор. Там же доступны изменение порядка и удаление. При перестановке активный ключ сохраняется, при удалении открывается следующий доступный город или пустое состояние.
-3. Back уходит из управления набором к просмотру. Перелистывание само по себе не создаёт новую запись маршрута для каждого города. При возврате из прогноза на отдельный день восстанавливаются ключ города и контекст прокрутки.
+1. In the prediction app, each page uses a single layout for a separate city. Cities have stable keys and user order. Switching swipes, buttons, or keys changes the current key inside the set.
+2. The App Bar opens up dial management. "Add City" leads to a search, after selecting the city is included in the set. There is also a change of order and removal. When rearranged, the active key is saved, and when removed, the next available city or empty state opens.
+3. Back is leaving set management for viewing. Flipping by itself does not create a new route record for each city. When you return from the forecast for a separate day, the city key and the scroll context are restored.
 
-**Проверка.** Перестановка городов сохраняет текущий город. После удаления текущего города открывается ожидаемый сосед, а для пустого набора доступна команда добавления. Свайп и доступные кнопки выбирают элементы в одном порядке. [Uniform page shuffle для Phone 8.1](https://web.archive.org/web/20140618190016id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596124.aspx) · [Просмотр элементов внутри страницы Phone 8.1](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx) · [FlipView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/flipview)
+**Check.** Rearrangement of cities preserves the current city. After removing the current city, the expected neighbor opens, and an add command is available for an empty set. The swipe and available buttons select elements in the same order. [Uniform page shuffle for Phone 8.1](https://web.archive.org/web/20140618190016id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596124.aspx) · [View elements inside the Phone 8.1 page](https://web.archive.org/web/20140501211142id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596119.aspx) · [FlipView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/flipview)
 
-## 19. Камера, подтверждение и повторное открытие снимка
+## 19. Take, confirm, and reopen a photo
 
-Phone 8 Lens открывал видоискатель из системной камеры. Microsoft описала прямое сохранение и захват с подтверждением. Позднее системный просмотрщик мог открыть созданный снимок в приложении, если у снимка был связанный режим просмотра или редактирования. В библиотеке это сценарий для хоста, который поддерживает внешнюю активацию и передачу снимка. [Lens design guidelines for Windows Phone](https://web.archive.org/web/20121103005627/http://msdn.microsoft.com/en-us/library/windowsphone/design/jj662922(v=vs.105).aspx)
+The Phone 8 Lens opened the viewfinder from the system camera. Microsoft has described direct save and capture with confirmation. Later, the system viewer could open the created image in the application if the image had a linked viewing or editing mode. In the library, this is a script for a host that supports external image activation and transfer. [Lens design guidelines for Windows Phone](https://web.archive.org/web/20121103005627/http://msdn.microsoft.com/en-us/library/windowsphone/design/jj662922(v=vs.105).aspx)
 
-1. Хост передаёт контекст запуска. Frame открывает видоискатель, где доступны захват и выход. Пересчёт геометрии после поворота сохраняет явно выбранные режимы камеры.
-2. При прямом захвате результат сохраняется через хост, а видоискатель принимает следующий ввод после подтверждения сохранения. В режиме с проверкой создаётся временный снимок. «Сохранить» записывает его, «Отменить» освобождает временные данные. Оба результата возвращают к видоискателю.
-3. При запуске из просмотра фотографии Frame открывает связанный объект по идентификатору. Действие «Сохранить копию» становится доступным после правки. Оно оставляет пользователя на экране редактирования с подтверждённым результатом. Back возвращает к выбранной фотографии в системном просмотрщике через хост.
-4. Если дополнительная информация о снимке недоступна, страница показывает доступное стандартное изображение или сообщает, что объект уже недоступен. Повторное сохранение должно быть отдельной подтверждённой операцией.
+1. The host transmits the launch context. Frame opens the viewfinder where capture and output are available. Recalculating the geometry after a turn saves the clearly selected camera modes.
+2. With direct capture, the result is saved through the host, and the viewfinder receives the next input after the save confirmation. In the mode with verification, a temporary picture is created. "Save" records it, "Cancel" releases temporary data. Both results are returned to the viewfinder.
+3. When you run a photo from view, Frame opens the associated object by ID. The action "Save a copy" becomes available after editing. It leaves the user on the edit screen with a confirmed result. Back returns to the selected photo in the system viewer via the host.
+4. If additional information about the image is not available, the page shows the standard image available or informs that the object is no longer available. Reconservation must be a separate, confirmed operation.
 
-**Проверка.** Отмена на экране предпросмотра оставляет число сохранённых снимков прежним. При запуске из просмотра детали открываются для выбранного снимка. После сохранения копии результат виден на текущем экране. Потеря связанных данных даёт выход или просмотр доступного изображения. [Рекомендации Lens для Phone Store apps](https://web.archive.org/web/20140408235720id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596114.aspx) · [Lens в сводном PDF, стр. 33](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=33)
+**Check.** Cancel on the preview screen leaves the number of saved shots the same. When you start from a view, details are opened for the selected shot. After saving the copy, the result is visible on the current screen. Loss of Linked Data gives you access to or view the available image. [Lens Recommendations for Phone Store Apps](https://web.archive.org/web/20140408235720id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596114.aspx) · [Lens in consolidated PDF, page 33](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=33)
 
-## 20. Адаптивная панель команд
+## 20. Adaptive command bar
 
-1. В широком списке документов панель показывает «Создать», «Сортировать» и «Фильтр». Дополнительные действия доступны через многоточие. У «Фильтра» есть видимое состояние переключателя.
-2. При сужении панели «Фильтр» переносится в меню. Его текущее состояние и клавиатурное действие остаются доступны. После увеличения ширины команда снова появляется на панели, если помещается.
-3. Выбор строк подставляет команды для выбранных документов. Перенос этих команд меняет видимое место, сохраняя идентификаторы целей. При исчезновении всего выбранного набора открытое контекстное меню закрывается и фокус возвращается в список.
-4. Открытая команда проверяет доступность цели перед выполнением. Изменение ширины во время выполнения сохраняет состояние операции и её итог в одном месте.
+1. In a wide list of documents, the panel shows "Create", "Sort" and "Filter". Additional actions are available through the ellipsis. The Filter has an apparent switch state.
+2. When the panel is narrowed, the "Filter" is transferred to the menu. Its current state and keyboard action remain available. After increasing the width, the command reappears on the panel if it fits.
+3. Selection of lines substitutes commands for selected documents. The transfer of these commands changes the visible location, preserving the target identifiers. When the entire selected set disappears, the open context menu closes and the focus returns to the list.
+4. An open command checks the availability of the target before execution, and the change in width during execution keeps the state of the operation and the outcome in one place.
 
-**Проверка.** До и после переноса «Фильтр» открывает одну и ту же настройку, а её включённость совпадает на панели и в меню. Фокус остаётся в доступной части поверхности. При изменении выбора во время открытого меню снятые с выбора документы не обрабатываются случайно. [CommandBar](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/command-bar) · [Коллекции и прямое управление](components.md#коллекции-и-прямое-управление)
+**Check.** Before and after the transfer, the Filter opens the same setting, and its activation coincides on the panel and in the menu. The focus remains in the accessible part of the surface. When you change the selection during the open menu, selected documents are not processed randomly. [CommandBar](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/command-bar) · [Collections and direct management](components.md#collections-and-direct-manipulation)
 
-## 21. Экран блокировки и основная плитка
+## 21. Lock screen and primary tile
 
-1. Пользователь выбирает в настройках оболочки приложение для статуса и, при необходимости, отдельного поставщика фона. Хост сообщает, какие роли доступны и включены.
-2. Событие обновляет основную плитку и связанные представления. Для быстрого статуса хост получает значок и доступное значение счётчика. Для подробного статуса используется краткий текст. В историческом адаптере Phone 8 текст для Flip берётся из широкой или средней плитки по правилам платформы.
-3. При сбое получения фона хост использует стандартное изображение. Отключение статуса прекращает его публикацию на экране блокировки. Плитка Start продолжает работать по собственным настройкам.
-4. После открытия приложения и просмотра событий модель пересчитывает счётчик. Адаптеры получают то же значение при следующей публикации.
+1. The user selects in the shell settings an application for status and, if necessary, a separate background provider. The host informs which roles are available and included.
+2. The event updates the main tiles and related views. For fast status, the host receives an icon and an available counter value. A short text is used for detailed status. In the historic Phone 8 adapter, text for Flip is taken from a wide or medium tile according to the rules of the platform.
+3. When the background is not received, the host uses a standard image. Disabling the status stops its publication on the lock screen. Start tiles continue to work on their own settings.
+4. After opening the application and watching the events, the model recalculates the counter, and the adapters get the same value the next time they publish.
 
-**Проверка.** Отключение статуса экрана блокировки убирает его в этой поверхности. Установка нулевого счётчика убирает число. При отсутствии данных широкой Flip-плитки исторический профиль использует текст средней. [Руководство по экрану блокировки Phone 8](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj662927(v=vs.105)) · [Руководство для Phone Store apps](https://web.archive.org/web/20140408235720id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596116.aspx)
+**Check.** Disabling the lock screen status removes it from that surface. Setting a zero counter removes the number. In the absence of broad Flip tile data, the historical profile uses medium text. [Phone 8 Lock Screen Guide](https://learn.microsoft.com/en-us/previous-versions/windows/apps/jj662927(v=vs.105)) · [Guide to Phone Store Apps](https://web.archive.org/web/20140408235720id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596116.aspx)
 
-## 22. Общая коллекция с разной навигацией на телефоне и ПК
+## 22. Shared collection with phone and desktop navigation
 
-В 2015 году команда Windows описала проектный вариант Photos, где на телефоне между коллекцией и альбомами можно перелистывать Pivot одной рукой, а на ПК те же области открываются через меню. Это пример выбора представления в период разработки Windows 10. [Windows 10 Design](https://blogs.windows.com/windowsexperience/2015/04/29/windows-10-design-getting-the-balance-right/)
+In 2015, the Windows team described a design version of Photos, where on the phone between the collection and the albums you can flip Pivot with one hand, and on the PC the same areas open through the menu. This is an example of selecting a view during Windows 10 development. [Windows 10 Design](https://blogs.windows.com/windowsexperience/2015/04/29/windows-10-design-getting-the-balance-right/)
 
-1. Два места назначения «Коллекция» и «Альбомы» имеют постоянные ключи. Узкий профиль с касанием отображает их в Pivot, настольный — в NavigationView. Оба способа выбирают одну модель активного раздела.
-2. Переход к отдельному фото создаёт историю. При смене устройства ввода или окна в уже открытом фото выбранный раздел и фото сохраняются. Оболочка подстраивает представление под доступное место.
-3. При возврате из фото Frame восстанавливает исходный раздел и якорь коллекции. Состояние фокуса переводится на видимый элемент текущего макета, если прежний узел больше недоступен.
-4. Программное отражение выбора в NavigationView при восстановлении обновляет выделенный пункт. Запрос перехода обрабатывается только один раз.
+1. The two destinations "Collection" and "Albums" have permanent keys. A narrow profile with a touch displays them in Pivot, a desktop one in NavigationView. Both methods select one active partition model.
+2. Switching to a separate photo creates a story. When you change the input device or window in an already open photo, the selected section and photo are saved. The shell adjusts the presentation to the available place.
+3. When you return from a photo, Frame restores the original section and anchor of the collection. The focus state is translated to the visible element of the current layout if the previous node is no longer available.
+4. NavigationView's software choice reflection updates the selected item when it is restored, and the transition request is processed only once.
 
-**Проверка.** Свайп Pivot и выбор пункта NavigationView открывают один раздел данных и сохраняют одинаковую историю просмотра. Back из фото возвращает к заданной записи во всех профилях. [NavigationView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/navigationview) · [List/details](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/list-details)
+**Check.** The Pivot swipe and the NavigationView option open one data partition and keep the same browsing history. Back from the photo returns to the preset entry in all profiles. [NavigationView](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/navigationview) · [List/details](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/list-details)
 
-## 23. Речь как способ вызвать команду
+## 23. Run a command by voice
 
-В Phone 8.1 системная голосовая команда могла запускать конкретную задачу. Для распознавания внутри приложения гайд предлагает явную кнопку микрофона в App Bar и пример фразы для текущего экрана. При низкой уверенности он предлагает запросить подтверждение, а после нескольких неудачных попыток дать ввести текст или закрыть распознавание. Для короткого списка допустимых фраз Phone 8.1 поддерживал локальное распознавание. Встроенная диктовка требовала сеть. [Speech design guidelines](https://web.archive.org/web/20141022104513id_/http://msdn.microsoft.com/en-us/library/windows/apps/dn596121.aspx) · [Cortana integration и образцы распознавания](https://blogs.windows.com/windowsdeveloper/2014/09/23/cortana-integration-and-speech-recognition-new-code-samples/)
+In Phone 8.1, the system voice command could run a specific task. For recognition inside the application, the guide offers an explicit microphone button in the App Bar and an example phrase for the current screen. With low confidence, he suggests requesting confirmation, and after several unsuccessful attempts to give text or close recognition. For a short list of valid phrases, the Phone 8.1 supported local recognition. Built-in dictation required a network. [Speech design guidelines](https://web.archive.org/web/20141022104513id_/http://msdn.microsoft.com/en-us/library/windows/apps/dn596121.aspx) · [Cortana integration and recognition patterns](https://blogs.windows.com/windowsdeveloper/2014/09/23/cortana-integration-and-speech-recognition-new-code-samples/)
 
-1. Кнопка микрофона запускает распознавание через хост. Состояния «слушаю», «обрабатываю» и «остановлено» отображаются текстом и доступны для озвучивания. Отмена возвращает фокус к кнопке.
-2. Распознанная фраза разрешается в команду и параметры. Неоднозначный результат открывает список совпадений с доступным выбором. Ошибка оставляет путь повторить попытку или выполнить действие через экран.
-3. Системная активация передаёт то же назначение через адаптер. Frame открывает нужное место. Если действие требует подтверждения, запуск подготавливает действие и показывает его итоговое назначение.
-4. После отмены распознавания поздний результат поглощается по идентификатору запроса. Новый запуск получает новый идентификатор и наследует только устойчивый контекст страницы.
+1. The microphone button triggers recognition through the host. The states "listen", "process" and "stopped" are displayed in text and are available for voiceover. Cancel returns focus to the button.
+2. The recognized phrase is allowed in the command and parameters. The ambiguous result opens up a list of matches with the available choice. The error leaves a way to try again or perform an action through the screen.
+3. System activation transmits the same purpose through the adapter. Frame opens the right place. If the action requires confirmation, the launch prepares the action and shows its final purpose.
+4. After derecognition, the late result is absorbed by the request identifier. A new launch receives a new identifier and inherits only the stable context of the page.
 
-**Проверка.** Речь и видимая команда открывают одно назначение. Неоднозначный результат сохраняет исходный экран до выбора. Отмена очищает индикатор и защищает от позднего открытия другого маршрута. [Системные контракты Windows Phone 8.1](sources.md#windows-81-и-windows-phone-81)
+**Check.** Speech and Visible Command open a single assignment. The ambiguous result keeps the source screen up to selection. Cancellation clears the indicator and protects against late opening of another route. [System Contracts for Windows Phone 8.1](sources.md#windows-81-and-windows-phone-81)
 
-## 24. Hub с разнородными данными и частичной загрузкой
+## 24. Hub with mixed data and partial loading
 
-1. На широком экране Hub каталога показывает приоритетное содержимое, затем подборки, недавние записи и отдельную секцию справки. У каждой секции свой источник данных и ключ. Для первого показа подготавливаются видимые секции. Остальные загружаются без блокировки уже видимого содержимого.
-2. Заголовок подборки с действием открывает весь список подборки. Вход через карточку открывает конкретный объект. Клавиатурный переход на заголовок соседней секции приводит её в видимую область без записи Frame.
-3. Если загрузка одной секции завершается ошибкой, она показывает повтор. Другие секции и их команды остаются доступны. Поздний результат удалённой секции проверяет ключ и версию запроса перед обновлением.
-4. В узком настольном окне Hub располагает те же секции вертикально. После возврата из деталей восстанавливается выбранная секция и опорный элемент. При смене оси прежнее смещение используется только в совместимой геометрии.
-5. Обзор секций по Semantic Zoom приводит к выбранной секции по тому же ключу. Back из страницы со всем содержимым раздела восстанавливает исходный Hub.
+1. On a wide screen, the directory's Hub shows priority content, then selections, recent entries, and a separate help section. Each section has its own data source and key. For the first display, visible sections are prepared. The rest are downloaded without blocking the already visible content.
+2. The title of the collection with action opens the entire list of collections. Entrance through the card opens a specific object. The keyboard transition to the header of the adjacent section leads it to the visible area without the Frame recording.
+3. If one section is loaded with an error, it shows a repeat. Other sections and their teams remain available. The late result of the deleted section checks the key and version of the request before updating.
+4. In a narrow desktop window, the Hub has the same sections vertically. After returning from the parts, the selected section and the support element are restored. When changing the axis, the previous displacement is used only in compatible geometry.
+5. A review of the sections by Semantic Zoom leads to the selected section by the same key. Back from the page with all the contents of the section restores the original Hub.
 
-**Проверка.** Видимая часть доступна при незавершённой фоновой загрузке. Ошибка справки не блокирует открытие карточки. Повторный вход после изменения ширины возвращает к осмысленному элементу. Выбор секции в обзоре меняет позицию Hub, а открытие подробной страницы добавляет запись Frame. [Hub для разнородных данных](https://blogs.windows.com/windowsdeveloper/2014/02/05/introducing-the-new-hub-control-for-heterogeneous-data/) · [Semantic Zoom в WinUI](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/semantic-zoom)
+**Check.** The visible part is available when the background load is incomplete. The error does not block the opening of the card. Re-entry after the width change returns to the meaningful element. Selecting a section in the review changes Hub's position, and opening a detailed page adds a Frame entry. [Hub for heterogeneous data](https://blogs.windows.com/windowsdeveloper/2014/02/05/introducing-the-new-hub-control-for-heterogeneous-data/) · [Semantic Zoom in WinUI](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/semantic-zoom)
 
-## 25. Phone Hub и команды текущей секции
+## 25. Phone Hub and current section commands
 
-1. У Hub три секции, «Обзор», «Недавние» и «Избранное». В начальной секции панель минимальная. Глобальные команды приложения доступны через меню.
-2. Пользователь перелистывает до «Недавних». Когда эта секция становится первой видимой, панель показывает основную команду «Очистить недавние» в компактном режиме. Край следующей секции на экране сохраняет подсказку о возможности перелистывания.
-3. Пользователь перелистывает дальше. Панель скрывает команду секции и возвращается в минимальный режим. Если меню уже открыто и контекст изменился, библиотека закрывает его и возвращает фокус в текущую секцию.
-4. Карточка из «Недавних» открывает детали. Back восстанавливает секцию, опорную строку и панель с командами этой секции. Вызов команды передаёт идентификатор секции, а подтверждение проверяет актуальность контекста перед применением.
+1. Hub has three sections, Review, Recent, and Favorites. The initial section has a minimal panel. Global app commands are available through the menu.
+2. The user flips to "Recent". When this section becomes the first visible, the panel shows the main command "Clear Recent" in compact mode. The edge of the next section on the screen saves a hint about the possibility of flipping.
+3. The user scrolls further. The panel hides the section command and returns to minimal mode. If the menu is already open and the context has changed, the library closes it and returns the focus to the current section.
+4. A card from "Recent" reveals the details. Back restores the section, the reference line and the panel with the commands of this section. The command call transmits the section ID, and the confirmation checks the relevance of the context before application.
 
-**Проверка.** Частично видимая секция не перехватывает панель у первой видимой. Перелистывание не добавляет запись Frame. После возврата доступны те же команды. В варианте с двумя секциями перелистывание останавливается на границах. [Phone Hub и AppBar в образце Microsoft](https://blogs.windows.com/windowsdeveloper/2014/07/22/tips-and-tricks-for-using-xaml-controls-in-your-universal-windows-apps/) · [Порядок обработки Back](#3-back-закрывает-текущий-контекст)
+**Check.** The partially visible section does not intercept the panel from the first visible section. Flipping does not add a Frame record. After the return, the same commands are available. In the two-section variant, the flipping stops at the boundaries. [Phone Hub and AppBar in Microsoft Sample](https://blogs.windows.com/windowsdeveloper/2014/07/22/tips-and-tricks-for-using-xaml-controls-in-your-universal-windows-apps/) · [Procedure for processing Back](#3-back-closes-the-current-context)
 
-## 26. Карта из обзора и возврат к выбранному месту
+## 26. Open a map and return to a selected location
 
-1. Секция «Рядом» в Hub показывает статическое превью карты и список мест. Перелистывание над превью остаётся жестом Hub. Нажатие «Открыть карту» создаёт запись Frame с областью поиска, ключом секции и точкой возврата фокуса.
-2. Карта занимает основную область страницы. Касание и клавиатура позволяют перемещаться по карте, менять масштаб и открывать доступный список точек. Сохранённая область и текущий выбор работают без геолокации. Если пользователь запрашивает своё местоположение, карта использует результат, предоставленный хостом.
-3. Выбор метки обновляет встроенное описание в панели карты без записи в истории. Команда из описания открывает страницу места. Frame запоминает выбранную точку, границы видимой области и масштаб, а карта обновляет данные независимо от положения.
-4. Back из карточки восстанавливает карту с прежней областью и возвращает фокус в краткое описание. Если точка исчезла, карта сохраняет область и переводит фокус на список мест. Следующий Back возвращает к кнопке, с которой открыли карту в Hub.
+1. The "Nearby" section in Hub shows a static map preview and a list of places. Flipping over the preview remains a Hub gesture. Clicking "Open Map" creates a Frame entry with a search area, section key, and focus return point.
+2. The map occupies the main area of the page. Touch and keyboard allow you to move around the map, change the scale and open the available list of points. The saved area and the current selection work without geolocation. If a user requests their location, the card uses the result provided by the host.
+3. Selecting a tag updates the built-in description in the map bar without a record in history. The command from the description opens the site page. Frame remembers the selected point, the boundaries of the visible area and the scale, and the map updates the data regardless of position.
+4. Back from the card restores the map with the previous area and returns the focus to the brief description. If the dot is gone, the map saves the area and shifts the focus to the list of places. The next Back returns to the button that opened the map in Hub.
 
-**Проверка.** Свайп по превью перелистывает Hub. После открытия карты тот же жест панорамирует карту. Два нажатия Back возвращают сначала на карту, а затем к прежней секции обзора. Отказ в геолокации оставляет доступными ручное перемещение и точки из текущей области. [Phone Hub](https://web.archive.org/web/20140408233046id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596112.aspx) · [Guidelines for Maps](https://web.archive.org/web/20140408235720id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596102.aspx)
+**Check.** Swipe previews the Hub. After opening the card, the same gesture pans the map. Two Back presses are returned first to the map and then to the previous review section. Failure to geolocate leaves available manual movement and points from the current area. [Phone Hub](https://web.archive.org/web/20140408233046id_/http://msdn.microsoft.com/en-us/library/windowsphone/design/dn596112.aspx) · [Guidelines for Maps](https://web.archive.org/web/20140408235720id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn596102.aspx)
 
-## 27. Запуск из оболочки и общий проигрыватель
+## 27. Shell activation and a shared player
 
-В шаблоне информационной архитектуры Microsoft перечислены три системные точки входа в музыкальное приложение. Внутри есть ветка входа и регистрации, Panorama, поиск, библиотека, недавние записи, контекстные действия и несколько путей к проигрывателю. [IA Sample, архивный PDF](https://web.archive.org/web/20121118220154id_/http://cmsresources.windowsphone.com/devcenter/en-us/downloads/IA_sample.pdf)
+The Microsoft information architecture template lists three system entry points to the music app. Inside, there's a login and login branch, Panorama, search, library, recent entries, contextual actions, and several paths to the player. [IA Sample, archival PDF](https://web.archive.org/web/20121118220154id_/http://cmsresources.windowsphone.com/devcenter/en-us/downloads/IA_sample.pdf)
 
-1. Адаптер хоста принимает запуск из списка приложений, плитки или музыкальной поверхности. Frame разрешает назначение. Если для него нужен вход в аккаунт, приложение хранит незавершённое назначение и открывает форму входа.
-2. Ошибка входа оставляет форму и назначение доступными для повтора. Успешный вход применяет назначение один раз. Явная отмена удаляет отложенный переход. После запуска общий обзор становится точкой входа в библиотеку, недавние записи и поиск.
-3. Активация записи открывает проигрыватель с ключом записи и контекстом очереди. Проигрыватель владеет позицией и воспроизведением. Экран, с которого открыли запись, хранит свою позицию и фильтр. Меню текущей записи получает тот же ключ, поэтому его команды относятся к отображаемой записи.
-4. Back закрывает открытое меню проигрывателя, затем восстанавливает список или поиск с прежним фильтром. Состояние воспроизведения сохраняется по правилам хоста. Повторное открытие текущей записи подхватывает её сохранённую позицию.
+1. The host adapter accepts the launch from a list of apps, tiles, or music surfaces. Frame authorizes appointment. If it needs to log in to the account, the application stores the unfinished appointment and opens the login form.
+2. The login error leaves the form and assignment available for repeat. Successful entry applies the appointment once. Explicit cancellation removes the delayed transition. Once launched, the overall review becomes the entry point to the library, recent entries, and search.
+3. Activation of the record opens the player with the record key and the context of the queue. The player owns the position and playback. The screen from which the recording was opened stores its position and filter. The menu of the current record receives the same key, so its commands refer to the displayed record.
+4. Back closes the player’s open menu, then restores the list or search with the same filter. The state of playback is maintained according to the rules of the host. The reopening of the current record picks up its saved position.
 
-**Проверка.** Из поиска и недавних записей можно открыть один и тот же объект. После закрытия проигрывателя каждая точка входа восстанавливает своё положение. Успешный вход после ошибки применяет отложенный переход один раз. Отмена входа очищает назначение. [Шаблон структуры приложения](https://web.archive.org/web/20121118220154id_/http://cmsresources.windowsphone.com/devcenter/en-us/downloads/IA_sample.pdf) · [Системная активация и возврат](#12-закрепление-обновление-плитки-и-активация)
+**Check.** You can access the same object from search and recent entries. After closing the player, each entry point regains its position. A successful entry after an error applies a delayed transition once. Cancelling entry clears appointment. [Application structure template](https://web.archive.org/web/20121118220154id_/http://cmsresources.windowsphone.com/devcenter/en-us/downloads/IA_sample.pdf) · [System activation and return](#12-tile-pinning-updates-and-activation)
 
-## 28. Выбор из нескольких разделов и добавление в очередь
+## 28. Select items across sections and add them to a queue
 
-1. В коллекции «Аудиозаписи» tap открывает запись. В профиле Windows Store короткий cross-slide поперёк прокрутки отмечает запись. Команда «Выбрать» даёт тот же результат без жеста.
-2. Пользователь переходит в другую группу и отмечает ещё одну запись. Подборка показывает обе записи с доступными названиями. Счётчик и панель команд опираются на те же ключи, поэтому прокрутка или фильтр не меняют состав выбора.
-3. Команда «Добавить в очередь» разрешает ключи и создаёт позиции очереди в видимом порядке подборки. Порядком воспроизведения после добавления владеет очередь. Ещё одно явное добавление той же записи создаёт отдельную позицию.
-4. Back из открытой подборки закрывает её представление и возвращает фокус к вызвавшей кнопке. Когда запись исчезает из каталога, подборка обновляет счётчик. Если это случилось при добавлении, результат команды сообщает, какая запись пропущена.
+1. In the Audio Records collection, tap opens the recording. In the Windows Store profile, a short cross-slide across the scroll marks the record. The "Select" command gives the same result without a gesture.
+2. The user moves to another group and notes another entry. The collection shows both records with available titles. The counter and the command panel rely on the same keys, so scrolling or filtering does not change the composition of the selection.
+3. The "Add to the queue" command resolves the keys and creates the queue positions in the visible order of the collection. The order of reproduction after addition is owned by the queue. Another explicit addition of the same record creates a separate position.
+4. Back from an open selection closes its view and returns the focus to the trigger button. When the record disappears from the catalog, the collection updates the counter. If this happens when you add, the result of the command tells you which entry is missed.
 
-**Проверка.** Короткое касание открывает запись, cross-slide отмечает её. Переключение группы сохраняет счётчик и выбранные ключи. Повторное добавление создаёт отдельную позицию очереди, а в подборке запись остаётся единственной. [Guidelines for cross-slide](https://learn.microsoft.com/en-us/windows/apps/develop/input/guidelines-for-cross-slide) · [Проигрыватель и контекст очереди](#27-запуск-из-оболочки-и-общий-проигрыватель)
+**Check.** A short tap opens the recording, a cross-slide marks it. Switching the group saves the counter and selected keys. Re-addition creates a separate queue position, and in the collection, the record remains the only one. [Guidelines for cross-slide](https://learn.microsoft.com/en-us/windows/apps/develop/input/guidelines-for-cross-slide) · [Player and context of the queue](#27-shell-activation-and-a-shared-player)
 
-## 29. Перетаскивание и изменение порядка
+## 29. Drag and reorder
 
-1. Пользователь выбирает записи и за ручку начинает перенос. Источник фиксирует ключи и исходную версию списка. До захвата движения прокрутка и активация строк обрабатываются обычным способом.
-2. При наведении между элементами цель показывает место вставки и доступную операцию. Предпросмотр может сдвинуть соседние строки. В модели порядок сохраняется до подтверждения.
-3. При отпускании команда проверяет, что записи, цель и границы группы ещё существуют. После успеха фокус следует за перемещённым элементом. При ошибке или отмене предпросмотр исчезает, а список возвращается к подтверждённому порядку.
-4. Для переноса между списками целевая коллекция подтверждает вставку. После подтверждения Move источник удаляет перемещённые позиции. Copy оставляет обе версии доступными. Клавиатурные команды движения внутри списка и команда переноса в другой список используют те же ключи и проверки.
+1. The user selects the records and starts the transfer by the handle. The source captures the keys and the original version of the list. Before the motion is captured, scrolling and string activation are processed in the usual way.
+2. When hovering between the elements, the target shows the insertion location and the operation available. A preview can shift adjacent lines. In the model, order is maintained until confirmation.
+3. When released, the team checks that the band's records, purpose, and boundaries still exist. After success, the focus follows the displaced element. If you make an error or cancel the preview disappears, and the list returns to the confirmed order.
+4. For transfer between lists, the target collection confirms the insert. After confirming Move, the source removes the moved positions. Copy keeps both versions available. The keyboard motion commands within the list and the transfer command to another list use the same keys and checks.
 
-**Проверка.** Отмена над недопустимой целью и удаление цели во время жеста не меняют порядок. Перенос с клавиатуры даёт тот же результат, что и перенос указателем. Источник исчезает только после успешного Move. Считыватель сообщает выбранную операцию и итоговое положение. [Drag and drop](https://learn.microsoft.com/en-us/windows/apps/develop/data/drag-and-drop) · [ListViewBase.CanReorderItems](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.listviewbase.canreorderitems?view=windows-app-sdk-1.8)
+**Check.** Undoing an inadmissible target and removing a target during a gesture does not change the order. Transfer from the keyboard gives the same result as transfer pointer. The source disappears only after a successful Move. The reader reports the selected operation and the final position. [Drag and drop](https://learn.microsoft.com/en-us/windows/apps/develop/data/drag-and-drop) · [ListViewBase.CanReorderItems](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.listviewbase.canreorderitems?view=windows-app-sdk-1.8)
 
-## 30. Обновление коллекции с сохранением фокуса
+## 30. Refresh a collection and keep focus
 
-1. На странице «Заявки» пользователь раскрывает фильтры, выбирает состояние и возвращается к списку с клавиатуры. Фильтр сообщает раскрытое состояние, строка сообщает название и состояние выбора, панель команд использует те же выбранные ключи.
-2. Фоновый ответ обновляет группы и счётчик результатов. Страница сохраняет маршрут, активную строку и её позицию. Область статуса объявляет изменившийся итог после применения данных.
-3. Если активная строка исчезла, список ищет ближайшую доступную строку по прежнему порядку. При пустом результате фокус переходит к подходящей кнопке фильтра. Сообщение об изменении объясняет, почему исходный объект исчез из списка.
-4. Пользователь открывает действия строки с клавиатуры или через средство доступности. Меню получает ключ текущей строки и возвращает фокус при закрытии. Кнопка в панели вызывает то же действие над тем же объектом.
+1. On the Applications page, the user opens the filters, selects the status and returns to the list from the keyboard. The filter tells the disclosed state, the string tells the name and the selection state, the command panel uses the same selected keys.
+2. The background response updates the groups and the results counter. The page saves the route, active line and its position. The status area declares the changed result after the data is applied.
+3. If the active line has disappeared, the list looks for the nearest available line in the same order. When the result is empty, the focus goes to the appropriate filter button. The change message explains why the original object disappeared from the list.
+4. The user opens the actions of the line from the keyboard or through the accessibility tool. The menu receives the current line key and returns focus when closed. A button in the panel causes the same action on the same object.
 
-В образце XAML GridView для Phone 8.1 отрисовка строки проходит по этапам, а контейнер очищается при возврате в пул. Для виртуализированного списка библиотеки якорь, фокус и текущая команда привязаны к данным строки. После переиспользования контейнер получает семантику нового объекта вместе с новым содержимым. [Образец активации и переиспользования GridView](windows-phone-archive.md#разбор-исходников-образцов)
+In the XAML GridView sample for Phone 8.1, the line is rendered in stages, and the container is cleared when returned to the pool. For a virtualized library list, the anchor, focus, and current command are tied to the string data. Once reused, the container receives the semantics of the new object along with the new content. [GridView activation and reuse sample](windows-phone-archive.md#sample-source-analysis)
 
-**Проверка.** Обновление без изменения результата сохраняет фокус и не повторяет объявление. После удаления строки клавиатурная навигация продолжается в списке или у фильтра. При активном скринридере доступны имя, роль, признаки выбора и текущие команды. [Руководство Windows 8.1 по доступности, стр. 390–393](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=390) · [UI Automation в WinUI](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/custom-automation-peers) · [Проверка с Narrator](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/accessibility-testing)
+**Check.** Update without changing the result retains focus and does not repeat the ad. After removing the line, the keyboard navigation continues in the list or at the filter. With an active screen reader, name, role, selection signs and current commands are available. [Windows 8.1 Availability Guide, pp. 390–393](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=390) · [UI Automation in WinUI](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/custom-automation-peers) · [Testing with Narrator](https://learn.microsoft.com/en-us/windows/apps/design/accessibility/accessibility-testing)
 
-## 31. Локальное сохранение и отложенная отправка
+## 31. Save locally and send later
 
-В кейсе Tailspin для Windows Phone UI читает анкеты и ответы из локального хранилища. Сервис синхронизации загружает данные и отправляет завершённые анкеты асинхронно. [Building the Mobile Client](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/gg490771(v=pandp.10)) · [Using Services on the Phone](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/gg490772(v=pandp.10))
+In the Tailspin case for Windows Phone, the UI reads questionnaires and answers from local storage. The synchronization service loads data and sends completed questionnaires asynchronously. [Building the Mobile Client](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/gg490771(v=pandp.10)) · [Using Services on the Phone](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/gg490772(v=pandp.10))
 
-Исторический `TransferMonitor` показывает причины ожидания вроде Wi‑Fi или питания и включает индикатор без процентов, когда общий размер неизвестен. В этом сценарии строка очереди отображает состояние фоновой операции отдельно от статуса сохранения самой анкеты. [Исходник TransferMonitor](https://github.com/microsoftarchive/WindowsPhoneToolkit/blob/4e4fd5d36c769c004f7ccc7daf78a5ffb8ef18df/Microsoft.Phone.Controls.Toolkit/TransferControl/TransferMonitor.cs)
+The historic `TransferMonitor` shows reasons for waiting like Wi-Fi or power, and includes an indicator without interest when the overall size is unknown. In this scenario, the queue line displays the background operation state separately from the preservation status of the questionnaire itself. [TransferMonitor source](https://github.com/microsoftarchive/WindowsPhoneToolkit/blob/4e4fd5d36c769c004f7ccc7daf78a5ffb8ef18df/Microsoft.Phone.Controls.Toolkit/TransferControl/TransferMonitor.cs)
 
-1. Список «Анкеты» показывает доступные локальные записи. Пользователь открывает анкету, вводит ответы и сохраняет черновик. Редактор показывает «Сохранено на устройстве». Back возвращает к той же позиции списка.
-2. Команда «Отправить» фиксирует версию ответов и создаёт запись отправки. Если сети сейчас нет, список показывает «Ожидает отправки». Поля и вложения остаются в локальном хранилище.
-3. Синхронизация использует тот же идентификатор при повторе. Ошибка сети оставляет запись доступной и показывает команду «Повторить». Серверное подтверждение относится к отправленной версии. После него отображается «Отправлено».
-4. После закрытия приложения очередь и сохранённый черновик восстанавливаются отдельно от журнала Frame. Если отправка завершилась во время отсутствия приложения, список показывает подтверждённый статус, а фокус восстанавливается на прежней записи.
+1. The "Forms" list shows available local records. The user opens the questionnaire, enters answers and saves the draft. The editor shows "Save on the device." Back goes back to the same position on the list.
+2. The "Send" command captures the version of the answers and creates a record of the sending. If the network is not currently available, the list shows "Expects to be sent." Fields and attachments remain in the local storage.
+3. Synchronization uses the same identifier when repeated. A network error leaves the record available and shows the "Repeat" command. Server confirmation refers to the submitted version. After that, it is displayed "Sent".
+4. After closing the application, the queue and the saved draft are restored separately from the Frame journal. If the submission is completed while the application is not available, the list shows the confirmed status, and the focus is restored to the previous record.
 
-**Проверка.** Анкета открывается и сохраняется без сети. Повтор после обрыва использует один идентификатор отправки. Позднее подтверждение обновляет именно отправленную версию и не затирает последующие правки. [Локальное хранилище и асинхронная синхронизация в Tailspin](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/gg490771(v=pandp.10)) · [Возврат после приостановки](#15-приостановка-восстановление-и-смена-среды)
+**Check.** is open and saved without a network. Repeat after the cliff uses a single send ID. Later confirmation updates the submitted version and does not erase subsequent edits. [Local Storage and Asynchronous Synchronization in Tailspin](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/gg490771(v=pandp.10)) · [Return after suspension](#15-suspension-restoration-and-environment-changes)
 
-## 32. Форма и экранная клавиатура
+## 32. Forms and the on-screen keyboard
 
-1. Пользователь открывает контакт и выбирает поле сайта. Поле предлагает раскладку URL. Вставка и аппаратная клавиатура идут по общему пути ввода с той же проверкой значения.
-2. Появляется экранная клавиатура. Хост передаёт доступную область, форма прокручивает поле, подпись и актуальную ошибку в неё. Действие «Сохранить» остаётся доступным в видимой панели либо через команды формы.
-3. При переходе к следующему полю, открытии меню в контексте ввода и повороте экрана форма сохраняет черновик и активное поле. Изменение геометрии пересчитывает позицию поля в новой области. Открытое меню возвращает фокус после закрытия.
-4. Системный Back, когда его принимает клавиатура, скрывает её. Страница восстанавливает доступную область без потери введённого. Следующий Back применяет правила ухода из редактора.
+1. The user opens the contact and selects the site field. The field offers a layout of the URL. The insert and hardware keyboard follow a common input path with the same value check.
+2. The on-screen keyboard appears. The host transmits the available area, the form scrolls through the field, the label and the actual error in it. The Save action remains available either in the visible panel or through form commands.
+3. When moving to the next field, opening the menu in the context of entering and rotating the screen, the form retains the draft and the active field. The change in geometry recalculates the position of the field in the new area. The open menu returns focus after closing.
+4. The system back, when it is accepted by the keyboard, hides it. The page restores the available area without losing the input. The following Back applies the rules of leaving the editor.
 
-**Проверка.** В коротком ландшафтном окне активное поле и доступное действие остаются видимыми. При автоматическом изменении размера со стороны платформы нижний отступ применяется один раз. Вставленный адрес проходит ту же проверку, что и набранный. [Проектирование ввода для Phone 7](https://web.archive.org/web/20101213163400id_/http://msdn.microsoft.com:80/en-us/library/gg490770.aspx) · [Экранная клавиатура в Windows](https://learn.microsoft.com/en-us/windows/apps/develop/input/respond-to-the-presence-of-the-touch-keyboard) · [Назначение поля](https://learn.microsoft.com/en-us/windows/apps/develop/input/use-input-scope-to-change-the-touch-keyboard)
+**Check.** In a short landscape window, the active field and action available remain visible. In case of automatic change of size on the platform side, the lower indentation is applied once. The inserted address passes the same check as the typed address. [Designing input for Phone 7](https://web.archive.org/web/20101213163400id_/http://msdn.microsoft.com:80/en-us/library/gg490770.aspx) · [Screen keyboard in Windows](https://learn.microsoft.com/en-us/windows/apps/develop/input/respond-to-the-presence-of-the-touch-keyboard) · [Field assignment](https://learn.microsoft.com/en-us/windows/apps/develop/input/use-input-scope-to-change-the-touch-keyboard)
 
-## 33. Постановка, изменение и открытие напоминания
+## 33. Schedule, edit, and open a reminder
 
-1. В карточке задачи пользователь задаёт время. Приложение хранит намерение, например 09:00 по местному времени, и вычисляет момент для хоста. Список показывает «Запланировано» после подтверждения постановки.
-2. При переносе времени или отмене используется тот же ключ напоминания. Хост заменяет или отменяет ожидающую доставку. При ошибке интерфейс показывает последний подтверждённый результат и оставляет повтор доступным. Смена часового пояса пересчитывает момент для правила местного времени.
-3. В момент доставки уведомление показывает системная оболочка. При активации хост передаёт ключ задачи в Frame. При наличии объекта открываются его актуальные детали. Если задача уже удалена, открывается список с понятным сообщением.
-4. При возврате из деталей Back следует журналу входа. Пропущенный показ и успешная постановка остаются отдельными состояниями. Подтверждённые события оболочки обновляют модель.
+1. In the task card, the user sets the time. The application stores an intention, such as 9:00 local time, and calculates the moment for the host. The list shows "Planned" after the production is confirmed.
+2. The same reminder key is used when changing time or canceling. The host replaces or cancels the pending delivery. When an error occurs, the interface displays the last confirmed result and leaves the repeat available. Changing the time zone recalculates the moment for the local time rule.
+3. At the time of delivery, the notification shows the system shell. When activated, the host transmits the task key to Frame. If there is an object, its actual details are opened. If the task has already been deleted, a list with a clear message opens.
+4. When returning from details, Back follows an entry log. Missed screening and successful staging remain separate states. Confirmed shell events update the model.
 
-**Проверка.** После переноса времени в очереди остаётся одно напоминание. Активация старого уведомления открывает актуальную задачу или список при её удалении. При выключенном устройстве список отражает подтверждённое состояние без предположения о факте показа. [Reminder в Windows Phone SDK](https://learn.microsoft.com/en-us/previous-versions/hh203244(v=vs.110)) · [Запланированные уведомления, стр. 368](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=368) · [Постановка и отмена в Windows](https://learn.microsoft.com/en-us/windows/apps/develop/notifications/app-notifications/app-notifications-scheduled)
+**Check.** After the time is changed, there is one reminder left in the queue. Activating the old notification opens up the actual task or list when it is deleted. When the device is turned off, the list reflects the confirmed state without presumption of the fact of display. [Reminder in Windows Phone SDK](https://learn.microsoft.com/en-us/previous-versions/hh203244(v=vs.110)) · [Scheduled notifications, page 368](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=368) · [Setting and Canceling in Windows](https://learn.microsoft.com/en-us/windows/apps/develop/notifications/app-notifications/app-notifications-scheduled)
 
-## 34. Команды с клавиатуры и область действия
+## 34. Keyboard commands and scope
 
-1. В редакторе «Сохранить» доступно на панели, через меню и по Ctrl+S. Каждый вход разрешает ключ активного документа и проверяет одну модель доступности команды.
-2. При переключении вкладки клавиатурный контекст получает новый документ. Сочетания редактирования в текстовом поле и контекстные команды списка относятся к своим областям фокуса.
-3. Сужение окна переносит кнопку в overflow. Сочетание продолжает действовать в контексте редактора. Alt показывает подсказки клавиш для текущей поверхности, а выбор подсказки открывает меню или вызывает команду.
-4. Модальный диалог берёт ввод в свою область. Его команды работают до закрытия. После закрытия фокус возвращается к исходному элементу и сочетания редактора снова опираются на активный документ.
+1. In the Save editor, it is available on the panel, through the menu, and by Ctrl+S. Each login resolves the active document key and checks one command availability model.
+2. When you switch the tab, the keyboard context receives a new document. Text field editing combinations and list context commands refer to their areas of focus.
+3. The narrowing of the window transfers the button to overflow. The combination continues to operate in the context of the editor. Alt shows key prompts for the current surface, and the choice of clue opens the menu or calls a command.
+4. Modal dialogue takes input into its field. His teams are working until closing. After closing, the focus returns to the original element and the editor combinations again rely on the active document.
 
-**Проверка.** Ctrl+S и пункт меню сохраняют один и тот же активный документ до и после перестройки панели. При смене вкладки старая цель не получает команду. При недоступности действия сочетание не меняет данные. Escape закрывает подсказки клавиш и возвращает обычный режим ввода. [Keyboard accelerators](https://learn.microsoft.com/en-us/windows/apps/develop/input/keyboard-accelerators) · [Access keys](https://learn.microsoft.com/en-us/windows/apps/develop/input/access-keys) · [Commanding in Windows apps](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/commanding)
+**Check.** Ctrl+S and the menu item keep the same active document before and after the dashboard restructuring. When you change the tab, the old goal does not receive a command. If the action is unavailable, the combination does not change the data. Escape closes the key prompts and returns the normal input mode. [Keyboard accelerators](https://learn.microsoft.com/en-us/windows/apps/develop/input/keyboard-accelerators) · [Access keys](https://learn.microsoft.com/en-us/windows/apps/develop/input/access-keys) · [Commanding in Windows apps](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/commanding)
 
-## 35. Заставка и первый рабочий экран
+## 35. Splash screen and first working screen
 
-В документации Phone Store apps краткая заставка сопровождает загрузку. Временные страницы загрузки пропускаются при нажатии Back. В Windows App SDK запуск, открытие файла и переход по протоколу могут приходить с разными параметрами активации. Сценарий использует общий вход в маршрутизатор для этих способов запуска. [Заставка и Back в Phone Store apps](https://web.archive.org/web/20141012014027id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596109.aspx) · [Rich activation with the app lifecycle API](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/applifecycle/applifecycle-rich-activation)
+In the documentation of the Phone Store apps, a brief screensaver accompanies the download. Temporary download pages are skipped when you click Back. In the Windows App SDK, starting, opening a file, and navigating the protocol can come with different activation options. The script uses a shared router input for these launch methods. [Screensaver and Back in Phone Store apps](https://web.archive.org/web/20141012014027id_/http://msdn.microsoft.com:80/en-us/library/windows/apps/dn596109.aspx) · [Rich activation with the app lifecycle API](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/applifecycle/applifecycle-rich-activation)
 
-1. При холодном запуске хост принимает параметры активации и показывает заставку на время подготовки окна. Маршрутизатор выбирает начальное назначение по параметрам, сохранённому состоянию или адресу по умолчанию.
-2. При готовности оболочки Frame открывает выбранный рабочий экран. Если данные ещё загружаются, экран показывает состояние загрузки в своей области и даёт воспользоваться доступной навигацией. Системная заставка уступает место экрану.
-3. Если открываемый объект недоступен, на рабочем экране появляется объяснение и действие для возврата в связанный раздел. Если пользователь уйдёт до завершения загрузки, поздний ответ не переключит его обратно.
+1. In a cold start, the host accepts the activation parameters and shows the screensaver for the time of window preparation. The router selects the initial destination by parameters, saved state, or default address.
+2. When the shell is ready, Frame opens the selected screen. If the data is still loaded, the screen shows the load status in its area and allows you to use the available navigation. The system screensaver gives way to the screen.
+3. If the object to be opened is not available, an explanation and action appear on the desktop screen to return to the associated partition. If the user leaves before the download is complete, a late response will not switch it back.
 
-**Проверка.** Обычный запуск открывает начальный экран, ссылка открывает связанное назначение, а медленная сеть оставляет доступной навигацию. Back следует истории рабочего экрана и пропускает заставку. Ошибка загрузки предлагает выход и повтор только там, где он возможен. [Приостановка и восстановление](#15-приостановка-восстановление-и-смена-среды)
+**Check.** A normal launch opens the start screen, the link opens the associated destination, and the slow network leaves navigation available. Back follows the history of the desktop screen and skips the screensaver. The download error offers output and replay only where possible. [Suspension and reinstatement](#15-suspension-restoration-and-environment-changes)
 
-## 36. Выделение, вставка и отмена в редакторе
+## 36. Select, paste, and undo in the editor
 
-1. Пользователь выделяет текст в заметке касанием и уточняет диапазон маркерами. Мышь и клавиатура меняют то же выделение. Контекстное меню привязано к выбранному фрагменту, а редактор сохраняет диапазон при переходе фокуса в меню.
-2. Пункт «Копировать» и Ctrl+C передают выделенный текст в буфер. В редактируемой области «Вырезать» удаляет исходный диапазон после успешной передачи, если он всё ещё относится к той же версии текста. Контекст просмотра позволяет копировать, если это разрешено для выбранного содержимого.
-3. «Вставить» из меню и Ctrl+V обращаются к одной операции редактора. Она запоминает документ, версию текста и диапазон, затем читает буфер. Данные поддерживаемого формата вставляются, если после чтения контекст редактирования совпадает с запомненным. При смене документа, текста или диапазона результат отбрасывается.
-4. Редактор добавляет успешное вырезание или вставку одним шагом в журнал изменений. Отмена возвращает прежний фрагмент и восстанавливает выделение или точку ввода. Закрытие меню возвращает фокус в редактор.
+1. The user highlights the text in the note by touching and specifies the range with markers. The mouse and keyboard change the same allocation. The context menu is tied to the selected fragment, and the editor retains the range when the focus is switched to the menu.
+2. Copy and Ctrl+C send the selected text to the buffer. In the editable area, Cut removes the original range after a successful transfer if it still belongs to the same version of the text. The browsing context allows you to copy, if permitted for the selected content.
+3. "Insert" from the menu and Ctrl+V refer to a single editor operation. It remembers the document, the text version and the range, then reads the buffer. The supported format data is inserted if the editing context matches the memory after reading. When you change a document, text, or range, the result is discarded.
+4. The editor adds a successful cut or paste in one step to the change log. Cancellation returns the previous fragment and restores the selection or input point. Closing the menu returns the focus to the editor.
 
-**Проверка.** Меню и сочетание клавиш дают один результат. В режиме чтения доступны только разрешённые операции, а неподдерживаемый формат сохраняет текст. Ctrl+Z возвращает фрагмент, который был заменён при вставке. Задержка буфера при смене документа сохраняет оба документа в текущем состоянии. [Clipboard commands, стр. 300](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=300) · [Copy and paste in WinUI](https://learn.microsoft.com/en-us/windows/apps/develop/communication/copy-and-paste)
+The **Check.** menu and keyboard combination give the same result. In read mode, only allowed operations are available, and the unsupported format saves text. Ctrl+Z returns a fragment that was replaced when inserted. Buffer delay when changing a document keeps both documents in their current state. [Clipboard commands, page 300](https://tilsgee.github.io/DesignGuidelinesArchive/uwp8.1.pdf#page=300) · [Copy and paste in WinUI](https://learn.microsoft.com/en-us/windows/apps/develop/communication/copy-and-paste)
 
-## 37. Рукописная аннотация и смена ввода
+## 37. Ink annotations and input changes
 
-1. В просмотре документа пользователь включает аннотации. Панель показывает активный инструмент и его параметры. Перо рисует штрих, а жест пальцем прокручивает документ. Рисование пальцем доступно через явный переключатель.
-2. Начало штриха фиксирует страницу, указатель и параметры инструмента. Отпускание сохраняет один штрих. Потеря захвата отменяет незавершённый штрих. После увеличения масштаба или поворота завершённые штрихи остаются у соответствующего содержимого страницы.
-3. Клавиатура меняет инструмент или вызывает отмену. Отмена убирает последний завершённый штрих в редакторе. Пользователь может выбрать аннотацию из списка и открыть её место в документе. Значение подписи доступно средствам доступности.
-4. При выходе из режима аннотаций фокус возвращается к его кнопке. Сохранённые аннотации остаются частью документа и доступны при следующем открытии.
+1. In viewing the document, the user includes annotations. The panel shows the active tool and its parameters. The pen draws a stroke, and the gesture scrolls the document with a finger. Finger drawing is available through an explicit switch.
+2. The start of the stroke fixes the page, pointer and tool parameters. Letting go saves one touch. Losing a grip cancels an unfinished touch. After zooming in or rotating, the completed strokes remain with the corresponding content of the page.
+3. The keyboard changes the tool or causes cancellation. Cancel removes the final finishing touch in the editor. The user can select the abstract from the list and open its place in the document. The value of the label is available to accessibility tools.
+4. When you leave the annotation mode, the focus returns to the annotation button, and the saved annotations remain part of the document and are available at the next opening.
 
-**Проверка.** Штрих пером и прокрутка пальцем дают разные результаты. Потеря захвата сохраняет предыдущие аннотации. Отмена убирает ровно один завершённый штрих. Смена устройства ввода сохраняет текущую страницу, аннотацию и выбранный инструмент. [Input and feedback patterns](https://web.archive.org/web/20140501004253id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn456349.aspx) · [Inking controls for WinUI apps](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/ink-controls)
+**Check.** Feather stroke and finger scrolling give different results. Loss of capture retains previous annotations. Cancellation removes exactly one completed stroke. Changing the input device saves the current page, annotation, and selected tool. [Input and feedback patterns](https://web.archive.org/web/20140501004253id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/dn456349.aspx) · [Inking controls for WinUI apps](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/ink-controls)
 
-## 38. Выбор из списка в форме
+## 38. Select from a list in a form
 
-1. В настройках напоминания свёрнутое поле показывает применённое значение. При открытии оно выбирает подходящее представление. В профиле Toolkit одиночный список из пяти элементов раскрывается в форме, а список из шести открывает временный экран. Если набор пуст, поле показывает, что варианты недоступны.
-2. Стрелки перемещаются по пунктам. Касание пункта или Enter подтверждает одиночное значение и закрывает список. Escape или Back закрывает его с прежним значением и возвращает фокус в поле.
-3. Поле дней повторения открывает полноэкранный список с галочками. Отметки меняют временный набор. Подтверждение передаёт дни в черновик формы и обновляет краткую подпись. Отмена оставляет прежний набор, а напоминание меняется после сохранения формы.
-4. Если каталог вариантов обновился в открытом списке, форма сохраняет выбор по ключам и проверяет их при подтверждении. Для удалённого пункта она показывает, что вариант недоступен, и позволяет выбрать другой.
+1. In reminder settings, the folded field shows the value applied. When opened, it selects a suitable view. In the Toolkit profile, a single list of five items is revealed in the form, and a list of six opens the time screen. If the set is empty, the field shows that the options are not available.
+2. The arrows are moving point by point. Touch point or Enter confirms single value and closes list. Escape or Back closes it with the same value and returns the focus to the field.
+3. The Repeat Days field opens a full-screen list with ticks. The marks change the temporal set. Confirmation passes the days into a form draft and updates the brief label. Cancellation leaves the old set, and the reminder changes after retaining the form.
+4. If the catalogue of options is updated in the open list, the form saves the choice by keys and checks them when confirmed. For a remote item, it shows that the option is not available, and allows you to choose another one.
 
-**Проверка.** Пять и шесть вариантов открывают разные представления с одинаковым результатом подтверждения. Back из обоих представлений возвращает к тому же полю. Предпросмотр и отметки до подтверждения сохраняют исходный черновик. Смена локали меняет подписи и порядок дней, сохраняя прежние дни повторения. [ListPicker в Toolkit](components.md#listpicker-в-форме) · [Combo box and list box](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/combo-box)
+**Check.** Five and six variants open different views with the same confirmation result. Back from both views returns to the same field. Preview and markings before confirmation retain the original draft. Changing the locale changes labels and the order of days, keeping the same days of repetition. [ListPicker in Toolkit](components.md#listpicker-in-a-form) · [Combo box and list box](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/combo-box)
 
-## 39. Групповая галочка и визуальные состояния
+## 39. Group checkbox and visual states
 
-1. В коллекции «Для офлайна» пользователь отмечает одну запись. Галочка заголовка группы показывает смешанный выбор. Клавиатурный фокус может находиться на заголовке одновременно со смешанной отметкой. Средство доступности получает имя группы и состояние выбора.
-2. Space на заголовке или касание галочки выбирает все доступные записи этой группы. Шаблон обновляет отметки, а панель получает один актуальный набор ключей. Повторная активация полностью отмеченной группы снимает её выбор. Добавление или удаление строки пересчитывает отметку по доступным ключам.
-3. Команда «Скачать» фиксирует набор ключей на момент вызова. Строка группы показывает прогресс, а команда сообщает о выполнении. Сужение окна переносит команду в меню, сохраняя её состояние и текущий выбор. Индикатор становится измеримым на том же месте после получения общего размера.
-4. Операция завершает запись результата независимо от визуального перехода. Смена темы или отключение анимаций меняют оформление и сохраняют итоговую отметку, фокус и доступность действий. Если исходный элемент больше недоступен, фокус возвращается в видимую область коллекции.
+1. In the collection "For offline", the user notes one entry. The tick of the group's title shows a mixed selection. The keyboard focus can be on the header at the same time as the mixed mark. The availability means receives the name of the group and the state of choice.
+2. Space on the title or tick selects all available records of this group. The template updates the marks, and the panel receives one current set of keys. Re-activation of the fully marked group removes its choice. Adding or deleting a line recalculates the mark on the available keys.
+3. The "Download" command captures a set of keys at the time of the call. The line of the group shows progress and the team reports progress. The narrowing of the window transfers the command to the menu, preserving its state and current choice. The indicator becomes measurable in the same place after the total size is obtained.
+4. The operation completes the recording of the result regardless of the visual transition. Changing the theme or disabling animations change the design and maintain the final mark, focus and availability of actions. If the original item is no longer available, the focus is returned to the visible area of the collection.
 
-**Проверка.** Частичный выбор даёт смешанную отметку, а переход фокуса и смена ширины сохраняют выбранные ключи. Клавиатура и касание выбирают один набор. Два быстрых нажатия на «Скачать» запускают одну операцию. Итог совпадает при обычном и уменьшенном движении. [Check boxes в MSDN](https://web.archive.org/web/20140413013344id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/hh700393.aspx) · [Визуальные состояния WinUI](components.md#визуальные-состояния-и-шаблоны-winui)
+**Check.** Partial selection gives a mixed mark, and switching focus and changing width retain selected keys. The keyboard and touch select one set. Two quick clicks on "Download" start one operation. The result is the same for normal and reduced motion. [Check boxes in MSDN](https://web.archive.org/web/20140413013344id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/design/hh700393.aspx) · [Visual states of WinUI](components.md#visual-states-and-winui-templates)
 
-## 40. Документная вкладка, закрытие и перенос
+## 40. Close and transfer document tabs
 
-1. Пользователь открывает два документа в соседних вкладках. Стрелки в ряду вкладок перемещают фокус, а Enter или Space меняют активный документ. Ctrl+Tab переключает его сразу. Черновик и позиция каждого документа сохраняются при переключении.
-2. Крестик вкладки или Ctrl+F4 запрашивает закрытие конкретного документа. Для черновика окно показывает решение «Сохранить», «Отбросить» или «Остаться». Ошибка записи оставляет вкладку открытой с её данными. После успешного закрытия активной вкладки выбирается ближайшая оставшаяся. Если закрыта последняя вкладка рабочего окна, оно показывает начальную область.
-3. При вытягивании вкладки TabView запрашивает новое окно. Успешно подготовленное окно получает существующий сеанс, включая черновик и историю. Если создание окна не удалось, вкладка остаётся у прежнего владельца. Запрос закрытия во время переноса ждёт смены владельца и обрабатывается один раз в итоговом окне.
-4. При наведении на другой ряд вкладок принимающее окно проверяет возможность вставки. После принятия вкладка переходит в указанную позицию, а пустое временное окно закрывается. При отказе вкладка остаётся в окне, которому принадлежит в этот момент. После активации в новом окне восстанавливается фокус её содержимого.
+1. The user opens two documents in adjacent tabs. Arrows in a row of tabs move the focus, while Enter or Space change the active document. Ctrl+Tab switches it right away. The draft and position of each document are saved when switching.
+2. A tab cross, or Ctrl+F4, requests the closure of a specific document. For a draft, the window shows the decision to Save, Discard, or Remain. A record error leaves the tab open with its data. After the active tab is successfully closed, the nearest remaining tab is selected. If the last tab of the working window is closed, it shows the initial area.
+3. When you pull the tab, TabView requests a new window. A successfully prepared window receives an existing session, including a draft and a story. If the window is not created, the tab remains with the previous owner. The closing request during the transfer waits for the change of owner and is processed once in the final window.
+4. When hovering over another row of tabs, the receiving window checks for insertion. After accepting the tab goes to the specified position, and the empty time window closes. If you refuse, the tab remains in the window that belongs to at that moment. After activation, the focus of its contents is restored in the new window.
 
-**Проверка.** Закрытие соседней вкладки сохраняет активный документ. Отмена закрытия сохраняет черновик. После прямого переноса в новое окно или возврата в существующее у вкладки остаётся один владелец, а история и черновик совпадают с состоянием до переноса. [Tab view в Microsoft Learn](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/tab-view) · [Контракт документных вкладок](components.md#документные-вкладки-tabview)
+**Check.** Closing the adjacent tab saves the active document. Closing cancellation saves the draft. After a direct transfer to a new window or a return to an existing tab, one owner remains, and the history and draft coincide with the state before the transfer. [Tab view in Microsoft Learn](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/tab-view) · [Contract of document tabs](components.md#document-tabs-with-tabview)
 
-## 41. Ползунок, предпросмотр и сохранение настройки
+## 41. Preview and save a setting with a slider
 
-1. На странице настройки изображения форма загружает сохранённое значение яркости. Горизонтальный Slider и числовое поле редактируют одно значение в вертикально прокручиваемой области. У обоих контролов видимые подписи, одинаковый диапазон и единица измерения.
-2. Движение Slider обновляет черновик, подпись значения и локальный предпросмотр. Прокрутка страницы сохраняет значение. Прерывание перемещения возвращает значение к началу жеста.
-3. В числовом поле можно набрать промежуточный текст. После подтверждения корректного числа Slider и предпросмотр принимают это значение. Ошибка оставляет последний допустимый черновик в предпросмотре и объясняет диапазон у поля.
-4. Сохранение применяет черновик. После ухода с отменой настройки и предпросмотр возвращаются к сохранённому значению. При ошибке записи форма оставляет черновик доступным для повтора.
+1. On the image setting page, the form loads the stored brightness value. A horizontal Slider and a numerical field edit a single value in a vertically scrollable area. Both controls have visible labels, the same range, and the same unit of measurement.
+2. The Slider movement updates the draft, value label and local preview. Scrolling the page retains the value. Interrupting the movement returns the value to the beginning of the gesture.
+3. In the numerical field, you can type intermediate text. After confirming the correct Slider number and preview take this value. The error leaves the last allowable draft in the preview and explains the range near the field.
+4. Conservation applies a draft. After leaving with cancellation, the settings and preview return to the saved value. If a recording error occurs, the form leaves the draft available for replay.
 
-**Проверка.** Касание, клавиатура и числовой ввод приводят к одному допустимому значению. Допустимы оба края диапазона. Вертикальный скролл сохраняет яркость. Невалидный ввод и прерванный жест сохраняют последнее допустимое значение соответствующей операции. [Guidelines for sliders](https://web.archive.org/web/20140408235721/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh465473.aspx) · [Текстовый ввод](https://web.archive.org/web/20140411233715/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh750315.aspx)
+**Check.** Touching, keyboard and numerical input result in a single valid value. Both edges of the range are permissible. The vertical scroll retains its brightness. The invalid input and interrupted gesture retain the last valid value of the corresponding operation. [Guidelines for sliders](https://web.archive.org/web/20140408235721/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh465473.aspx) · [Text input](https://web.archive.org/web/20140411233715/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh750315.aspx)
 
-## Сквозные проверки будущей реализации
+## End-to-end checks for future implementation
 
-| Условие | Инвариант |
+| Conditions | Invariant |
 | --- | --- |
-| Быстрые повторные команды, Back и прерванная анимация | Один пользовательский акт даёт одно подтверждённое изменение. Временный UI остаётся согласованным с маршрутом. |
-| Асинхронный ответ после смены страницы, секции или аккаунта | Результат применяется только к действующему контексту. |
-| Resize, RTL, масштаб текста и переход светлая/тёмная | Тот же объект и те же допустимые действия доступны. Ориентиры и порядок чтения сохраняются. |
-| В виртуализированной коллекции объект удалён или переставлен | Возврат идёт по стабильной идентичности или к ближайшему осмысленному ориентиру. |
-| Клавиатура, скринридер и уменьшенное движение | Критические задачи исполнимы, а результат и состояние определяются через семантику. |
-| Неподдерживаемое системное закрепление, уведомление или выбор файла | Хост сообщает о доступных возможностях. UI отражает фактический результат. |
+| Fast repeat commands, Back and interrupted animation | One user act produces one confirmed change; the temporary UI remains consistent with the route. |
+| Asynchronous response after changing a page, section, or account | The result applies only to the current context. |
+| Resize, RTL, text scale and light/dark transition | The same object and the same valid actions are available. The reference points and the order of reading are saved. |
+| In a virtualized collection, the object is removed or rearranged. | The return is through a stable identity or to the nearest meaningful reference point. |
+| Keyboard, screen reader and reduced movement | Critical tasks are executable, and the result and state are determined through semantics. |
+| Unsupported system anchoring, notification, or file selection | The host reports on the available features. The UI reflects the actual outcome. |
 
-### Проверки исторического профиля Windows Phone
+### Historical Windows Phone profile checks
 
-| Раздел сертификации 2014 года | Что проверяли |
+| Certification Section 2014 | Checked out. |
 | --- | --- |
-| 5.1.3. Отклик | Если операция оставляет устройство на вид несколько секунд без ответа, после порога в три секунды нужен видимый индикатор. Шаги проверки также требуют способ отменить выполняемую операцию. |
-| 5.2.1–5.2.3. Запуск и повторный вход | Первый экран или заставка видны за пять секунд, ввод доступен в течение двадцати. Те же пределы применяются после закрытия и при активации после завершения процесса. |
-| 5.2.4. Back | Диалог или контекстное меню закрываются с возвратом к вызвавшему экрану. Со вложенной страницы Back ведёт в предыдущую запись журнала, с первой закрывает приложение, включая допустимое подтверждение. |
-| 5.3.1–5.3.3. Системные прерывания | Звонок и сообщения остаются доступны. После звонка приложение возвращается на передний план и продолжает работу. После перехода к сообщению можно вернуться через Back. |
-| 5.5.2. Темы | Текст и графика читаемы в светлой и тёмной теме, в том числе во встроенной веб-поверхности. |
+| 5.1.3 Response | If the operation leaves the device looking like a few seconds unanswered, a visible indicator is needed after a threshold of three seconds. Verification steps also require a way to cancel the operation being performed. |
+| 5.2.1 to 5.2.3 Start and re-entry | The first screen or screensaver is visible in five seconds, input is available in twenty, and the same limits apply after closing and when activated after the process is complete. |
+| 5.2.4. Back | The dialog or context menu closes with a return to the screen. From the nested page, Back leads to the previous log entry, with the first closing the application, including valid confirmation. |
+| 5.3.1 to 5.3.3 System interruptions | The call and the messages remain available. After the call, the application returns to the foreground and continues to work, and after the transition to the message, you can return via Back. |
+| Topics: 5.5.2 | Text and graphics are readable in light and dark topics, including the built-in web surface. |
 
-[Technical certification requirements for Windows Phone, 14 апреля 2014](https://web.archive.org/web/20140424024354id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/develop/hh184840(v=vs.105).aspx)
+[Technical certification requirements for Windows Phone, April 14, 2014](https://web.archive.org/web/20140424024354id_/http://msdn.microsoft.com:80/en-us/library/windowsphone/develop/hh184840(v=vs.105).aspx)
