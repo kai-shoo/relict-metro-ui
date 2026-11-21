@@ -78,7 +78,7 @@ async function render(requested = new URL(location.href).searchParams.get('tag')
   trigger.value = name;
   list.currentItem = name;
   tagName.textContent = name.slice('metro-'.length);
-  document.querySelector('#module').textContent = `import 'windows-phone-metro-ui/${name.slice(6)}';`;
+  document.querySelector('#module').textContent = `import 'relict-metro-ui/${name.slice(6)}';`;
   application.hidden = true;
   application.removeAttribute('href');
   source.open = false;

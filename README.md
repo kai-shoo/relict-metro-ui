@@ -1,4 +1,4 @@
-# Windows Phone Metro UI
+# Relict Metro UI
 
 Web Components на Lit и TypeScript в визуальном профиле **Windows Phone 8 Silverlight**. Версия 0.2.0 включает навигацию, коллекции, плитки, формы, команды, адаптивные панели, медиа и эффекты Toolkit. Компоненты из поздних поколений используют геометрию и тему Phone 8. Разметка, свойства и события работают через DOM.
 
@@ -26,7 +26,7 @@ npm pack
 
 Переменная `METRO_CHROMIUM_PATH` позволяет использовать локальный Chromium для браузерных и пакетных проверок. `npm run test:package` собирает временный npm-архив, устанавливает его в отдельный проект и запускает потребители HTML, React 19 + TypeScript и Vue 3. Проверка также собирает каждый из 119 поэлементных импортов и загружает его в отдельный реестр Custom Elements. Для установки тестовых зависимостей нужен доступ к npm registry.
 
-`npm pack` создаёт `windows-phone-metro-ui-0.2.0.tgz`. В архиве лежат браузерный модуль, ESM-модули с TypeScript-декларациями, справочник API, дизайн-документ и исходники примеров. Оформление использует системный стек шрифтов.
+`npm pack` создаёт `relict-metro-ui-0.2.0.tgz`. В архиве лежат браузерный модуль, ESM-модули с TypeScript-декларациями, справочник API, дизайн-документ и исходники примеров. Оформление использует системный стек шрифтов.
 
 ## Подключить
 
@@ -62,21 +62,23 @@ npm pack
 ### Приложение с бандлером
 
 ```sh
-npm install ./windows-phone-metro-ui-0.2.0.tgz
+npm install relict-metro-ui
 ```
+
+До публикации пакет можно установить из архива, созданного командой `npm pack`: `npm install ./relict-metro-ui-0.2.0.tgz`.
 
 Добавьте такую же разметку Pivot в приложение. Импорт регистрирует Pivot и его панели. CommandBar и Tile подключаются отдельными импортами при использовании.
 
 ```ts
-import 'windows-phone-metro-ui/pivot';
-import type { MetroPivot } from 'windows-phone-metro-ui/pivot';
+import 'relict-metro-ui/pivot';
+import type { MetroPivot } from 'relict-metro-ui/pivot';
 
 const pivot = document.querySelector<MetroPivot>('#folders')!;
 pivot.addEventListener('metro-change', ({ detail }) => console.log(detail.value));
 pivot.value = 'archive';
 ```
 
-Для каждого тега доступен отдельный импорт. Например, `metro-checkbox` регистрируется через `windows-phone-metro-ui/checkbox`. Корневой импорт регистрирует все элементы. `windows-phone-metro-ui/browser` указывает на автономный браузерный модуль. Типы элементов и событий доступны через обычные DOM-вызовы TypeScript. В компонентных фреймворках можно использовать ссылку на DOM-узел для присваивания свойств и подписки через `addEventListener`.
+Для каждого тега доступен отдельный импорт. Например, `metro-checkbox` регистрируется через `relict-metro-ui/checkbox`. Корневой импорт регистрирует все элементы. `relict-metro-ui/browser` указывает на автономный браузерный модуль. Типы элементов и событий доступны через обычные DOM-вызовы TypeScript. В компонентных фреймворках можно использовать ссылку на DOM-узел для присваивания свойств и подписки через `addEventListener`.
 
 ## Публичный API
 

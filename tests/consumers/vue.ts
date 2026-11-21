@@ -1,8 +1,8 @@
 import { createApp, h, ref } from 'vue';
-import { MetroPivot } from 'windows-phone-metro-ui/pivot';
-import 'windows-phone-metro-ui/pivot-item';
-import 'windows-phone-metro-ui/command-bar';
-import 'windows-phone-metro-ui/tile';
+import { MetroPivot } from 'relict-metro-ui/pivot';
+import 'relict-metro-ui/pivot-item';
+import 'relict-metro-ui/command-bar';
+import 'relict-metro-ui/tile';
 
 if (customElements.get('metro-pivot') !== MetroPivot) throw new Error('Wrong Pivot registration');
 createApp({

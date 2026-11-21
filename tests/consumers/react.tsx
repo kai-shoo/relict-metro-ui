@@ -1,7 +1,7 @@
 import { useState, type HTMLAttributes } from 'react';
 import { createRoot } from 'react-dom/client';
-import { MetroPivot } from 'windows-phone-metro-ui/pivot';
-import 'windows-phone-metro-ui/pivot-item';
+import { MetroPivot } from 'relict-metro-ui/pivot';
+import 'relict-metro-ui/pivot-item';
 
 type Change = CustomEvent<{ value: string }>;
 
@@ -46,7 +46,7 @@ if (customElements.get('metro-command-bar') || customElements.get('metro-tile'))
   throw new Error('Pivot import registered unrelated components');
 }
 await Promise.all([
-  import('windows-phone-metro-ui/command-bar'),
-  import('windows-phone-metro-ui/tile'),
+  import('relict-metro-ui/command-bar'),
+  import('relict-metro-ui/tile'),
 ]);
 createRoot(document.getElementById('app')!).render(<App />);

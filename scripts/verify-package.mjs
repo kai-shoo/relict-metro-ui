@@ -9,7 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium } from 'playwright';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const packageName = 'windows-phone-metro-ui';
+const packageName = 'relict-metro-ui';
 const examples = [
   'mail', 'start', 'controls', 'workspace', 'media', 'editor', 'camera', 'collections', 'drafts', 'photos',
   'map', 'launch', 'keyboard', 'notifications', 'navigation', 'music', 'clipboard', 'annotations', 'imports',
@@ -41,6 +41,7 @@ try {
   assert(files.has('dist/metro-ui.js'), 'Run npm run build before verifying the archive');
   assert(files.has('package.json'));
   assert(files.has('README.md'));
+  assert(files.has('LICENSE'), 'Missing MIT license');
   assert(files.has('docs/api.md'), 'Missing component API reference');
   assert(files.has('docs/implementation.md'), 'Missing implementation overview');
   for (const spec of ['foundations', 'components', 'flows', 'silverlight-controls', 'metro-icons']) {
@@ -58,6 +59,7 @@ try {
   const installed = join(workspace, 'node_modules', packageName);
   const manifest = JSON.parse(await readFile(join(installed, 'package.json'), 'utf8'));
   assert.equal(manifest.version, pack.version);
+  assert.equal(manifest.license, 'MIT');
   async function loadsBrowserModule(path, visited) {
     assert(files.has(path), `Missing example module ${path}`);
     if (path === 'dist/metro-ui.js') return true;
