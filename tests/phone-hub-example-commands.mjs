@@ -46,15 +46,27 @@ export const phoneHubCommands = {
 
       const list = demo.locator('#recent-scroll');
       const link = list.getByRole('link', { name: /Край хребта/ });
-      await link.scrollIntoViewIfNeeded();
-      const saved = await list.evaluate(element => element.scrollTop);
-      await link.click();
+      await demo.waitForFunction(() => {
+        const hub = document.querySelector('#hub');
+        return hub.value === 'recent' && hub.firstVisible === 'recent';
+      });
+      const saved = await link.evaluate(element => {
+        const list = element.closest('#recent-scroll');
+        list.scrollTop = list.scrollHeight;
+        element.focus({ preventScroll: true });
+        return list.scrollTop;
+      });
+      await demo.keyboard.press('Enter');
       await demo.getByRole('heading', { name: 'Край хребта', exact: true }).waitFor();
       await back.click();
       await clear.waitFor();
-      await demo.waitForFunction(() => document.activeElement?.dataset.record === 'ridge');
-      const backRestored = saved > 0 && await list.evaluate(element => element.scrollTop) === saved
-        && await hub.evaluate(element => element.value === 'recent' && element.firstVisible === 'recent');
+      if (saved <= 0) throw new Error('The recent list did not scroll before navigation.');
+      await demo.waitForFunction(top => {
+        const hub = document.querySelector('#hub');
+        return hub.value === 'recent' && hub.firstVisible === 'recent'
+          && document.activeElement?.dataset.record === 'ridge'
+          && document.querySelector('#recent-scroll').scrollTop === top;
+      }, saved);
 
       await clear.click();
       await dialog.waitFor();
@@ -75,7 +87,7 @@ export const phoneHubCommands = {
       await confirm.click();
       await demo.getByText('Список недавних очищен.').waitFor();
       const freshCleared = !await link.isVisible() && await clear.isDisabled();
-      return { previewIsPassive, menuBack, recentIsCompact, contextChanged, backRestored, stalePreserved, cancelPreserved, freshCleared };
+      return { previewIsPassive, menuBack, recentIsCompact, contextChanged, stalePreserved, cancelPreserved, freshCleared };
     } finally {
       await demo.close();
     }

@@ -106,6 +106,6 @@ test('first visible geometry changes independently of a held drag and Phone Hub 
 test('Phone Hub example keeps commands tied to the visible section and restores the origin on Back', async () => {
   expect(await commands.phoneHubExample()).toEqual({
     previewIsPassive: true, menuBack: true, recentIsCompact: true, contextChanged: true,
-    backRestored: true, stalePreserved: true, cancelPreserved: true, freshCleared: true,
+    stalePreserved: true, cancelPreserved: true, freshCleared: true,
   });
 }, 15000);
