@@ -1,5 +1,15 @@
-# Правила для агентов
+# Agent rules
 
-- Пишите README, документацию и GitHub issues на английском, примерно на 80% в стиле ASD-STE100. Это ориентир, а не требование формального соответствия.
-- Используйте короткие предложения, простой порядок слов и активный залог. Описывайте одно действие на шаг. В инструкциях используйте повелительное наклонение. Для каждого понятия используйте один термин.
-- Сохраняйте точные имена API, команды, названия продуктов и цитаты из источников. Не упрощайте текст в ущерб технической точности.
+- Write README files, documentation, and GitHub issues in English. Aim for roughly 80% alignment with the ASD-STE100 style. This is a guideline, not a formal compliance requirement.
+- Use short sentences, simple word order, and active voice. Describe one action per step. Use the imperative mood in instructions. Use one term for each concept.
+- Keep exact API names, commands, product names, and source quotations. Do not simplify text at the expense of technical accuracy.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live in GitHub Issues for `kai-shoo/relict-metro-ui`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+Single-context layout: root `GLOSSARY.md` and `docs/adr/`. See `docs/agents/domain.md`.
