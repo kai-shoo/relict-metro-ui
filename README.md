@@ -45,7 +45,23 @@ Set `METRO_CHROMIUM_PATH` to use a local Chromium executable for the browser and
 
 Push a version tag that matches `package.json`, for example `v0.2.0`. The `v` prefix is optional. A prerelease tag such as `v0.3.0-rc.1` requires the same prerelease version in `package.json`.
 
-Open the **Release** run for the tag in GitHub Actions. After the browser and package installation checks pass, download **release-candidate** from the run's **Artifacts** section. It contains the one `.tgz` that the workflow installed and tested. The workflow does not require npm credentials and does not publish to npm.
+Open the **Release** run for the tag in GitHub Actions. After the browser and package installation checks pass, download **release-candidate** from the run's **Artifacts** section. It contains the one `.tgz` that the workflow installed and tested. Verification does not require npm credentials. Unless `NPM_STAGE_RELEASE` is set to `true`, the workflow stops after verification.
+
+### Stage and approve a release
+
+**Maintainer setup (outstanding):** In the npm settings for `relict-metro-ui`, add a [GitHub Actions Trusted Publisher](https://docs.npmjs.com/trusted-publishers/). Set the owner to `kai-shoo`, the repository to `relict-metro-ui`, and the workflow filename to `release.yml`. Leave the environment name blank. Keep `npm stage publish` allowed. Disable both direct `npm publish` and `npm dist-tag` access. Confirm that the maintainer has package write access and 2FA enabled.
+
+In GitHub, go to **Settings → Secrets and variables → Actions → Variables**. Set the repository variable `NPM_STAGE_RELEASE` to `true` only after you configure the Trusted Publisher. Do not add an npm token. To run verification only, remove the variable or set it to `false` before you push a version tag.
+
+Use an npm CLI that supports `npm stage`, such as npm 11.19.1 bundled with Node.js 24.22.3.
+
+1. Choose an unused version. Run `npm version 0.3.0-rc.1 --no-git-tag-version`, replacing the example version as needed. Commit the changes to `package.json` and `package-lock.json`. Land the commit on `main`.
+2. Tag that commit and push the tag. For the example version, run `git tag v0.3.0-rc.1 <commit>` and `git push origin v0.3.0-rc.1`.
+3. Open the **Release** run. Confirm that verification and staging passed. The staging job uses the verified archive from that run and requests `next` for prereleases or `latest` for stable releases. Staging alone does not change either dist-tag.
+4. Sign in to npm as a maintainer. Use the stage ID from the job log with [`npm stage view <stage-id>`](https://docs.npmjs.com/cli/v11/commands/npm-stage). Check the package, version, and dist-tag. Use `npm stage download <stage-id>` to inspect the archive and compare it with the **release-candidate** artifact.
+5. Run `npm stage approve <stage-id>` and complete the 2FA prompt. To discard a candidate instead, run `npm stage reject <stage-id>` and complete the 2FA prompt.
+
+**Live `next` check (outstanding):** Use a prerelease for the first run. Before you push the tag, record the current dist-tags with `npm view relict-metro-ui dist-tags --prefer-online`. After staging and before approval, run `npm view relict-metro-ui@0.3.0-rc.1 version --prefer-online` as a public registry reader. Expect a version-not-found error. Check that the dist-tags have not changed. After 2FA approval, repeat both commands. Confirm that the version is now public, `next` points to it, and `latest` still has the recorded value.
 
 ## Install and use
 
