@@ -147,8 +147,9 @@ document.addEventListener('keydown', (event) => {
       dialog.close();
       return;
     }
-    const menu = document.querySelector<HTMLElementTagNameMap['metro-expander']>('.component-menu');
-    if (menu?.matches('[open]:focus-within')) {
+    const menu = document.querySelector<HTMLElementTagNameMap['metro-expander']>('.component-menu:focus-within');
+    // The native disclosure changes before metro-expander reflects its open attribute.
+    if (menu?.shadowRoot?.querySelector('details')?.open) {
       menu.shadowRoot?.querySelector('summary')?.focus();
       menu.open = false;
     } else if (document.querySelector('#docs-nav')?.matches(':focus-within')) {
