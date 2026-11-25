@@ -25,10 +25,18 @@ The output is `website/dist/`. GitHub Pages deploys it automatically when change
 
 The default base path is `/relict-metro-ui`. To host at the root of a domain, build with `DOCS_BASE=/ npm run docs:build` and update `site` in `site.config.mjs`. Use directory index serving and `404.html`; do not rewrite every URL to the home page.
 
+## Find and use an example
+
+- Open the [component index](https://kai-shoo.github.io/relict-metro-ui/components/) and filter by tag. Select a guide to run the example, copy its code, and read its API. Each guide has a direct URL, such as [`/components/dialog/`](https://kai-shoo.github.io/relict-metro-ui/components/dialog/).
+- To switch guides, expand **Components by name** in the sidebar. On a phone, open **Browse documentation** first. Use Tab to reach a link. Use Escape to close the submenu.
+- Open the [icon catalog](https://kai-shoo.github.io/relict-metro-ui/icons/) and type part of a name, such as `volume`. Select an SVG to preview it. Select **Copy markup** and import `relict-metro-ui/icon` in your app.
+- Open [Example apps](https://kai-shoo.github.io/relict-metro-ui/examples/) to try complete workflows. Select **Component catalog** to try a control in a standalone page. Share a specific control with a URL such as [`/examples/catalog/?tag=metro-repeat-button`](https://kai-shoo.github.io/relict-metro-ui/examples/catalog/?tag=metro-repeat-button).
+
 ## Structure
 
 - `src/layouts/Docs.astro` — shared shell and client router.
-- `src/pages/` — overview, getting started, catalog, apps, and reference pages.
+- `src/pages/components/[slug].astro` — one guide per registered element. Edit usage and API text in `src/lib/component-guides.ts`. The live preview and copyable code use the same example. `src/lib/component-catalog.ts` reads examples from the release catalog and `src/lib/component-examples.ts`.
+- `src/components/IconCatalog.astro` — SVG previews, search, and markup for the names in `metroIconNames`.
 - `../docs/*.md` and `../README.md` — English reference documents.
 - `content/example-translations.json` — English text for the published example apps.
 - `src/lib/paths.ts` — base-aware URLs shared by server and client code.
@@ -47,7 +55,14 @@ npx playwright install chromium
 npm run test:docs
 ```
 
-The production smoke test checks the actual project subpath, direct URLs, client-side history, Shadow DOM links, theme persistence, full-text search, clipboard, mobile layout, and English content. `METRO_CHROMIUM_PATH` can select an existing Chromium installation.
+Run these commands from the repository root after you install the website dependencies. Set `METRO_CHROMIUM_PATH` to use an existing Chromium executable.
+
+`npm run test:docs` builds the site and starts its own servers. It opens every standalone example from the index in development and static preview. On the static site it checks:
+
+- Each registered component's guide, live demo, API link, copyable import, and search entry.
+- Component submenu navigation on desktop and mobile, including keyboard focus and the current guide.
+- Each registered SVG, icon search, preview, clipboard markup, and recovery from an empty result.
+- Direct URLs under the project base path, internal links, browser history, theme persistence, full-text search, and English content.
 
 ## Updating the UI kit
 

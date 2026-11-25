@@ -5,6 +5,8 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { basePath } from '../website/site.config.mjs';
+import { verifyComponentCoverage } from '../website/src/lib/component-tests/coverage.mjs';
+import { verifyComponentMenu, verifyIconCatalog } from './verify-doc-catalogs.mjs';
 
 const website = new URL('../website/', import.meta.url);
 const root = fileURLToPath(new URL('dist/', website));
@@ -171,7 +173,10 @@ try {
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark', 'Theme must survive reload');
 
   const referenceDirectories = await readdir(resolve(root, 'reference'), { withFileTypes: true });
-  const routes = ['/', '/getting-started/', '/components/', '/examples/', '/reference/',
+  await verifyComponentMenu(page, base, false);
+  await verifyIconCatalog(page, base);
+
+  const routes = ['/', '/getting-started/', '/components/', '/icons/', '/examples/', '/reference/',
     ...referenceDirectories.filter((entry) => entry.isDirectory()).map((entry) => `/reference/${entry.name}/`)];
   const internalLinks = new Set();
   const anchors = new Map();
@@ -210,7 +215,7 @@ try {
   assert.match(await page.locator('h1').textContent(), /nothing here/);
 
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const route of ['/', '/components/', '/getting-started/', '/reference/api/']) {
+  for (const route of ['/', '/components/', '/icons/', '/getting-started/', '/reference/api/']) {
     await page.goto(base + route);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Mobile overflow: ${route}`);
   }
@@ -220,6 +225,7 @@ try {
   await page.waitForURL('**/components/');
   await page.locator('#component-filter input').fill('tile');
   assert.equal(await page.locator('[data-component]:visible').count(), 4);
+  await verifyComponentMenu(page, base, true);
 
   const noScript = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await noScript.newPage();
@@ -228,6 +234,7 @@ try {
   assert.deepEqual(errors, [], 'Unexpected browser errors');
   assert.deepEqual(failedAssets, [], 'Missing assets under the GitHub Pages base path');
   console.log(`Documentation checks passed: ${routes.length} routes, ${internalLinks.size} internal paths, SPA history, Shadow DOM links, theme, search, clipboard, components and mobile layout.`);
+  await verifyComponentCoverage(browser, base);
 } finally {
   await browser?.close();
   await server?.stop();

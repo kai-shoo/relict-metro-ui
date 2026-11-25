@@ -5,16 +5,14 @@ import { readFile, readdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
 import { basePath } from '../../../site.config.mjs';
 
-const base = `${process.argv[2] || 'http://localhost:4321'}${basePath}`;
-const src = new URL('../../../../src/', import.meta.url);
-const files = (await readdir(src)).filter(name => name.endsWith('.ts'));
-const tags = new Set((await Promise.all(files.map(async name =>
-  Array.from((await readFile(new URL(name, src), 'utf8')).matchAll(/defineElement\('(metro-[\w-]+)'/g), m => m[1]),
-))).flat());
-assert(tags.size);
-const search = await (await fetch(`${base}/search.json`)).json();
-const browser = await chromium.launch({ executablePath: process.env.METRO_CHROMIUM_PATH });
-try {
+export async function verifyComponentCoverage(browser, base) {
+  const src = new URL('../../../../src/', import.meta.url);
+  const files = (await readdir(src)).filter(name => name.endsWith('.ts'));
+  const tags = new Set((await Promise.all(files.map(async name =>
+    Array.from((await readFile(new URL(name, src), 'utf8')).matchAll(/defineElement\('(metro-[\w-]+)'/g), m => m[1]),
+  ))).flat());
+  assert(tags.size);
+  const search = await (await fetch(`${base}/search.json`)).json();
   const context = await browser.newContext({
     viewport: { width: 390, height: 844 }, reducedMotion: 'reduce',
     permissions: ['clipboard-read', 'clipboard-write'],
@@ -69,7 +67,10 @@ try {
 
   async function demo(name) {
     await page.goto(`${base}/components/${name}/`);
-    return page.frameLocator('.demo iframe');
+    // Bring the entire preview into view before opening an overlay inside it.
+    const iframe = page.locator('.demo iframe');
+    await iframe.scrollIntoViewIfNeeded();
+    return iframe.contentFrame();
   }
   let live = await demo('dialog');
   await live.getByRole('button', { name: 'Review note' }).click();
@@ -102,6 +103,14 @@ try {
   await live.getByRole('button', { name: 'Pause', exact: true }).waitFor();
   assert.deepEqual(errors, []);
   console.log('Browser actions passed: dialog result, form submission, context command, tab selection, frame Back, collection transfer, audio playback. No page or asset errors.');
-} finally {
-  await browser.close();
+  await context.close();
+}
+
+if (import.meta.main) {
+  const browser = await chromium.launch({ executablePath: process.env.METRO_CHROMIUM_PATH });
+  try {
+    await verifyComponentCoverage(browser, `${process.argv[2] || 'http://localhost:4321'}${basePath}`);
+  } finally {
+    await browser.close();
+  }
 }
