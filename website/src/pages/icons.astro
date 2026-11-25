@@ -1,0 +1,20 @@
+---
+import Code from '../components/Code.astro';
+import IconCatalog from '../components/IconCatalog.astro';
+import Docs from '../layouts/Docs.astro';
+import { withBase } from '../lib/paths';
+---
+<Docs title="Icon catalog" wide>
+  <div class="eyebrow">DOCUMENTATION / UI KIT</div>
+  <h1>icons<span class="accent">.</span></h1>
+  <p class="lead">Choose an icon to preview its SVG and copy its markup. Each name works with <code>&lt;metro-icon&gt;</code>.</p>
+  <IconCatalog />
+  <section class="home-section">
+    <h2>Use an icon</h2>
+    <p>Import the element once in your app. Paste the markup next to the text it illustrates.</p>
+    <Code code={`import 'relict-metro-ui/icon';`} lang="js" label="Register the element" />
+    <p>Leave the icon decorative if nearby text explains it. Give a standalone icon a <code>label</code> if it conveys information.</p>
+    <Code code={`<p><metro-icon name="check"></metro-icon> Changes saved</p>\n<metro-icon name="volume-mute" label="Audio muted"></metro-icon>`} />
+    <p>The <a class="text-link" href={withBase('/reference/metro-icons/')}>Windows Phone icon guide</a> records historical PNG filenames and system symbols. Those lists describe the original platforms. Use the names in this catalog for Relict Metro UI.</p>
+  </section>
+</Docs>

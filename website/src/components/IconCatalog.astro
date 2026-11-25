@@ -1,0 +1,112 @@
+---
+import { metroIconNames } from 'relict-metro-ui/icon';
+const names = [...metroIconNames].sort();
+---
+<section aria-label="Icon catalog">
+  <div class="catalog-heading">
+    <metro-text-box id="icon-filter" type="search" label="Find an icon" placeholder="Try volume or favorite" autocomplete="off"></metro-text-box>
+    <p id="icon-count" role="status">{names.length} icons</p>
+  </div>
+  <ul class="icon-grid">
+    {names.map(name => (
+      <li data-icon-name={name}>
+        <metro-button label={`Use ${name} icon`}>
+          <metro-icon name={name}></metro-icon>
+          <code>{name}</code>
+        </metro-button>
+      </li>
+    ))}
+  </ul>
+  <div id="icon-empty" hidden>
+    <p>No icons match. Try part of a name or clear the search.</p>
+    <metro-button>Clear search</metro-button>
+  </div>
+  <noscript>Enable JavaScript to preview, filter, and copy icons.</noscript>
+
+  <metro-dialog id="icon-detail" label="Use this icon">
+    <metro-icon class="preview"></metro-icon>
+    <metro-text-box label="HTML markup" readonly></metro-text-box>
+    <div class="hero-install">
+      <metro-button data-copy="" label="Copy icon markup">Copy markup</metro-button>
+      <span class="copy-status" role="status"></span>
+    </div>
+    <button slot="actions" data-metro-value="close">Close</button>
+  </metro-dialog>
+</section>
+
+<script>
+  import 'relict-metro-ui/dialog';
+
+  document.addEventListener('astro:page-load', () => {
+    const field = document.querySelector<HTMLElementTagNameMap['metro-text-box']>('#icon-filter');
+    if (!field) return;
+    const items = [...document.querySelectorAll<HTMLLIElement>('.icon-grid [data-icon-name]')];
+    const count = document.querySelector('#icon-count')!;
+    const empty = document.querySelector<HTMLElement>('#icon-empty')!;
+    const dialog = document.querySelector<HTMLElementTagNameMap['metro-dialog']>('#icon-detail')!;
+    const copy = dialog.querySelector('metro-button')!;
+
+    const filter = () => {
+      const query = field.value.trim().toLowerCase().replace(/\s+/g, '-');
+      let matches = 0;
+      for (const item of items) {
+        item.hidden = !item.dataset.iconName!.includes(query);
+        if (!item.hidden) matches++;
+      }
+      count.textContent = `${matches} ${matches === 1 ? 'icon' : 'icons'}`;
+      empty.hidden = matches !== 0;
+    };
+
+    field.addEventListener('input', filter);
+    empty.querySelector('metro-button')!.addEventListener('click', () => {
+      field.value = '';
+      filter();
+      field.focus();
+    });
+    for (const item of items) {
+      const button = item.querySelector('metro-button')!;
+      button.addEventListener('click', () => {
+        const name = item.dataset.iconName!;
+        const markup = `<metro-icon name="${name}"></metro-icon>`;
+        dialog.label = `Use ${name}`;
+        dialog.querySelector('metro-icon')!.name = name;
+        dialog.querySelector('metro-text-box')!.value = markup;
+        copy.dataset.copy = markup;
+        copy.textContent = 'Copy markup';
+        dialog.querySelector('.copy-status')!.textContent = '';
+        dialog.show(button);
+      });
+    }
+    filter();
+  });
+</script>
+
+<style>
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(7.25rem, 100%), 1fr));
+    gap: .5rem;
+    padding: 0;
+    list-style: none;
+  }
+  .icon-grid metro-button, .icon-grid metro-button::part(button) { width: 100%; }
+  .icon-grid metro-button::part(button) {
+    min-height: 6rem;
+    align-content: center;
+    gap: .7rem;
+    padding: .5rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--fg);
+    font-size: .94rem;
+    font-weight: 400;
+  }
+  .icon-grid metro-button:hover::part(button),
+  .icon-grid metro-button:focus-within::part(button) { color: var(--accent-text); border-color: currentColor; }
+  .icon-grid metro-icon { --metro-icon-size: 2rem; }
+  .preview { display: grid; margin: 1.5rem auto; --metro-icon-size: 4rem; }
+  #icon-detail metro-text-box { width: 100%; --metro-space: 0; }
+  #icon-detail:not(:defined) { display: none; }
+  #icon-detail metro-text-box::part(input) { font: .9rem monospace; }
+  #icon-detail .hero-install { margin: .75rem 0; }
+</style>

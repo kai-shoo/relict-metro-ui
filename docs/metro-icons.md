@@ -2,13 +2,34 @@
 
 [Table of contents](../README.md) · [Components](components.md) · [Visual grammar](foundations.md)
 
-For the Application Bar in Windows Phone 7–8 Silverlight, the historical PNG name and size are stored separately from the command assignment. In Phone 8.1 Store apps, `AppBarButton` can use a raster mask or system symbol. WinJS has a `AppBarIcon` for the same task. The assignments below help select a character for the team, and the identifiers capture a specific source and generation.
+## Use icons in Relict Metro UI
+
+Open the [SVG icon catalog](/icons/) to find a supported name. Select a drawing to copy its HTML. Each drawing is an original SVG path on a 24 × 24 grid. The icon inherits its color from the surrounding text.
+
+Import the element once:
+
+```js
+import 'relict-metro-ui/icon';
+```
+
+Use a decorative icon next to visible text. Set `label` when the icon alone conveys information:
+
+```html
+<p><metro-icon name="save"></metro-icon> Save changes</p>
+<metro-icon name="volume-mute" label="Audio muted"></metro-icon>
+```
+
+Set `--metro-icon-size` to change the width and height. To get the supported names in code, import `metroIconNames` from `relict-metro-ui/icon`.
+
+## Read the Windows Phone archive
+
+The sections below describe historical Windows Phone resources. **SDK filenames, XAML symbols, and WinJS identifiers are not the Relict icon API.** For example, use `name="search"`, not the SDK filename `feature.search.png`. The archived XAML symbol `Scan` does not have a built-in Relict icon.
 
 ## Geometry and display rules
 
-| Profile | Source canvas | Area of sign | Processing |
+| Profile | Source canvas | Glyph area | Display rules |
 | --- | --- | --- | --- |
-| Phone 7 Silverlight | 48 × 48 physical px | Downtown. | A white sign on a transparent background. The panel draws a circle and subtracts the color of the theme. |
+| Phone 7 Silverlight | 48 × 48 physical px | Centered | White glyph on a transparent background. The Application Bar draws the circle. |
 | Phone 8 Silverlight, recommendations for WVGA | 48 × 48 physical px | 26 × 26 px in the center, fields at 11 px | White mask with alpha channel. The panel draws a circle. For the finished SDK icon, the guide specifies a variant from `Icons\Dark`. |
 | Phone 8.1 Store apps, 100% | 32 × 32 physical px | 18 x 18 px, fields at 7 px | Transparent background, the image is used as a mask. |
 | Phone 8.1 Store apps, 140% | 45 x 45 physical px | 25 x 25 px, fields at 10 px | The resource name ends in `.scale-140.png`. |
@@ -16,56 +37,56 @@ For the Application Bar in Windows Phone 7–8 Silverlight, the historical PNG n
 
 [Phone 7 Design Guide, pp. 32–35](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=17) · [Microsoft Learn, App bar icon buttons](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff431806(v=vs.105)) · [Original graphical ZIP Phone 8](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/asset_template_PSDs.zip) · [Original graphics ZIP Phone 8.1, sheet 6](https://cmsresources.windowsphone.com/devcenter/en-us/downloads/Visual_Assets_Templates_for_Windows_Phone_Store_apps.zip)
 
-Microsoft recommends simple monochrome geometry and familiar metaphors. The main buttons have short text labels that are visible when you open the panel. An action with an obscure metaphor can be placed in a text menu. In Silverlight, the application has hardware Back for log return. When the case is rotated, the panel becomes vertical and keeps the sign oriented to the user. [Guide to the Application Bar buttons](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff431806(v=vs.105)) · [App bar for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff431813(v=vs.105))
+Microsoft recommended simple monochrome shapes and familiar symbols. Opening the Application Bar revealed a short label for each button. Commands without a familiar symbol could use a text menu. Silverlight apps used the hardware Back button for navigation. In landscape mode, the bar moved to the side and kept its icons upright. [Application Bar buttons](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff431806(v=vs.105)) · [App bar for Windows Phone](https://learn.microsoft.com/en-us/previous-versions/windows/apps/ff431813(v=vs.105))
 
-In the library, the color of the mask is taken from the current state of the team through the foreground brush. The outline of the button, the label, the purpose of the touch and the mask are set separately. When disclosed, the label explains the same command. A time state, such as "Play" or "Pause," updates the label and the sign together. [Contract of teams](components.md#library-contract-for-commands) · [Guide to Reproduction Management](https://web.archive.org/web/20140408235720/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh452724.aspx) · [Objectives of touch](foundations.md#input-and-feedback)
+Keep a command's icon and label in sync. For example, when a media player starts playback, change both the drawing and the label from Play to Pause. [Library contract for commands](components.md#library-contract-for-commands) · [Media playback guide](https://web.archive.org/web/20140408235720/http://msdn.microsoft.com/en-us/library/windowsphone/design/hh452724.aspx) · [Input and feedback](foundations.md#input-and-feedback)
 
 ## Windows Phone SDK 8.0 raster icons
 
-The Phone 7 v2.0 manual specifies 32 PNGs in each of the light and dark background options in Windows Phone Developer Tools Beta. For the App Bar in the app, the guide indicates a white option. The Phone SDK 8.0 delivery can be checked by installer composition. [Phone 7 Design Guide, pp. 34–35](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=18)
+The Phone 7 v2.0 guide lists 32 PNGs for each theme in Windows Phone Developer Tools Beta. The guide specifies white icons for the Application Bar. [Phone 7 Design Guide, pp. 34–35](https://tableless.github.io/exemplos/pdf/guidelines-interface-mobiles/UI%20Design%20and%20Interaction%20Guide%20for%20Windows%20Phone%207%20v2.0.pdf#page=18)
 
-The Windows Phone SDK 8.0 contains the `MobileTools/wpsdkcore/WPSDK_en.cab` package. Its SHA-1 `E4E41CFF011BF11C53A3EBF216253AA042706660` matches Microsoft's installer manifesto. In the `File` table of the `wpsdk_en.msi` package and in the CAB itself, 37 PNGs are confirmed in each `Icons\Dark` and `Icons\Light` folder. Both folders have the same names. PNG headers give 76×76 px for 36 files and 115×115 px for `overflowdots.png`. These are the SDK file sizes, and the table above indicates the recommended sizes when preparing your own drawing. In the tested pairs `add/new`, `cancel/close`, `sync/refresh` matches the alpha channel. [Windows Phone SDK 8.0 Page](https://www.microsoft.com/en-us/download/details.aspx?id=35471) · [Official ISO](https://download.microsoft.com/download/9/3/8/938A5074-461F-4E3D-89F4-5CE2F42C1E36/wpsdkv80_enu1.iso)
+The Windows Phone SDK 8.0 contains `MobileTools/wpsdkcore/WPSDK_en.cab`. Its SHA-1 `E4E41CFF011BF11C53A3EBF216253AA042706660` matches Microsoft's installer manifest. The CAB and the `File` table in `wpsdk_en.msi` list the same 37 PNG filenames in `Icons\Dark` and `Icons\Light`. In each folder, 36 files measure 76 × 76 px. The exception is `overflowdots.png` at 115 × 115 px. These are the shipped file sizes, not the design canvas sizes above. Three pairs have matching alpha channels: `add/new`, `cancel/close`, and `sync/refresh`. [Windows Phone SDK 8.0](https://www.microsoft.com/en-us/download/details.aspx?id=35471) · [Official ISO](https://download.microsoft.com/download/9/3/8/938A5074-461F-4E3D-89F4-5CE2F42C1E36/wpsdkv80_enu1.iso)
 
-The REDIST column saves 32 individual names from Microsoft’s 2013 and 2015 listings. A dash means that there is no separate position for the SDK file in the name list. [Visual Studio 2013 REDIST](https://learn.microsoft.com/en-us/visualstudio/releases/2013/2013-redistribution-vs#windows-phone-icon-files) · [Visual Studio 2015 REDIST](https://learn.microsoft.com/en-us/visualstudio/releases/2015/2015-redistribution-vs#microsoft-windows-phone-sdk-80--and-microsoft-windows-phone-sdk-81)
+The REDIST column gives the 32 filenames in Microsoft's 2013 and 2015 redistribution lists. A dash means the lists have no separate entry for that SDK file. [Visual Studio 2013 REDIST](https://learn.microsoft.com/en-us/visualstudio/releases/2013/2013-redistribution-vs#windows-phone-icon-files) · [Visual Studio 2015 REDIST](https://learn.microsoft.com/en-us/visualstudio/releases/2015/2015-redistribution-vs#microsoft-windows-phone-sdk-80--and-microsoft-windows-phone-sdk-81)
 
-| Act or appointment | Name in the SDK 8.0 directory | Name in REDIST |
+| Command or shape | Name in the SDK 8.0 directory | Name in REDIST |
 | --- | --- | --- |
 | Add | `add.png` | `appbar.add.rest.png` |
 | Create | `new.png` | `appbar.new.rest.png` |
 | Reduce | `minus.png` | `appbar.minus.rest.png` |
 | Confirm | `check.png` | `appbar.check.rest.png` |
-| Cancel. | `cancel.png` | `appbar.cancel.rest.png` |
-| Close it. | `close.png` | `appbar.close.rest.png` |
+| Cancel | `cancel.png` | `appbar.cancel.rest.png` |
+| Close | `close.png` | `appbar.close.rest.png` |
 | Synchronize | `sync.png` | `appbar.sync.rest.png` |
 | Update | `refresh.png` | `appbar.refresh.rest.png` |
-| Reference | `questionmark.png` | `appbar.questionmark.rest.png` |
-| Get back. | `back.png` | `appbar.back.rest.png` |
+| Help | `questionmark.png` | `appbar.questionmark.rest.png` |
+| Back | `back.png` | `appbar.back.rest.png` |
 | Next | `next.png` | `appbar.next.rest.png` |
 | Search | `feature.search.png` | `appbar.feature.search.rest.png` |
 | Delete | `delete.png` | `appbar.delete.rest.png` |
-| Save. | `save.png` | `appbar.save.rest.png` |
-| folder | `folder.png` | `appbar.folder.rest.png` |
+| Save | `save.png` | `appbar.save.rest.png` |
+| Folder | `folder.png` | `appbar.folder.rest.png` |
 | Video | `feature.video.png` | `appbar.feature.video.rest.png` |
 | Camera | `feature.camera.png` | `appbar.feature.camera.rest.png` |
-| Mail. | `feature.email.png` | `appbar.feature.email.rest.png` |
+| Mail | `feature.email.png` | `appbar.feature.email.rest.png` |
 | Settings | `feature.settings.png` | `appbar.feature.settings.rest.png` |
-| Chosen. | `favs.png` | `appbar.favs.rest.png` |
-| Add to the select few | `favs.addto.png` | `appbar.favs.addto.rest.png` |
+| Favorites | `favs.png` | `appbar.favs.rest.png` |
+| Add to favorites | `favs.addto.png` | `appbar.favs.addto.rest.png` |
 | Download | `download.png` | `appbar.download.rest.png` |
-| Download. | `upload.png` | `appbar.upload.rest.png` |
-| Share. | `share.png` | `appbar.share.rest.png` |
+| Upload | `upload.png` | `appbar.upload.rest.png` |
+| Share | `share.png` | `appbar.share.rest.png` |
 | Edit | `edit.png` | `appbar.edit.rest.png` |
-| Additional teams | `overflowdots.png` | `appbar.overflowdots.png` |
-| Reproduce | `transport.play.png` | `appbar.transport.play.rest.png` |
-| Pause. | `transport.pause.png` | `appbar.transport.pause.rest.png` |
+| More commands | `overflowdots.png` | `appbar.overflowdots.png` |
+| Play | `transport.play.png` | `appbar.transport.play.rest.png` |
+| Pause | `transport.pause.png` | `appbar.transport.pause.rest.png` |
 | Previous or rewind | `transport.rew.png` | `appbar.transport.rew.rest.png` |
-| Next, or fast forward. | `transport.ff.png` | `appbar.transport.ff.rest.png` |
-| Stop it. | `stop.png` | `appbar.stop.rest.png` |
-| Contour of the circle | `basecircle.png` | `appbar.basecircle.rest.png` |
+| Next or fast forward | `transport.ff.png` | `appbar.transport.ff.rest.png` |
+| Stop | `stop.png` | `appbar.stop.rest.png` |
+| Circle outline | `basecircle.png` | `appbar.basecircle.rest.png` |
 | Alarm clock | `feature.alarm.png` | — |
 | Calendar | `feature.calendar.png` | — |
-| Phone. | `feature.phone.png` | — |
-| I like it. | `like.png` | — |
+| Phone | `feature.phone.png` | — |
+| Like | `like.png` | — |
 | Microphone | `microphone.png` | — |
 
 ## Official sheets and vector source
@@ -78,11 +99,11 @@ The vector directory comes with a separate `License.rtf` license. It connects ic
 
 ## Windows Phone 8.1 Store app symbols
 
-Microsoft's April 2014 Help Archive lists 193 `Windows.UI.Xaml.Controls.Symbol` values for Windows 8.1 and Windows Phone 8.1 Runtime. The corresponding headset of that generation is the Segoe UI Symbol. The April Help indicates decimal values, the table below records them in Unicode format. WinJS' June Help lists 196 `AppBarIcon` names and specifies the use of the name in `AppBarCommand.icon`. In it, the `pause` key is given in the lower case. [MSDN Symbol, April 2014](https://web.archive.org/web/20140423170427/http://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.symbol.aspx) · [MSDN AppBarIcon, June 2014](https://web.archive.org/web/20140629200623/http://msdn.microsoft.com/en-us/library/windows/apps/hh770557.aspx).
+Microsoft's April 2014 reference lists 193 `Windows.UI.Xaml.Controls.Symbol` values for Windows 8.1 and Windows Phone 8.1 Runtime. These apps used the Segoe UI Symbol font. The table shows the original decimal values as Unicode code points. The June 2014 WinJS reference lists 196 `AppBarIcon` names for `AppBarCommand.icon`. [MSDN Symbol, April 2014](https://web.archive.org/web/20140423170427/http://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.symbol.aspx) · [MSDN AppBarIcon, June 2014](https://web.archive.org/web/20140629200623/http://msdn.microsoft.com/en-us/library/windows/apps/hh770557.aspx)
 
-In the table next to the names that coincide without register. Names with a different spelling are given after the table by a separate list of WinJS. For the program interface, the staff names of the selected environment are used. In the Windows App SDK, the set and headset are set to the current `Symbol` resource `SymbolThemeFontFamily`. [WinUI SymbolIcon](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.symbolicon)
+The table pairs names that differ only in case. The list after the table gives the remaining WinJS names. Use the spelling for the platform you target. For current Windows App SDK behavior, see [WinUI SymbolIcon](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.symbolicon).
 
-| XAML Symbol | Code. | WinJS AppBarIcon |
+| XAML Symbol | Code point | WinJS AppBarIcon |
 | --- | --- | --- |
 | `Previous` | `U+E100` | `previous` |
 | `Next` | `U+E101` | `next` |
@@ -278,4 +299,4 @@ In the table next to the names that coincide without register. Names with a diff
 | `Scan` | `U+E294` | `scan` |
 | `Preview` | `U+E295` | `preview` |
 
-Names WinJS with another spelling or without the eponymous value of `Symbol` in the April image — `right`, `left`, `settings`, `mail2`, `characters`, `accounts`, `uploadskydrive`, `cc`.
+Other WinJS names: `right`, `left`, `settings`, `mail2`, `characters`, `accounts`, `uploadskydrive`, `cc`.
