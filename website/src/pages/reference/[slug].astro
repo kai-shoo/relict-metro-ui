@@ -1,6 +1,7 @@
 ---
 import Docs from '../../layouts/Docs.astro';
 import { documents } from '../../lib/content';
+import { withBase } from '../../lib/paths';
 export function getStaticPaths() {
   return documents.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
 }
@@ -8,6 +9,6 @@ const { entry } = Astro.props;
 const { Content } = entry.document;
 ---
 <Docs title={entry.title} headings={entry.headings}>
-  <div class="eyebrow">DOCUMENTATION / REFERENCE</div>
+  <div class="eyebrow"><a href={withBase('/reference/')}>Sources &amp; guides</a> / Reference</div>
   <article class="prose markdown-document"><Content /></article>
 </Docs>

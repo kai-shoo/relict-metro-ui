@@ -3,8 +3,9 @@ import Docs from '../layouts/Docs.astro';
 import { withBase } from '../lib/paths';
 ---
 <Docs title="Page not found">
-  <div class="eyebrow">404 / LOST YOUR WAY?</div>
-  <h1>nothing here. yet.</h1>
-  <p class="lead">This page may have moved. Try searching the docs or head back to the overview.</p>
+  <div class="eyebrow">Documentation / 404</div>
+  <h1>There's nothing here.</h1>
+  <p class="lead">This page may have moved. Search for a component or return to the documentation.</p>
+  <metro-button data-action="search">Search the docs</metro-button>
   <a href={withBase('/')} class="primary-link">Back to the docs →</a>
 </Docs>

@@ -3,9 +3,9 @@ import Docs from '../../layouts/Docs.astro';
 import { documents } from '../../lib/content';
 ---
 <Docs title="Sources & guides" wide>
-  <div class="eyebrow">DOCUMENTATION / KNOWLEDGE LIBRARY</div>
-  <h1>straight from the source.</h1>
-  <p class="lead">Library guides, research into the original Metro design, and Windows Phone specifications. All the reference material in one place.</p>
+  <div class="eyebrow">Developer guide / Reference</div>
+  <h1>Sources &amp; guides</h1>
+  <p class="lead">Find component contracts, design guidance, and the Windows Phone specifications behind the library.</p>
   <div class="document-list">
     {documents.map((entry, index) => <a href={entry.href}><span>{String(index + 1).padStart(2, '0')}</span><h2>{entry.title}</h2><b>→</b></a>)}
   </div>

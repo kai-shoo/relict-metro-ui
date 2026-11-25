@@ -1,4 +1,5 @@
 import 'relict-metro-ui/button';
+import 'relict-metro-ui/expander';
 import 'relict-metro-ui/icon';
 import 'relict-metro-ui/tile';
 import 'relict-metro-ui/text-box';
@@ -115,10 +116,10 @@ document.addEventListener('click', async (event) => {
       const status = button.closest('.code-block, .hero-install')?.querySelector('.copy-status');
       try {
         await navigator.clipboard.writeText(button.dataset.copy);
-        button.textContent = 'copied ✓';
+        button.textContent = 'Copied';
         if (status) status.textContent = 'Code copied';
       } catch {
-        button.textContent = 'select code';
+        button.textContent = 'Select code';
         if (status) status.textContent = 'Clipboard unavailable. Select and copy the code manually.';
       }
     }
@@ -144,6 +145,18 @@ document.addEventListener('keydown', (event) => {
     if (dialog?.open) {
       event.preventDefault();
       dialog.close();
+      return;
+    }
+    const menu = document.querySelector<HTMLElementTagNameMap['metro-expander']>('.component-menu');
+    if (menu?.matches('[open]:focus-within')) {
+      menu.shadowRoot?.querySelector('summary')?.focus();
+      menu.open = false;
+    } else if (document.querySelector('#docs-nav')?.matches(':focus-within')) {
+      const drawer = document.querySelector<HTMLDetailsElement>('.mobile-navigation[open]');
+      if (drawer?.getClientRects().length) {
+        drawer.open = false;
+        drawer.querySelector('summary')?.focus();
+      }
     }
   }
 });
@@ -160,6 +173,24 @@ document.addEventListener('astro:page-load', () => {
   pageController = new AbortController();
   const { signal } = pageController;
   updateThemeLabel();
+  const outline = document.querySelector<HTMLDetailsElement>('.page-outline');
+  if (outline) {
+    const sideBySide = matchMedia('(min-width: 1201px)');
+    outline.open = sideBySide.matches;
+    sideBySide.addEventListener('change', () => { outline.open = sideBySide.matches; }, { signal });
+  }
+  const mobileNavigation = document.querySelector<HTMLDetailsElement>('.mobile-navigation');
+  const componentList = document.querySelector<HTMLUListElement>('.component-links');
+  const currentComponent = componentList?.querySelector<HTMLElement>('[aria-current="page"]');
+  if (componentList && currentComponent) {
+    // Scroll only the list. Keep the document and the reader's focus in place.
+    const revealCurrent = () => {
+      componentList.scrollTop = currentComponent.offsetTop - componentList.clientHeight / 2;
+    };
+    void customElements.whenDefined('metro-expander').then(revealCurrent);
+    mobileNavigation?.addEventListener('toggle', revealCurrent, { signal });
+    componentList.closest('metro-expander')?.addEventListener('metro-toggle', revealCurrent, { signal });
+  }
   const dialog = document.querySelector<HTMLDialogElement>('#search-dialog');
   dialog?.addEventListener('close', () => {
     ++searchGeneration;

@@ -3,8 +3,8 @@ import { Code } from 'astro:components';
 interface Props { code: string; lang?: 'html' | 'js' | 'ts' | 'css' | 'bash'; label?: string }
 const { code, lang = 'html', label = lang } = Astro.props;
 ---
-<div class="code-block">
-  <div class="code-header"><span>{label}</span><metro-button data-copy={code} label="Copy code">copy</metro-button></div>
+<figure class="code-block">
+  <figcaption class="code-header"><span>{label}</span><metro-button data-copy={code} label="Copy code">Copy</metro-button></figcaption>
   <Code code={code} lang={lang} theme="github-dark" />
   <span class="copy-status sr-only" role="status"></span>
-</div>
+</figure>
