@@ -44,8 +44,7 @@ export const phoneHubCommands = {
       const contextChanged = await bar.getAttribute('mode') === 'minimal' && !await clear.isVisible();
       await favorites.press('ArrowLeft');
 
-      const list = demo.locator('#recent-scroll');
-      const link = list.getByRole('link', { name: /Край хребта/ });
+      const link = demo.locator('#recent-scroll').getByRole('link', { name: /Край хребта/ });
       await demo.waitForFunction(() => {
         const hub = document.querySelector('#hub');
         return hub.value === 'recent' && hub.firstVisible === 'recent';

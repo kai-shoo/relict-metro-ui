@@ -24,6 +24,6 @@ test('Photos restores the card offset when enlarged captions reflow the feed at 
 
 test.each([320, 390])('Photos switches a %i px gallery to one column when text size doubles', async width => {
   expect(await commands.photosGridAtLargeText(width)).toEqual({
-    normal: 2, enlarged: 1, captionFits: true, focusVisible: true,
+    normal: 2, enlarged: 1, captionFits: true,
   });
 }, 15000);

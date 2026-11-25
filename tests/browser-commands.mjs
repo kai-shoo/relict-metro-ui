@@ -14,6 +14,18 @@ import { phoneDateTimeCommands } from './phone-date-time-commands.mjs';
 import { pivotHeaderCommands } from './pivot-headers-commands.mjs';
 import { applications } from '../examples/catalog/applications.js';
 
+// The frame can restore focus before the gallery scrolls its anchor into view.
+async function waitForPhotoReturn(page, feedSelector, id) {
+  await page.waitForFunction(({ feedSelector, id }) => {
+    const card = document.activeElement;
+    const feed = document.querySelector(feedSelector);
+    if (card?.dataset.photo !== id || !feed?.contains(card)) return false;
+    const rect = card.getBoundingClientRect();
+    const viewport = feed.getBoundingClientRect();
+    return rect.top < viewport.bottom && rect.bottom > viewport.top;
+  }, { feedSelector, id });
+}
+
 // Real navigations and touch sequences run through the Browser Mode provider.
 export const browserCommands = {
   ...notificationCommands,
@@ -215,14 +227,7 @@ export const browserCommands = {
       const feed = shell.locator('[data-feed="albums"]');
       const returned = feed.getByRole('link', { name: photoTitle });
       await returned.waitFor();
-      await demo.waitForFunction(({ id, shellId }) => {
-        const card = document.activeElement;
-        const feed = card?.closest(`#${shellId} [data-feed="albums"]`);
-        if (card?.dataset.photo !== id || !feed) return false;
-        const rect = card.getBoundingClientRect();
-        const viewport = feed.getBoundingClientRect();
-        return rect.top < viewport.bottom && rect.bottom > viewport.top;
-      }, { id: photoId, shellId: switchLayout ? 'photo-menu' : 'photo-pivot' });
+      await waitForPhotoReturn(demo, `#${switchLayout ? 'photo-menu' : 'photo-pivot'} [data-feed="albums"]`, photoId);
       const scrollRestored = savedTop > 0 && (enlargeLabels
         ? await returned.evaluate((element, { savedAnchor, savedTop }) => {
           const feed = element.closest('[data-feed]');
@@ -266,16 +271,11 @@ export const browserCommands = {
       await demo.getByRole('heading', { name: 'Снежный перевал' }).waitFor();
       await demo.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
       await demo.goBack();
-      await demo.waitForFunction(() => document.activeElement?.dataset.photo === 'pass');
+      await waitForPhotoReturn(demo, '#photo-pivot [data-feed="collection"]', 'pass');
 
       return {
         normal, enlarged: await columns(),
         captionFits: await feed.evaluate(element => element.scrollWidth <= element.clientWidth + 1),
-        focusVisible: await photo.evaluate(element => {
-          const viewport = element.closest('[data-feed]').getBoundingClientRect();
-          const card = element.getBoundingClientRect();
-          return document.activeElement === element && card.top < viewport.bottom && card.bottom > viewport.top;
-        }),
       };
     });
   },
