@@ -50,6 +50,7 @@ function readHeaders(pivot) {
       next: drawn[selected + 1] ?? null,
       lastVisible: drawn.filter(tab => tab.visible).at(-1),
       focus: root.activeElement?.textContent.trim() ?? null,
+      focusOutline: root.activeElement ? getComputedStyle(root.activeElement).outlineStyle : null,
       real: tabs.filter(tab => tab.getAttribute('role') === 'tab').map(tab => tab.textContent.trim()),
       copies: tabs.filter(tab => tab.getAttribute('aria-hidden') === 'true').length,
     };

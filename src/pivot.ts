@@ -409,7 +409,8 @@ export class MetroPivot extends LitElement {
     const button = this.#button(value);
     if (!button || button.disabled || this.selectionLocked) return;
     this.#cancelHeaderMotion();
-    button.focus({ preventScroll: true });
+    const focusOptions = { preventScroll: true, focusVisible: event.detail > 0 ? false : undefined };
+    button.focus(focusOptions);
     this.#activate(value);
     if (event.detail > 0) this.#scrollTowardHeader(value, event.currentTarget as HTMLElement);
     this.requestUpdate();

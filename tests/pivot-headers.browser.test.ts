@@ -17,6 +17,7 @@ interface HeaderLayout {
   next: Header | null;
   lastVisible: Header;
   focus: string | null;
+  focusOutline: string | null;
   real: string[];
   copies: number;
 }
@@ -56,6 +57,7 @@ test('clicking the visible fragment of a mail heading brings its real tab to the
     next: { label: 'Flagged', hidden: false },
     lastVisible: { clipped: true },
     focus: 'Inbox',
+    focusOutline: 'none',
     real: ['Inbox', 'Flagged', 'Archive'],
   });
   expect(Math.abs(inbox.active.start - before.active.start)).toBeLessThanOrEqual(1);
@@ -65,12 +67,13 @@ test('clicking the visible fragment of a mail heading brings its real tab to the
     previous: { label: 'Flagged', clipped: true },
     next: { label: 'Inbox', hidden: true },
     focus: 'Archive',
+    focusOutline: 'none',
   });
   expect(archive.next!.visible).toBeGreaterThan(0);
   expect(rtlWithoutResize).toMatchObject({
     value: 'archive', active: { label: 'Archive', buttonVisible: true }, focus: 'Archive',
   });
-  expect(preview).toMatchObject({ value: 'archive', focus: 'Inbox' });
+  expect(preview).toMatchObject({ value: 'archive', focus: 'Inbox', focusOutline: 'solid' });
   expect(wide).toMatchObject({ value: 'inbox', copies: 0, real: ['Inbox', 'Flagged', 'Archive'] });
   expect(wide.active.start).toBeLessThan(inbox.active.start);
   expect(rtlInbox).toMatchObject({
