@@ -1,40 +1,109 @@
 import { strict as assert } from 'node:assert';
-import { readFile, readdir, stat } from 'node:fs/promises';
-import { createServer } from 'node:http';
-import { extname, resolve, sep } from 'node:path';
+import { readdir } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import { basePath } from '../website/site.config.mjs';
 
-const root = resolve(fileURLToPath(new URL('../website/dist/', import.meta.url)));
-const types = {
-  '.html': 'text/html; charset=utf-8',
-  '.js': 'text/javascript',
-  '.css': 'text/css',
-  '.json': 'application/json',
-  '.svg': 'image/svg+xml',
-  '.wasm': 'application/wasm',
-};
-const server = createServer(async (request, response) => {
-  try {
-    const url = new URL(request.url, 'http://localhost');
-    if (url.pathname !== basePath && !url.pathname.startsWith(`${basePath}/`)) throw new Error('Outside the project site');
-    let path = resolve(root, `.${decodeURIComponent(url.pathname.slice(basePath.length)) || '/'}`);
-    if (path !== root && !path.startsWith(`${root}${sep}`)) throw new Error('Invalid path');
-    if ((await stat(path)).isDirectory()) path = resolve(path, 'index.html');
-    response.setHeader('Content-Type', types[extname(path)] ?? 'application/octet-stream');
-    response.end(await readFile(path));
-  } catch {
-    response.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-    response.end(await readFile(resolve(root, '404.html')));
+const website = new URL('../website/', import.meta.url);
+const root = fileURLToPath(new URL('dist/', website));
+const { dev, preview } = await import(createRequire(website).resolve('astro'));
+const options = { root: fileURLToPath(website), server: { host: '127.0.0.1', port: 0 }, logLevel: 'error' };
+
+async function verifyExamples(browser, mode, origin) {
+  const base = origin + basePath;
+  const page = await browser.newPage();
+  page.setDefaultTimeout(7000);
+  const failures = [];
+  page.on('pageerror', (error) => failures.push(error.message));
+  page.on('response', (response) => {
+    if (response.status() >= 400) failures.push(`${response.status()} ${response.url()}`);
+  });
+  await page.route(/^https?:/, (route) => {
+    if (new URL(route.request().url()).origin === origin) return route.continue();
+    failures.push(`External dependency: ${route.request().url()}`);
+    return route.abort();
+  });
+
+  async function open(app) {
+    await page.goto(`${base}/examples/`);
+    const link = page.locator(`.examples-grid a[href^="${basePath}/examples/${app}/"]`);
+    const href = await link.getAttribute('href');
+    await Promise.all([page.waitForURL(origin + href), link.click()]);
+    assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+    assert(await page.locator('link[rel="stylesheet"]').evaluateAll((links) =>
+      links.some((link) => link.href.startsWith(`${location.origin}${location.pathname}`) && link.sheet?.cssRules.length)),
+    `${mode}: ${app} did not load its stylesheet`);
+    assert.doesNotMatch(await page.locator('body').innerText(), /[А-Яа-яЁё]/, `Untranslated ${app} UI`);
   }
-});
-await new Promise((done) => server.listen(0, '127.0.0.1', done));
-const origin = `http://127.0.0.1:${server.address().port}`;
-const base = origin + basePath;
+
+  try {
+    await open('mail');
+    await page.locator('[data-message-id="radio-check"]:visible').click();
+    assert.equal(await page.locator('#message-title').innerText(), 'Radio check at 08:30');
+
+    await open('start');
+    assert.match(await page.locator('#today').getAttribute('datetime'), /^\d{4}-\d{2}-\d{2}$/);
+    await page.getByRole('link', { name: 'Flagged mail' }).click();
+    await page.waitForFunction(() => document.querySelector('#mail-pivot')?.value === 'flagged');
+
+    await open('controls');
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await page.getByText('Settings saved', { exact: true }).waitFor();
+
+    await open('workspace');
+    await page.getByRole('button', { name: 'City garden' }).click();
+    assert.equal(await page.locator('#project-title').innerText(), 'City garden');
+
+    await open('media');
+    await page.getByRole('button', { name: 'Create a recording notification' }).click();
+    await page.waitForFunction(() => document.querySelector('#notifications').notifications[0]?.title === 'At dawn');
+
+    await open('collections');
+    await page.getByRole('checkbox', { name: 'Select Field notes' }).check();
+    assert(await page.locator('metro-cross-slide').filter({ hasText: 'Field notes' }).evaluate((row) => row.selected));
+    await page.getByRole('link', { name: 'Selection across groups' }).click();
+    await page.getByRole('button', { name: 'Select Field notes' }).press('Space');
+    await page.getByRole('button', { name: 'Selection (1)' }).click();
+    await page.getByRole('button', { name: 'Add to queue' }).click();
+    await page.locator('#queue-positions li').filter({ hasText: 'Field notes' }).waitFor({ state: 'attached' });
+
+    await open('catalog');
+    await page.reload();
+    assert.equal(new URL(page.url()).searchParams.get('tag'), 'metro-repeat-button');
+    await page.locator('#tag').click();
+    await page.getByRole('dialog').getByRole('button', { name: 'Close', exact: true }).click();
+    await page.getByRole('button', { name: 'Increment' }).click();
+    assert.equal(await page.locator('#demo output').innerText(), '1');
+    await page.goto(`${base}/examples/catalog/?tag=metro-button`);
+    await page.locator('#code').filter({ hasText: '<metro-button' }).waitFor();
+    assert.equal(await page.locator('#tag-name').innerText(), 'button');
+    assert.match(await page.locator('#module').innerText(), /relict-metro-ui\/button/);
+    await page.getByRole('link', { name: 'Open the complete example' }).click();
+    await page.getByRole('button', { name: 'Save', exact: true }).waitFor();
+
+    assert.deepEqual(failures, [], `${mode}: example errors or external dependencies`);
+    console.log(`${mode}: all six apps and the catalog rendered from clicked links; deep links, styles, data and interactions passed.`);
+  } finally {
+    await page.close();
+  }
+}
+
 let browser;
+let server;
 try {
   browser = await chromium.launch({ executablePath: process.env.METRO_CHROMIUM_PATH || undefined });
+  const development = await dev(options);
+  try {
+    await verifyExamples(browser, 'Astro dev', `http://127.0.0.1:${development.address.port}`);
+  } finally {
+    await development.stop();
+  }
+  server = await preview(options);
+  const origin = `http://127.0.0.1:${server.port}`;
+  const base = origin + basePath;
+  await verifyExamples(browser, 'Static preview', origin);
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     colorScheme: 'light',
@@ -137,17 +206,6 @@ try {
     assert(anchors.get(url.pathname)?.has(decodeURIComponent(url.hash.slice(1))), `Broken translated anchor: ${url.pathname}${url.hash}`);
   }
 
-  await page.goto(base + '/examples/catalog/?tag=metro-button');
-  await page.locator('#tag:not([disabled])').waitFor();
-  assert.equal(await page.locator('#tag-name').textContent(), 'button');
-  assert.match(await page.locator('#module').textContent(), /relict-metro-ui\/button/);
-  assert.equal(await page.locator('html').getAttribute('lang'), 'en');
-  assert.doesNotMatch(await page.locator('body').innerText(), /[А-Яа-яЁё]/, 'Untranslated catalog UI');
-  await page.goto(base + '/examples/controls/');
-  await page.getByRole('button', { name: 'Save', exact: true }).waitFor();
-  assert.doesNotMatch(await page.locator('body').innerText(), /[А-Яа-яЁё]/, 'Untranslated app UI');
-  await page.getByRole('button', { name: 'Save', exact: true }).click();
-  await page.locator('#result').waitFor({ state: 'visible' });
   assert.equal((await page.goto(base + '/missing-page/')).status(), 404);
   assert.match(await page.locator('h1').textContent(), /nothing here/);
 
@@ -172,5 +230,5 @@ try {
   console.log(`Documentation checks passed: ${routes.length} routes, ${internalLinks.size} internal paths, SPA history, Shadow DOM links, theme, search, clipboard, components and mobile layout.`);
 } finally {
   await browser?.close();
-  await new Promise((done) => server.close(done));
+  await server?.stop();
 }

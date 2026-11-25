@@ -2,23 +2,32 @@
 import Docs from '../layouts/Docs.astro';
 import { withBase } from '../lib/paths';
 const examples = [
-  { name: 'mail', path: 'mail', icon: 'mail', text: 'Pivot, commands, and navigation from a list to a message.', color: '#0050ef' },
-  { name: 'start screen', path: 'start', icon: 'home', text: 'Tiles, accents, and application routes.', color: '#a20025' },
-  { name: 'settings', path: 'controls', icon: 'settings', text: 'Forms, switches, and dialogs.', color: '#008272' },
-  { name: 'workspace', path: 'workspace', icon: 'edit', text: 'Tabs, notes, and moving between windows.', color: '#6a00ff' },
-  { name: 'media library', path: 'media', icon: 'play', text: 'A player, notifications, and a playback queue.', color: '#b61861' },
-  { name: 'collections', path: 'collections', icon: 'list', text: 'Selecting, sorting, and transferring items.', color: '#a65300' },
+  { name: 'Mail', path: 'mail/', icon: 'mail', text: 'Switch folders and open a message.', color: '#0050ef' },
+  { name: 'Start screen', path: 'start/', icon: 'pin', text: 'Open the inbox or flagged mail from a pinned tile.', color: '#a20025' },
+  { name: 'Settings', path: 'controls/', icon: 'settings', text: 'Set a delivery preference and save the form.', color: '#008272' },
+  { name: 'Workspace', path: 'workspace/', icon: 'edit', text: 'Edit project notes and move a notebook to another window.', color: '#6a00ff' },
+  { name: 'Media library', path: 'media/', icon: 'play', text: 'Play a recording and create a notification.', color: '#b61861' },
+  { name: 'Collections', path: 'collections/', icon: 'folder', text: 'Select recordings and transfer them to a queue.', color: '#a65300' },
+  { name: 'Component catalog', path: 'catalog/?tag=metro-repeat-button', icon: 'search', text: 'Try a repeat button, inspect its source, or choose another component.', color: '#34495e' },
 ];
 ---
 <Docs title="Example apps" wide>
   <div class="eyebrow">DOCUMENTATION / IN PRACTICE</div>
-  <h1>more than buttons.</h1>
-  <p class="lead">Complete experiences built with our UI kit. Open an app and try everything, from swiping between folders to moving a tab into another window.</p>
+  <h1>example apps<span class="accent">.</span></h1>
+  <p class="lead">Open a standalone app to see how Metro components work together. Use the component catalog to explore individual controls.</p>
   <div class="examples-grid">
-    {examples.map((example) => <a class="example-card" href={withBase(`/examples/${example.path}/`)} data-astro-reload>
-      <div class="example-cover" style={`--cover: ${example.color}`}><metro-icon name={example.icon}></metro-icon><span>{example.name}</span><b>↗</b></div>
+    {examples.map((example) => <a class="example-card" href={withBase(`/examples/${example.path}`)} data-astro-reload>
+      <metro-tile size="wide" aria-hidden="true" style={`--metro-tile-bg: ${example.color}`}>
+        <metro-icon name={example.icon}></metro-icon>
+      </metro-tile>
+      <h2>{example.name}</h2>
       <p>{example.text}</p>
     </a>)}
   </div>
-  <p class="muted">Examples ship with the npm package and open as standalone applications.</p>
 </Docs>
+
+<style>
+  .example-card metro-tile { --metro-tile-width: 100%; --metro-tile-fg: white; }
+  .example-card metro-icon { font-size: 2.5rem; }
+  .example-card h2 { font-size: 1.4rem; margin: .75rem 0 0; }
+</style>
