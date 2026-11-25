@@ -24,15 +24,21 @@ export const documents = Object.entries(markdown).map(([path, document]) => {
   };
 });
 
-// Use the installed release's catalogue rather than a second handwritten tag list.
+// Public element entry points declare their tags in HTMLElementTagNameMap.
+// Other public modules (for example shell-host) do not register elements.
 const require = createRequire(import.meta.url);
 const packageRoot = dirname(require.resolve('relict-metro-ui/package.json'));
-const samples = readFileSync(resolve(packageRoot, 'examples/catalog/samples.js'), 'utf8');
-const applications = readFileSync(resolve(packageRoot, 'examples/catalog/applications.js'), 'utf8');
-export const tags = [...new Set([
-  ...[...samples.matchAll(/<(metro-[\w-]+)\b/g)].map((match) => match[1]),
-  ...[...applications.matchAll(/"(metro-[\w-]+)"/g)].map((match) => match[1]),
-])].sort();
+export const tags = Object.entries(pkg.exports).flatMap(([subpath, entry]) => {
+  if (typeof entry === 'string' || !subpath.startsWith('./') || !('types' in entry)) return [];
+  const declaration = readFileSync(resolve(packageRoot, entry.types), 'utf8');
+  const tag = declaration.match(/interface HTMLElementTagNameMap\s*\{\s*'(metro-[\w-]+)'/)?.[1];
+  if (tag && subpath !== `./${tag.slice(6)}`) throw new Error(`Unexpected element entry point: ${subpath} (${tag})`);
+  return tag ? [tag] : [];
+}).sort();
+
+export function componentPath(tag: string) {
+  return `/components/${tag.slice(6)}/`;
+}
 
 export const navigation = [
   {
@@ -41,6 +47,7 @@ export const navigation = [
       { label: 'Overview', href: '/' },
       { label: 'Getting started', href: '/getting-started/' },
       { label: 'Components', href: '/components/', count: tags.length },
+      { label: 'Icons', href: '/icons/' },
       { label: 'Example apps', href: '/examples/' },
     ],
   },
@@ -51,7 +58,6 @@ export const navigation = [
       { label: 'Themes & typography', href: '/reference/foundations/' },
       { label: 'Component patterns', href: '/reference/components/' },
       { label: 'Interaction patterns', href: '/reference/flows/' },
-      { label: 'Icons', href: '/reference/metro-icons/' },
     ],
   },
   {

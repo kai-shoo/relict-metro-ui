@@ -1,0 +1,33 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import Code from '../../components/Code.astro';
+import ComponentExample from '../../components/ComponentExample.astro';
+import { tags } from '../../lib/content';
+import { componentGuide } from '../../lib/component-guides';
+import { withBase } from '../../lib/paths';
+
+export function getStaticPaths() {
+  return tags.map(tag => ({ params: { slug: tag.slice(6) }, props: { tag } }));
+}
+const { tag } = Astro.props;
+const [usage, api, section] = componentGuide(tag);
+const headings = [{ slug: 'example', text: 'Working example' }, { slug: 'api', text: 'API and usage' }];
+const reference = section === 'public-api' ? 'readme' : 'api';
+---
+<Docs title={tag} description={usage} headings={headings}>
+  <div class="eyebrow"><a href={withBase('/components/')}>COMPONENTS</a> / {tag.slice(6).toUpperCase()}</div>
+  <h1>{tag}</h1>
+  <p class="lead">{usage}</p>
+  <h2 id="example">Working example</h2>
+  <p>Try the preview, then copy the example into an HTML page in a project that supports npm imports.
+    <a class="text-link" href={withBase('/getting-started/#install')}>Installation →</a></p>
+  <ComponentExample {tag} />
+  <section class="prose" aria-labelledby="api">
+    <h2 id="api">API and usage</h2>
+    <p>{api.split('`').map((part, i) => i % 2 ? <code>{part}</code> : part)}</p>
+    <p>Import this module to register <code>{tag}</code> in your app:</p>
+    <Code lang="js" code={`import 'relict-metro-ui/${tag.slice(6)}';`} />
+    <p><a href={withBase(`/reference/${reference}/#${section}`)}>Read the full API contract →</a></p>
+    {(tag === 'metro-icon' || tag === 'metro-animated-icon') && <p><a href={withBase('/icons/')}>Browse the icon catalog →</a></p>}
+  </section>
+</Docs>
