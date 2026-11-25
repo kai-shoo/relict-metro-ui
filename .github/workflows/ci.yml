@@ -60,11 +60,14 @@ jobs:
           echo "04d5e8f903693f9dd13e16f867e994834e681eb3c72c0d337a770dcda09010cf  $archive" | sha256sum --check
           font_dir="$HOME/.local/share/fonts"
           mkdir -p "$font_dir"
-          tar -xJf "$archive" -C "$font_dir" --wildcards 'JetBrainsMonoNerdFont-*.ttf'
+          # The screenshot baselines use four faces. Extra weights change
+          # Chromium's fallback for 300 and 600 even with the same font family.
+          tar -xJf "$archive" -C "$font_dir" JetBrainsMonoNerdFont-{Regular,Italic,Bold,BoldItalic}.ttf
           export FONTCONFIG_FILE="$GITHUB_WORKSPACE/.github/ci-fonts.conf"
           fc-cache "$font_dir"
           test "$(fc-match -f '%{family}' system-ui)" = 'Liberation Sans'
           test "$(fc-match -f '%{family}' monospace | cut -d, -f1)" = 'JetBrainsMono Nerd Font'
+          test "$(fc-match -f '%{file}' monospace:weight=demibold)" = "$font_dir/JetBrainsMonoNerdFont-Bold.ttf"
           echo "FONTCONFIG_FILE=$FONTCONFIG_FILE" >> "$GITHUB_ENV"
       - run: npm run ${{ matrix.script }}
       - name: Upload visual test diffs
