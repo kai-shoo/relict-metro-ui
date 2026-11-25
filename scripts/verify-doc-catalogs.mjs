@@ -21,6 +21,8 @@ export async function verifyComponentMenu(page, base, mobile) {
   const index = await page.locator('main [data-component]').evaluateAll(items =>
     items.map(item => [item.dataset.component.slice(6), item.href]).sort());
   await toggle.press('Enter');
+  // The native details opens before its queued toggle event updates the Metro host.
+  await nav.locator('metro-expander[open]').waitFor();
   await links.first().waitFor();
   assert.deepEqual(await links.evaluateAll(items => items.map(item => [item.textContent.trim(), item.href])), index,
     'Component submenu must list each guide in name order');
@@ -28,6 +30,7 @@ export async function verifyComponentMenu(page, base, mobile) {
   assert(await links.first().evaluate(link => link === document.activeElement), 'Tab must reach the first component');
   await page.keyboard.press('Escape');
   await links.first().waitFor({ state: 'hidden' });
+  assert(await nav.isVisible(), 'Closing the submenu must leave the navigation open');
   assert(await toggle.evaluate(summary => summary.matches(':focus')), 'Escape must return focus to the submenu toggle');
   if (mobile) {
     await page.keyboard.press('Escape');
