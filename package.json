@@ -1,6 +1,6 @@
 {
   "name": "relict-metro-ui",
-  "version": "0.2.0",
+  "version": "0.2.1-verify.1",
   "description": "Windows Phone 8-inspired Metro web components",
   "type": "module",
   "license": "MIT",
